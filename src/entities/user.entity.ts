@@ -1,18 +1,6 @@
-import { prop, modelOptions, mongoose } from '@typegoose/typegoose';
+import { prop, modelOptions } from '@typegoose/typegoose';
 import { Severity } from '@typegoose/typegoose';
-
-export enum ROLE {
-  ADMIN = 'administrador',
-  USER = 'usuario',
-  OPERATOR = 'operador',
-}
-export enum DOC_TYPE {
-  CC = 'CÉDULA DE CIUDADANÍA',
-  CE = 'CÉDULA DE EXTRANJERÍA',
-  PA = 'PASAPORTE',
-  TI = 'TARJETA DE IDENTIDAD',
-  PTP = 'PERMISO TEMPORAL DE PERMANENCIA',
-}
+import { DOC_TYPE, ROLE } from 'src/common/enums';
 
 @modelOptions({
   schemaOptions: { collection: 'users', timestamps: true },
@@ -21,35 +9,38 @@ export enum DOC_TYPE {
 export class UserEntity {
   @prop({
     unique: true,
+    required: true,
   })
   uid: string;
-  @prop({})
-  firtsName: string;
-  @prop({})
+  @prop({ required: true })
+  firstName: string;
+  @prop({ required: true })
   lastName: string;
   @prop({
-    default: false,
+    default: true,
   })
   active: boolean;
   @prop({ enum: ROLE, default: ROLE.USER })
   role: ROLE;
-  @prop()
+  @prop({ required: true })
   account: string;
   @prop({
     trim: true,
     lowercase: true,
+    required: true,
+    unique: true,
   })
   email: string;
   @prop({
     default: [],
   })
   phone: string[] | [];
-  @prop()
+  @prop({ default: '' })
   whatsapp: string;
-  @prop({ enum: DOC_TYPE })
+  @prop({ enum: DOC_TYPE, default: DOC_TYPE.UNASSIGNED })
   docType: DOC_TYPE;
-  @prop({})
+  @prop({ default: '' })
   docNumber?: string;
-  @prop({})
+  @prop({ default: '' })
   nationality?: string;
 }

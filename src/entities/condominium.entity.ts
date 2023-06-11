@@ -1,7 +1,8 @@
-import { modelOptions, prop } from '@typegoose/typegoose';
+import { Severity, modelOptions, prop } from '@typegoose/typegoose';
 
 @modelOptions({
   schemaOptions: { collection: 'condominiums', timestamps: true },
+  options: { allowMixed: Severity.ALLOW },
 })
 export class CondominiumEntity {
   @prop({})

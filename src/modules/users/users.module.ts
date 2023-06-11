@@ -8,5 +8,6 @@ import { TypegooseModule } from 'nestjs-typegoose';
   imports: [TypegooseModule.forFeature([UserEntity])],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}

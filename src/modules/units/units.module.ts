@@ -8,5 +8,6 @@ import { UnitEntity } from 'src/entities/unit.entity';
   imports: [TypegooseModule.forFeature([UnitEntity])],
   controllers: [UnitsController],
   providers: [UnitsService],
+  exports: [UnitsService],
 })
 export class UnitsModule {}

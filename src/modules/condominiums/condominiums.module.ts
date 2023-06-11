@@ -8,5 +8,6 @@ import { CondominiumEntity } from 'src/entities/condominium.entity';
   imports: [TypegooseModule.forFeature([CondominiumEntity])],
   controllers: [CondominiumsController],
   providers: [CondominiumsService],
+  exports: [CondominiumsService],
 })
 export class CondominiumsModule {}

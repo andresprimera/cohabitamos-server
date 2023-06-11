@@ -6,6 +6,8 @@ import { AccountsModule } from './modules/accounts/accounts.module';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { CondominiumsModule } from './modules/condominiums/condominiums.module';
 import { UnitsModule } from './modules/units/units.module';
+import { UsersByUnitModule } from './modules/users-by-unit/users-by-unit.module';
+import { RequirementsModule } from './modules/requirements/requirements.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { UnitsModule } from './modules/units/units.module';
     ),
     CondominiumsModule,
     UnitsModule,
+    UsersByUnitModule,
+    RequirementsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

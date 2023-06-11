@@ -71,13 +71,11 @@ export class AccountsService {
   }
 
   async remove(_id: string) {
-    const response = await this.accountRepository
+    return await this.accountRepository
       .deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
       });
-
-    return response;
   }
 }

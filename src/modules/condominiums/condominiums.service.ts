@@ -79,7 +79,7 @@ export class CondominiumsService {
   }
 
   async remove(_id: string) {
-    const response = await this.condominiumRepository
+    return await this.condominiumRepository
       .deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
       .catch((error) => {
         Logger.error(error);
@@ -87,7 +87,5 @@ export class CondominiumsService {
       });
 
     //TODO: delete the units for this condo
-
-    return response;
   }
 }

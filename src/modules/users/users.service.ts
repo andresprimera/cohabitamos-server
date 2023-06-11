@@ -4,7 +4,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from '../../common/dtos/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType, types } from '@typegoose/typegoose';
@@ -70,13 +70,11 @@ export class UsersService {
   }
 
   async remove(_id: string) {
-    const response = await this.userRepository
+    return await this.userRepository
       .deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
       });
-
-    return response;
   }
 }

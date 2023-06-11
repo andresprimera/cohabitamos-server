@@ -62,13 +62,11 @@ export class UnitsService {
   }
 
   async remove(_id: string) {
-    const response = await this.unitRepository
+    return await this.unitRepository
       .deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
       });
-
-    return response;
   }
 }
