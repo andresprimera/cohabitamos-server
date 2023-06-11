@@ -4,23 +4,25 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
-import { AccountEntity } from 'src/entities/account.entity';
+import { CreateCondominiumDto } from './dto/create-condominium.dto';
+import { UpdateCondominiumDto } from './dto/update-condominium.dto';
+import { CondominiumEntity } from 'src/entities/condominium.entity';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nestjs-typegoose';
 import mongoose from 'mongoose';
 
 @Injectable()
-export class AccountsService {
+export class CondominiumsService {
   constructor(
-    @InjectModel(AccountEntity)
-    private readonly accountRepository: ReturnModelType<typeof AccountEntity>,
+    @InjectModel(CondominiumEntity)
+    private readonly condominiumRepository: ReturnModelType<
+      typeof CondominiumEntity
+    >,
   ) {}
 
-  async create(dtoWithFormatedId: CreateAccountDto) {
-    return await this.accountRepository
-      .create(dtoWithFormatedId)
+  async create(createCondominiumDto: CreateCondominiumDto) {
+    return await this.condominiumRepository
+      .create(createCondominiumDto)
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
@@ -28,14 +30,16 @@ export class AccountsService {
   }
 
   async findAll() {
-    return await this.accountRepository.find().catch((error) => {
+    //TODO: Pagination
+    return await this.condominiumRepository.find().catch((error) => {
       Logger.error(error);
       throw new InternalServerErrorException(error.message);
     });
   }
 
   async findOne(_id: string) {
-    const response = await this.accountRepository
+    //TODO: get units for this condominium
+    const response = await this.condominiumRepository
       .findOne({ _id: new mongoose.Types.ObjectId(_id) })
       .catch((error) => {
         Logger.error(error);
@@ -43,17 +47,19 @@ export class AccountsService {
       });
 
     if (!response) {
-      throw new NotFoundException('No account was found for the provided _id');
+      throw new NotFoundException(
+        'No condominium was found for the provided _id',
+      );
     }
 
     return response;
   }
 
-  async update(_id: string, updateAccountDto: UpdateAccountDto) {
-    const response = await this.accountRepository
+  async update(_id: string, updateCondominiumDto: UpdateCondominiumDto) {
+    const response = await this.condominiumRepository
       .findOneAndUpdate(
         { _id: new mongoose.Types.ObjectId(_id) },
-        updateAccountDto,
+        updateCondominiumDto,
         {
           new: true,
         },
@@ -64,19 +70,23 @@ export class AccountsService {
       });
 
     if (!response) {
-      throw new NotFoundException('No account was found for the provided _id');
+      throw new NotFoundException(
+        'No condominium was found for the provided _id',
+      );
     }
 
     return response;
   }
 
   async remove(_id: string) {
-    const response = await this.accountRepository
+    const response = await this.condominiumRepository
       .deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
       });
+
+    //TODO: delete the units for this condo
 
     return response;
   }

@@ -8,7 +8,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType, types } from '@typegoose/typegoose';
-import { UserEntity } from './entities/user.entity';
+import { UserEntity } from '../../entities/user.entity';
 import mongoose, { Types } from 'mongoose';
 
 @Injectable()
@@ -52,9 +52,7 @@ export class UsersService {
     const response = await this.userRepository
       .findOneAndUpdate(
         { _id: new mongoose.Types.ObjectId(_id) },
-        {
-          ...updateUserDto,
-        },
+        updateUserDto,
         {
           new: true,
         },
