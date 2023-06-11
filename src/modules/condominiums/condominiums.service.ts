@@ -38,21 +38,30 @@ export class CondominiumsService {
   }
 
   async findOne(_id: string) {
-    //TODO: get units for this condominium
     const response = await this.condominiumRepository
-      .findOne({ _id: new mongoose.Types.ObjectId(_id) })
+      .aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(_id) } }, // This will ensures that there is only 1 object in the response array
+        {
+          $lookup: {
+            from: 'units',
+            localField: '_id',
+            foreignField: 'condominium',
+            as: 'units',
+          },
+        },
+      ])
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
       });
 
-    if (!response) {
+    if (response && response.length === 0) {
       throw new NotFoundException(
         'No condominium was found for the provided _id',
       );
     }
 
-    return response;
+    return response[0];
   }
 
   async update(_id: string, updateCondominiumDto: UpdateCondominiumDto) {
