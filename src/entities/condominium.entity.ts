@@ -1,12 +1,13 @@
-import { Severity, modelOptions, prop } from '@typegoose/typegoose';
+import { Ref, Severity, modelOptions, prop } from '@typegoose/typegoose';
+import { AccountEntity } from './account.entity';
 
 @modelOptions({
   schemaOptions: { collection: 'condominiums', timestamps: true },
   options: { allowMixed: Severity.ALLOW },
 })
 export class CondominiumEntity {
-  @prop({})
-  account: string;
+  @prop({ ref: () => AccountEntity })
+  account: Ref<AccountEntity>;
 
   @prop({})
   address: string;

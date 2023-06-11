@@ -11,8 +11,8 @@ export enum StatsEnum {
   schemaOptions: { collection: 'accounts', timestamps: true },
 })
 export class AccountEntity {
-  @prop({})
-  owner: string;
+  @prop({ ref: () => UserEntity })
+  owner: Ref<UserEntity>;
   @prop({})
   startingDate: Date;
   @prop({})

@@ -1,4 +1,5 @@
-import { modelOptions, prop } from '@typegoose/typegoose';
+import { Ref, modelOptions, prop } from '@typegoose/typegoose';
+import { CondominiumEntity } from './condominium.entity';
 
 export enum unitTypeEnum {
   APT = 'Apto',
@@ -19,6 +20,6 @@ export class UnitEntity {
   @prop({})
   block: string;
 
-  @prop({})
-  condominium: string;
+  @prop({ ref: () => CondominiumEntity })
+  condominium: Ref<CondominiumEntity>;
 }

@@ -1,5 +1,6 @@
-import { prop } from '@typegoose/typegoose';
+import { Ref, prop } from '@typegoose/typegoose';
 import { DOC_TYPE, ROLE } from '../enums';
+import { AccountEntity } from 'src/entities/account.entity';
 
 export class CreateUserDto {
   @prop({})
@@ -15,8 +16,8 @@ export class CreateUserDto {
   lastName: string;
   @prop({ enum: ROLE, default: ROLE.USER, required: true })
   role: ROLE;
-  @prop({ required: true })
-  account: string;
+  @prop({ ref: () => AccountEntity })
+  account: Ref<AccountEntity>;
   @prop({
     trim: true,
     lowercase: true,

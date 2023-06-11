@@ -11,13 +11,18 @@ import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import mongoose from 'mongoose';
+import { ConvertParamToObjectId } from 'src/decorators/convert-to-objectId.decorator';
 
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Post()
-  create(@Body() createAccountDto: CreateAccountDto) {
+  create(
+    @ConvertParamToObjectId(['owner']) createAccountDto: CreateAccountDto,
+    //   @Body()
+    // createAccountDto: CreateAccountDto
+  ) {
     return this.accountsService.create(createAccountDto);
   }
 

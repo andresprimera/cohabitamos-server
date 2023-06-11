@@ -1,6 +1,7 @@
-import { prop, modelOptions } from '@typegoose/typegoose';
+import { prop, modelOptions, Ref } from '@typegoose/typegoose';
 import { Severity } from '@typegoose/typegoose';
 import { DOC_TYPE, ROLE } from 'src/common/enums';
+import { AccountEntity } from './account.entity';
 
 @modelOptions({
   schemaOptions: { collection: 'users', timestamps: true },
@@ -22,8 +23,8 @@ export class UserEntity {
   active: boolean;
   @prop({ enum: ROLE, default: ROLE.USER })
   role: ROLE;
-  @prop({ required: true })
-  account: string;
+  @prop({ ref: () => AccountEntity, default: null })
+  account: Ref<AccountEntity> | null;
   @prop({
     trim: true,
     lowercase: true,

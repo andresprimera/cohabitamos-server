@@ -10,13 +10,17 @@ import {
 import { CondominiumsService } from './condominiums.service';
 import { CreateCondominiumDto } from './dto/create-condominium.dto';
 import { UpdateCondominiumDto } from './dto/update-condominium.dto';
+import { ConvertParamToObjectId } from 'src/decorators/convert-to-objectId.decorator';
 
 @Controller('condominiums')
 export class CondominiumsController {
   constructor(private readonly condominiumsService: CondominiumsService) {}
 
   @Post()
-  create(@Body() createCondominiumDto: CreateCondominiumDto) {
+  create(
+    @ConvertParamToObjectId(['account'])
+    createCondominiumDto: CreateCondominiumDto,
+  ) {
     return this.condominiumsService.create(createCondominiumDto);
   }
 

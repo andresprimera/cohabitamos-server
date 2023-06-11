@@ -10,13 +10,16 @@ import {
 import { UnitsService } from './units.service';
 import { CreateUnitDto } from './dto/create-unit.dto';
 import { UpdateUnitDto } from './dto/update-unit.dto';
+import { ConvertParamToObjectId } from 'src/decorators/convert-to-objectId.decorator';
 
 @Controller('units')
 export class UnitsController {
   constructor(private readonly unitsService: UnitsService) {}
 
   @Post()
-  create(@Body() createUnitDto: CreateUnitDto) {
+  create(
+    @ConvertParamToObjectId(['condominium']) createUnitDto: CreateUnitDto,
+  ) {
     return this.unitsService.create(createUnitDto);
   }
 

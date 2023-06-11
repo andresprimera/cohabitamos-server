@@ -10,13 +10,17 @@ import {
 import { UsersByUnitService } from './users-by-unit.service';
 import { CreateUsersByUnitDto } from './dto/create-users-by-unit.dto';
 import { UpdateUsersByUnitDto } from './dto/update-users-by-unit.dto';
+import { ConvertParamToObjectId } from 'src/decorators/convert-to-objectId.decorator';
 
 @Controller('users-by-unit')
 export class UsersByUnitController {
   constructor(private readonly usersByUnitService: UsersByUnitService) {}
 
   @Post()
-  create(@Body() createUsersByUnitDto: CreateUsersByUnitDto) {
+  create(
+    @ConvertParamToObjectId(['unit', 'user'])
+    createUsersByUnitDto: CreateUsersByUnitDto,
+  ) {
     return this.usersByUnitService.create(createUsersByUnitDto);
   }
 
