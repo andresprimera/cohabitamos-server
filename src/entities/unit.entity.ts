@@ -1,4 +1,4 @@
-import { Ref, modelOptions, prop } from '@typegoose/typegoose';
+import { Ref, Severity, modelOptions, prop } from '@typegoose/typegoose';
 import { CondominiumEntity } from './condominium.entity';
 
 enum unitTypeEnum {
@@ -18,7 +18,7 @@ enum PetStatusEnum {
   DECEASED = 'Fallecido',
 }
 
-export class Pet {
+class Pet {
   @prop({ required: true, enum: PetEnum })
   kind: string;
 
@@ -34,6 +34,7 @@ export class Pet {
 
 @modelOptions({
   schemaOptions: { collection: 'units', timestamps: true },
+  options: { allowMixed: Severity.ALLOW },
 })
 export class UnitEntity {
   @prop({})
