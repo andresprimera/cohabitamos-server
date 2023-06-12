@@ -1,5 +1,5 @@
 import { Ref, modelOptions, prop } from '@typegoose/typegoose';
-import { Condominium } from 'gatewaySchemas';
+import { CondominiumEntity } from './condominium.entity';
 
 @modelOptions({
   schemaOptions: { collection: 'requirements_types', timestamps: true },
@@ -8,6 +8,6 @@ export class RequirementType {
   @prop({ required: true })
   value: string;
 
-  @prop({ ref: () => Condominium })
-  condominium: Ref<Condominium>;
+  @prop({ ref: () => CondominiumEntity })
+  condominium: Ref<CondominiumEntity>;
 }
