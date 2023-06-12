@@ -33,17 +33,25 @@ export class UsersController {
 
   @Get(':_id')
   findOne(@ConvertToObjectId('_id') _id: Types.ObjectId) {
-    console.log('This =>', typeof _id, _id);
-    // return this.usersService.findOne(_id);
+    return this.usersService.findOne(_id);
+  }
+
+  @Get('get-by-email/:email')
+  findByEmail(@Param('email') email: string) {
+    console.log({ email });
+    return this.usersService.findByEmail(email);
   }
 
   @Patch(':_id')
-  update(@Param('_id') _id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(
+    @ConvertToObjectId('_id') _id: Types.ObjectId,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     return this.usersService.update(_id, updateUserDto);
   }
 
   @Delete(':_id')
-  remove(@Param('_id') id: string) {
-    return this.usersService.remove(id);
+  remove(@ConvertToObjectId('_id') _id: Types.ObjectId) {
+    return this.usersService.remove(_id);
   }
 }

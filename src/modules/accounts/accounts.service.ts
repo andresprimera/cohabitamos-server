@@ -9,7 +9,7 @@ import { UpdateAccountDto } from './dto/update-account.dto';
 import { AccountEntity } from 'src/entities/account.entity';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nestjs-typegoose';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 @Injectable()
 export class AccountsService {
@@ -34,9 +34,9 @@ export class AccountsService {
     });
   }
 
-  async findOne(_id: string) {
+  async findOne(_id: Types.ObjectId) {
     const response = await this.accountRepository
-      .findOne({ _id: new mongoose.Types.ObjectId(_id) })
+      .findOne({ _id })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
@@ -49,15 +49,11 @@ export class AccountsService {
     return response;
   }
 
-  async update(_id: string, updateAccountDto: UpdateAccountDto) {
+  async update(_id: Types.ObjectId, updateAccountDto: UpdateAccountDto) {
     const response = await this.accountRepository
-      .findOneAndUpdate(
-        { _id: new mongoose.Types.ObjectId(_id) },
-        updateAccountDto,
-        {
-          new: true,
-        },
-      )
+      .findOneAndUpdate({ _id }, updateAccountDto, {
+        new: true,
+      })
       .catch((error) => {
         Logger.log(error.message);
         throw new InternalServerErrorException(error.message);
@@ -70,12 +66,10 @@ export class AccountsService {
     return response;
   }
 
-  async remove(_id: string) {
-    return await this.accountRepository
-      .deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
-      .catch((error) => {
-        Logger.error(error);
-        throw new InternalServerErrorException(error.message);
-      });
+  async remove(_id: Types.ObjectId) {
+    return await this.accountRepository.deleteOne({ _id }).catch((error) => {
+      Logger.error(error);
+      throw new InternalServerErrorException(error.message);
+    });
   }
 }

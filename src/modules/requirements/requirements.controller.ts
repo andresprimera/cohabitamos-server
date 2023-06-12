@@ -11,6 +11,8 @@ import {
 import { RequirementsService } from './requirements.service';
 import { CreateRequirementDto } from './dto/create-requirement.dto';
 import { UpdateRequirementDto } from './dto/update-requirement.dto';
+import { ConvertToObjectId } from 'src/decorators/convert-to-objectId.decorator';
+import { Types } from 'mongoose';
 
 @Controller('requirements')
 export class RequirementsController {
@@ -27,20 +29,20 @@ export class RequirementsController {
   // }
 
   @Get(':_id')
-  findOne(@Param('_id') _id: string) {
+  findOne(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.requirementsService.findOne(_id);
   }
 
   @Patch(':_id')
   update(
-    @Param('_id') _id: string,
+    @ConvertToObjectId() _id: Types.ObjectId,
     @Body() updateRequirementDto: UpdateRequirementDto,
   ) {
     return this.requirementsService.update(_id, updateRequirementDto);
   }
 
   @Delete(':_id')
-  remove(@Param('_id') _id: string) {
+  remove(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.requirementsService.remove(_id);
   }
 }

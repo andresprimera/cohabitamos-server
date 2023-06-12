@@ -10,7 +10,7 @@ import { UpdateRequirementDto } from './dto/update-requirement.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { RequirementEntity } from 'src/entities/requirement.entity';
 import { ReturnModelType } from '@typegoose/typegoose';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { UsersService } from '../users/users.service';
 import { CondominiumsService } from '../condominiums/condominiums.service';
 import { UnitsService } from '../units/units.service';
@@ -44,16 +44,20 @@ export class RequirementsService {
       throw new BadRequestException('Required field user not provided.');
     }
 
-    const unit: UnitEntity = await this.unitsService.findOne(unitId);
+    const unit: UnitEntity = await this.unitsService.findOne(
+      new Types.ObjectId(unitId),
+    );
 
     const condominium: CondominiumEntity =
-      await this.condominiumsService.findOne(String(unit.condominium));
+      await this.condominiumsService.findOne(
+        new Types.ObjectId(String(unit.condominium)),
+      );
 
     const { _id: userId } = createUserDto;
 
     let user: UserEntity;
     if (userId) {
-      user = await this.usersService.findOne(userId);
+      user = await this.usersService.findOne(new Types.ObjectId(userId));
     } else {
       createUserDto.account = condominium.account;
       user = await this.usersService.create(createUserDto);
@@ -69,7 +73,7 @@ export class RequirementsService {
         status: status || 'Abierto',
       })
       .catch((error) => {
-        Logger.error(error);
+        Logger.error('This is the error is running =>', error);
         throw new InternalServerErrorException(error.message);
       });
   }
@@ -79,9 +83,9 @@ export class RequirementsService {
   //   return `This action returns all requirements`;
   // }
 
-  async findOne(_id: string) {
+  async findOne(_id: Types.ObjectId) {
     const response = await this.requirementRepository
-      .findOne({ _id: new mongoose.Types.ObjectId(_id) })
+      .findOne({ _id })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
@@ -96,10 +100,13 @@ export class RequirementsService {
     return response;
   }
 
-  async update(_id: string, updateRequirementDto: UpdateRequirementDto) {
+  async update(
+    _id: Types.ObjectId,
+    updateRequirementDto: UpdateRequirementDto,
+  ) {
     const response = await this.requirementRepository
       .findOneAndUpdate(
-        { _id: new mongoose.Types.ObjectId(_id) },
+        { _id },
         { status: updateRequirementDto.status },
         {
           new: true,
@@ -119,9 +126,9 @@ export class RequirementsService {
     return response;
   }
 
-  async remove(_id: string) {
+  async remove(_id: Types.ObjectId) {
     return await this.requirementRepository
-      .deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
+      .deleteOne({ _id })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);

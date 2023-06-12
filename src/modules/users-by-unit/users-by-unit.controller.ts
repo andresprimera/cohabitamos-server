@@ -10,7 +10,11 @@ import {
 import { UsersByUnitService } from './users-by-unit.service';
 import { CreateUsersByUnitDto } from './dto/create-users-by-unit.dto';
 import { UpdateUsersByUnitDto } from './dto/update-users-by-unit.dto';
-import { ConvertParamToObjectId } from 'src/decorators/convert-to-objectId.decorator';
+import {
+  ConvertParamToObjectId,
+  ConvertToObjectId,
+} from 'src/decorators/convert-to-objectId.decorator';
+import { Types } from 'mongoose';
 
 @Controller('users-by-unit')
 export class UsersByUnitController {
@@ -31,20 +35,20 @@ export class UsersByUnitController {
   // }
 
   @Get(':_id')
-  findOne(@Param('_id') _id: string) {
+  findOne(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.usersByUnitService.findOne(_id);
   }
 
   @Patch(':_id')
   update(
-    @Param('_id') _id: string,
+    @ConvertToObjectId() _id: Types.ObjectId,
     @Body() updateUsersByUnitDto: UpdateUsersByUnitDto,
   ) {
     return this.usersByUnitService.update(_id, updateUsersByUnitDto);
   }
 
   @Delete(':_id')
-  remove(@Param('_id') _id: string) {
+  remove(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.usersByUnitService.remove(_id);
   }
 }

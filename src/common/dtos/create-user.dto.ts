@@ -6,9 +6,7 @@ export class CreateUserDto {
   @prop({})
   _id: string;
 
-  @prop({
-    unique: true,
-  })
+  @prop({})
   uid?: string;
   @prop({ required: true })
   firstName: string;

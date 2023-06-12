@@ -10,8 +10,11 @@ import {
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
-import mongoose from 'mongoose';
-import { ConvertParamToObjectId } from 'src/decorators/convert-to-objectId.decorator';
+import mongoose, { Types } from 'mongoose';
+import {
+  ConvertParamToObjectId,
+  ConvertToObjectId,
+} from 'src/decorators/convert-to-objectId.decorator';
 
 @Controller('accounts')
 export class AccountsController {
@@ -20,8 +23,6 @@ export class AccountsController {
   @Post()
   create(
     @ConvertParamToObjectId(['owner']) createAccountDto: CreateAccountDto,
-    //   @Body()
-    // createAccountDto: CreateAccountDto
   ) {
     return this.accountsService.create(createAccountDto);
   }
@@ -32,20 +33,20 @@ export class AccountsController {
   }
 
   @Get(':_id')
-  findOne(@Param('_id') _id: string) {
+  findOne(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.accountsService.findOne(_id);
   }
 
   @Patch(':_id')
   update(
-    @Param('_id') _id: string,
+    @ConvertToObjectId() _id: Types.ObjectId,
     @Body() updateAccountDto: UpdateAccountDto,
   ) {
     return this.accountsService.update(_id, updateAccountDto);
   }
 
   @Delete(':_id')
-  remove(@Param('_id') _id: string) {
+  remove(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.accountsService.remove(_id);
   }
 }

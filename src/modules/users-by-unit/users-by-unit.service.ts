@@ -9,7 +9,7 @@ import { UpdateUsersByUnitDto } from './dto/update-users-by-unit.dto';
 import { UsersByUnitEntity } from 'src/entities/users-by-unit.entity';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 @Injectable()
 export class UsersByUnitService {
@@ -38,10 +38,10 @@ export class UsersByUnitService {
   //   });
   // }
 
-  async findOne(_id: string) {
+  async findOne(_id: Types.ObjectId) {
     //TODO: get units for this condominium
     const response = await this.usersByUnitRepository
-      .findOne({ _id: new mongoose.Types.ObjectId(_id) })
+      .findOne({ _id })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
@@ -54,15 +54,14 @@ export class UsersByUnitService {
     return response;
   }
 
-  async update(_id: string, updateUsersByUnitDto: UpdateUsersByUnitDto) {
+  async update(
+    _id: Types.ObjectId,
+    updateUsersByUnitDto: UpdateUsersByUnitDto,
+  ) {
     const response = await this.usersByUnitRepository
-      .findOneAndUpdate(
-        { _id: new mongoose.Types.ObjectId(_id) },
-        updateUsersByUnitDto,
-        {
-          new: true,
-        },
-      )
+      .findOneAndUpdate({ _id }, updateUsersByUnitDto, {
+        new: true,
+      })
       .catch((error) => {
         Logger.log(error.message);
         throw new InternalServerErrorException(error.message);
@@ -75,9 +74,9 @@ export class UsersByUnitService {
     return response;
   }
 
-  async remove(_id: string) {
+  async remove(_id: Types.ObjectId) {
     return await this.usersByUnitRepository
-      .deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
+      .deleteOne({ _id })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);

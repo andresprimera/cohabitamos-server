@@ -9,7 +9,6 @@ import { AccountEntity } from './account.entity';
 })
 export class UserEntity {
   @prop({
-    unique: true,
     required: true,
   })
   uid: string;

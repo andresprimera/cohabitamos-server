@@ -9,7 +9,7 @@ import { UpdateCondominiumDto } from './dto/update-condominium.dto';
 import { CondominiumEntity } from 'src/entities/condominium.entity';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nestjs-typegoose';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 @Injectable()
 export class CondominiumsService {
@@ -37,10 +37,10 @@ export class CondominiumsService {
     });
   }
 
-  async findOne(_id: string) {
+  async findOne(_id: Types.ObjectId) {
     const response = await this.condominiumRepository
       .aggregate([
-        { $match: { _id: new mongoose.Types.ObjectId(_id) } }, // This will ensures that there is only 1 object in the response array
+        { $match: { _id } }, // This will ensures that there is only 1 object in the response array
         {
           $lookup: {
             from: 'units',
@@ -64,15 +64,14 @@ export class CondominiumsService {
     return response[0];
   }
 
-  async update(_id: string, updateCondominiumDto: UpdateCondominiumDto) {
+  async update(
+    _id: Types.ObjectId,
+    updateCondominiumDto: UpdateCondominiumDto,
+  ) {
     const response = await this.condominiumRepository
-      .findOneAndUpdate(
-        { _id: new mongoose.Types.ObjectId(_id) },
-        updateCondominiumDto,
-        {
-          new: true,
-        },
-      )
+      .findOneAndUpdate({ _id }, updateCondominiumDto, {
+        new: true,
+      })
       .catch((error) => {
         Logger.log(error.message);
         throw new InternalServerErrorException(error.message);
@@ -87,9 +86,9 @@ export class CondominiumsService {
     return response;
   }
 
-  async remove(_id: string) {
+  async remove(_id: Types.ObjectId) {
     return await this.condominiumRepository
-      .deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
+      .deleteOne({ _id })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);

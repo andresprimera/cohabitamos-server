@@ -33,9 +33,9 @@ export class UsersService {
     });
   }
 
-  async findOne(_id: string) {
+  async findOne(_id: Types.ObjectId) {
     const response = await this.userRepository
-      .findOne({ _id: new mongoose.Types.ObjectId(_id) })
+      .findOne({ _id })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
@@ -48,15 +48,26 @@ export class UsersService {
     return response;
   }
 
-  async update(_id: string, updateUserDto: UpdateUserDto) {
+  async findByEmail(email: string) {
     const response = await this.userRepository
-      .findOneAndUpdate(
-        { _id: new mongoose.Types.ObjectId(_id) },
-        updateUserDto,
-        {
-          new: true,
-        },
-      )
+      .findOne({ email })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException('No user was found for the provided email');
+    }
+
+    return response;
+  }
+
+  async update(_id: Types.ObjectId, updateUserDto: UpdateUserDto) {
+    const response = await this.userRepository
+      .findOneAndUpdate({ _id }, updateUserDto, {
+        new: true,
+      })
       .catch((error) => {
         Logger.log(error.message);
         throw new InternalServerErrorException(error.message);
@@ -69,12 +80,10 @@ export class UsersService {
     return response;
   }
 
-  async remove(_id: string) {
-    return await this.userRepository
-      .deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
-      .catch((error) => {
-        Logger.error(error);
-        throw new InternalServerErrorException(error.message);
-      });
+  async remove(_id: Types.ObjectId) {
+    return await this.userRepository.deleteOne({ _id }).catch((error) => {
+      Logger.error(error);
+      throw new InternalServerErrorException(error.message);
+    });
   }
 }
