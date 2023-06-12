@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
@@ -21,7 +21,18 @@ import configuration from './config';
     RequirementsModule,
     ConfigModule.forRoot({ load: [configuration] }),
     TypegooseModule.forRootAsync({
-      useFactory: () => ({ uri: process.env.MONGO_CONNECTION_URL as string }),
+      useFactory: async () => {
+        Logger.log(
+          'This is the connection for the database string =>',
+          process.env.MONGO_CONNECTION_URL,
+        );
+
+        return {
+          uri: process.env.MONGO_CONNECTION_URL as string,
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        };
+      },
     }),
   ],
   controllers: [AppController],
