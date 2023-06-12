@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateRequirementTypeDto } from './dto/create-requirement-type.dto';
 import { UpdateRequirementTypeDto } from './dto/update-requirement-type.dto';
+import { RequirementTypeEntity } from 'src/entities/requirement-type.entity';
+import { ReturnModelType } from '@typegoose/typegoose';
+import { InjectModel } from 'nestjs-typegoose';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class RequirementTypesService {
-  create(createRequirementTypeDto: CreateRequirementTypeDto) {
-    return 'This action adds a new requirementType';
+  constructor(
+    @InjectModel(RequirementTypeEntity)
+    private readonly requirementTypeRepository: ReturnModelType<
+      typeof RequirementTypeEntity
+    >,
+  ) {}
+
+  async create(createRequirementTypeDto: CreateRequirementTypeDto) {
+    return await this.requirementTypeRepository
+      .create(createRequirementTypeDto)
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
-  findAll() {
-    return `This action returns all requirementTypes`;
+  async findAll() {
+    //TODO: pagination
+    return await this.requirementTypeRepository.find().catch((error) => {
+      Logger.error(error);
+      throw new InternalServerErrorException(error.message);
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} requirementType`;
+  async findOne(_id: Types.ObjectId) {
+    const response = await this.requirementTypeRepository
+      .findOne({ _id })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException('No account was found for the provided _id');
+    }
+
+    return response;
   }
 
-  update(id: number, updateRequirementTypeDto: UpdateRequirementTypeDto) {
-    return `This action updates a #${id} requirementType`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} requirementType`;
+  async remove(_id: Types.ObjectId) {
+    return await this.requirementTypeRepository
+      .deleteOne({ _id })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
   }
 }

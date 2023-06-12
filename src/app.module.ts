@@ -14,12 +14,6 @@ import configuration from './config';
 
 @Module({
   imports: [
-    UsersModule,
-    AccountsModule,
-    CondominiumsModule,
-    UnitsModule,
-    UsersByUnitModule,
-    RequirementsModule,
     ConfigModule.forRoot({ load: [configuration] }),
     TypegooseModule.forRootAsync({
       useFactory: async () => {
@@ -35,6 +29,12 @@ import configuration from './config';
         };
       },
     }),
+    UsersModule,
+    AccountsModule,
+    CondominiumsModule,
+    UnitsModule,
+    UsersByUnitModule,
+    RequirementsModule,
     RequirementTypesModule,
   ],
   controllers: [AppController],

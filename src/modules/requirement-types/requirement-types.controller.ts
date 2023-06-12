@@ -10,6 +10,11 @@ import {
 import { RequirementTypesService } from './requirement-types.service';
 import { CreateRequirementTypeDto } from './dto/create-requirement-type.dto';
 import { UpdateRequirementTypeDto } from './dto/update-requirement-type.dto';
+import {
+  ConvertParamToObjectId,
+  ConvertToObjectId,
+} from 'src/decorators/convert-to-objectId.decorator';
+import { Types } from 'mongoose';
 
 @Controller('requirement-types')
 export class RequirementTypesController {
@@ -18,7 +23,10 @@ export class RequirementTypesController {
   ) {}
 
   @Post()
-  create(@Body() createRequirementTypeDto: CreateRequirementTypeDto) {
+  create(
+    @ConvertParamToObjectId(['condominium'])
+    createRequirementTypeDto: CreateRequirementTypeDto,
+  ) {
     return this.requirementTypesService.create(createRequirementTypeDto);
   }
 
@@ -27,21 +35,13 @@ export class RequirementTypesController {
     return this.requirementTypesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.requirementTypesService.findOne(+id);
+  @Get(':_id')
+  findOne(@ConvertToObjectId() _id: Types.ObjectId) {
+    return this.requirementTypesService.findOne(_id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateRequirementTypeDto: UpdateRequirementTypeDto,
-  ) {
-    return this.requirementTypesService.update(+id, updateRequirementTypeDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.requirementTypesService.remove(+id);
+  @Delete(':_id')
+  remove(@ConvertToObjectId() _id: Types.ObjectId) {
+    return this.requirementTypesService.remove(_id);
   }
 }

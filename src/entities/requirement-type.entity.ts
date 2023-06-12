@@ -4,7 +4,7 @@ import { CondominiumEntity } from './condominium.entity';
 @modelOptions({
   schemaOptions: { collection: 'requirements_types', timestamps: true },
 })
-export class RequirementType {
+export class RequirementTypeEntity {
   @prop({ required: true })
   value: string;
 
