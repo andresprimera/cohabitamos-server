@@ -9,6 +9,7 @@ import { UnitsModule } from './modules/units/units.module';
 import { UsersByUnitModule } from './modules/users-by-unit/users-by-unit.module';
 import { RequirementsModule } from './modules/requirements/requirements.module';
 import { ConfigModule } from '@nestjs/config';
+import { RequirementTypesModule } from './modules/requirement-types/requirement-types.module';
 import configuration from './config';
 
 @Module({
@@ -34,6 +35,7 @@ import configuration from './config';
         };
       },
     }),
+    RequirementTypesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

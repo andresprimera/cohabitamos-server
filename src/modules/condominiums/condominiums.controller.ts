@@ -22,7 +22,7 @@ export class CondominiumsController {
 
   @Post()
   create(
-    @ConvertParamToObjectId(['account'])
+    @ConvertParamToObjectId(['condominium'])
     createCondominiumDto: CreateCondominiumDto,
   ) {
     return this.condominiumsService.create(createCondominiumDto);
