@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
@@ -13,18 +13,13 @@ import { RequirementTypesModule } from './modules/requirement-types/requirement-
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { GuestReportsModule } from './modules/guest-reports/guest-reports.module';
 import { PetsModule } from './modules/pets/pets.module';
-import configuration from './config';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ load: [configuration] }),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypegooseModule.forRootAsync({
       useFactory: async () => {
-        Logger.log(
-          'This is the connection for the database string =>',
-          process.env.MONGO_CONNECTION_URL,
-        );
-
         return {
           uri: process.env.MONGO_CONNECTION_URL as string,
           useNewUrlParser: true,
@@ -42,6 +37,7 @@ import configuration from './config';
     VehiclesModule,
     GuestReportsModule,
     PetsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

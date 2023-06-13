@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Logger,
   UseInterceptors,
 } from '@nestjs/common';
 import { RequirementsService } from './requirements.service';
