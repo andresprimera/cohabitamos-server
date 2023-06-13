@@ -25,6 +25,21 @@ export class UnitsService {
     });
   }
 
+  async findAll(condominium: Types.ObjectId) {
+    const response = await this.unitRepository
+      .find({ condominium })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException('No units was found for this condominium');
+    }
+
+    return response;
+  }
+
   async findOne(_id: Types.ObjectId) {
     const response = await this.unitRepository
       .findOne({ _id })

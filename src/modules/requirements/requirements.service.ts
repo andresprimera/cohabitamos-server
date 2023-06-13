@@ -79,9 +79,24 @@ export class RequirementsService {
   }
 
   //TODO: retrieve every requirement by several filters: condominium, date, unit, type
-  // async findAll() {
-  //   return `This action returns all requirements`;
-  // }
+  async findAll(condominium: Types.ObjectId) {
+    const response = await this.requirementRepository
+      .find({
+        'condominium._id': condominium,
+      })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException(
+        'No requirement was found for this condominium',
+      );
+    }
+
+    return response;
+  }
 
   async findOne(_id: Types.ObjectId) {
     const response = await this.requirementRepository

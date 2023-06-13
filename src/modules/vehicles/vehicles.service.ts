@@ -19,7 +19,6 @@ export class VehiclesService {
   ) {}
 
   async create(createVehicleDto: CreateVehicleDto) {
-    Logger.log({ createVehicleDto });
     return await this.vehicleRepository
       .create(createVehicleDto)
       .catch((error) => {
@@ -28,8 +27,8 @@ export class VehiclesService {
       });
   }
 
-  async findAll() {
-    return await this.vehicleRepository.find().catch((error) => {
+  async findAll(condominium: Types.ObjectId) {
+    return await this.vehicleRepository.find({ condominium }).catch((error) => {
       Logger.error(error);
       throw new InternalServerErrorException(error.message);
     });

@@ -11,6 +11,8 @@ import { RequirementsModule } from './modules/requirements/requirements.module';
 import { ConfigModule } from '@nestjs/config';
 import { RequirementTypesModule } from './modules/requirement-types/requirement-types.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
+import { GuestReportsModule } from './modules/guest-reports/guest-reports.module';
+import { PetsModule } from './modules/pets/pets.module';
 import configuration from './config';
 
 @Module({
@@ -38,6 +40,8 @@ import configuration from './config';
     RequirementsModule,
     RequirementTypesModule,
     VehiclesModule,
+    GuestReportsModule,
+    PetsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

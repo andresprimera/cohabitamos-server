@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UnitsService } from './units.service';
 import { CreateUnitDto } from './dto/create-unit.dto';
@@ -15,6 +16,7 @@ import {
   ConvertToObjectId,
 } from 'src/decorators/convert-to-objectId.decorator';
 import { Types } from 'mongoose';
+import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
 
 @Controller('units')
 export class UnitsController {
@@ -25,6 +27,12 @@ export class UnitsController {
     @ConvertParamToObjectId(['condominium']) createUnitDto: CreateUnitDto,
   ) {
     return this.unitsService.create(createUnitDto);
+  }
+
+  @UseInterceptors(CondominiumInterceptor)
+  @Get()
+  findAll(@Param('requestCondominium') requestCondominium: Types.ObjectId) {
+    return this.unitsService.findAll(requestCondominium);
   }
 
   @Get(':_id')

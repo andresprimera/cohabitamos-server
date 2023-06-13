@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CondominiumsService } from './condominiums.service';
 import { CreateCondominiumDto } from './dto/create-condominium.dto';

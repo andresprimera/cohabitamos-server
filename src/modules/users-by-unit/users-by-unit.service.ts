@@ -9,7 +9,9 @@ import { UpdateUsersByUnitDto } from './dto/update-users-by-unit.dto';
 import { UsersByUnitEntity } from 'src/entities/users-by-unit.entity';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
+import { CondominiumsService } from '../condominiums/condominiums.service';
+import { UnitsService } from '../units/units.service';
 
 @Injectable()
 export class UsersByUnitService {
@@ -18,11 +20,15 @@ export class UsersByUnitService {
     private readonly usersByUnitRepository: ReturnModelType<
       typeof UsersByUnitEntity
     >,
+
+    private readonly unitsService: UnitsService,
   ) {}
 
   async create(createUsersByUnitDto: CreateUsersByUnitDto) {
+    const unit = await this.unitsService.findOne(createUsersByUnitDto.unit);
+
     return await this.usersByUnitRepository
-      .create(createUsersByUnitDto)
+      .create({ ...createUsersByUnitDto, condominium: unit.condominium })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);

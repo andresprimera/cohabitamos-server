@@ -1,6 +1,7 @@
 import { Ref, modelOptions, prop } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
 import { UserEntity } from './user.entity';
+import { CondominiumEntity } from './condominium.entity';
 
 export enum conditionEnum {
   OWNER = 'Propietario',
@@ -21,4 +22,7 @@ export class UsersByUnitEntity {
 
   @prop({ enum: conditionEnum })
   condition: string;
+
+  @prop({ ref: () => CondominiumEntity })
+  condominium: Ref<CondominiumEntity>;
 }

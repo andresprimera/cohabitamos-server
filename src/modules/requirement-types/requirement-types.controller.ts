@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RequirementTypesService } from './requirement-types.service';
 import { CreateRequirementTypeDto } from './dto/create-requirement-type.dto';
@@ -15,6 +16,7 @@ import {
   ConvertToObjectId,
 } from 'src/decorators/convert-to-objectId.decorator';
 import { Types } from 'mongoose';
+import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
 
 @Controller('requirement-types')
 export class RequirementTypesController {
@@ -30,9 +32,10 @@ export class RequirementTypesController {
     return this.requirementTypesService.create(createRequirementTypeDto);
   }
 
+  @UseInterceptors(CondominiumInterceptor)
   @Get()
-  findAll() {
-    return this.requirementTypesService.findAll();
+  findAll(@Param('requestCondominium') requestCondominium: Types.ObjectId) {
+    return this.requirementTypesService.findAll(requestCondominium);
   }
 
   @Get(':_id')

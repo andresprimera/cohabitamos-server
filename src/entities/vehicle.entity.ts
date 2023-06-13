@@ -28,8 +28,8 @@ export class VehiclesEntity {
   condition: string;
 
   @prop({ ref: () => UnitEntity })
-  unit: Ref<UnitEntity>;
+  unit: Ref<UnitEntity>[];
 
   @prop({ ref: () => CondominiumEntity })
-  condominium: Ref<CondominiumEntity>;
+  condominium: Ref<CondominiumEntity>[];
 }

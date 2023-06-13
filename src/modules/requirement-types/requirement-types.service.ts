@@ -7,7 +7,7 @@ import {
 import { CreateRequirementTypeDto } from './dto/create-requirement-type.dto';
 import { UpdateRequirementTypeDto } from './dto/update-requirement-type.dto';
 import { RequirementTypeEntity } from 'src/entities/requirement-type.entity';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { ReturnModelType, types } from '@typegoose/typegoose';
 import { InjectModel } from 'nestjs-typegoose';
 import { Types } from 'mongoose';
 
@@ -29,12 +29,14 @@ export class RequirementTypesService {
       });
   }
 
-  async findAll() {
+  async findAll(condominium: Types.ObjectId) {
     //TODO: pagination
-    return await this.requirementTypeRepository.find().catch((error) => {
-      Logger.error(error);
-      throw new InternalServerErrorException(error.message);
-    });
+    return await this.requirementTypeRepository
+      .find({ condominium })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
   }
 
   async findOne(_id: Types.ObjectId) {

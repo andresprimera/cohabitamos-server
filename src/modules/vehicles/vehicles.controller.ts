@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
@@ -15,6 +16,7 @@ import {
   ConvertToObjectId,
 } from 'src/decorators/convert-to-objectId.decorator';
 import { Types } from 'mongoose';
+import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
 
 @Controller('vehicles')
 export class VehiclesController {
@@ -28,9 +30,10 @@ export class VehiclesController {
     return this.vehiclesService.create(createVehicleDto);
   }
 
+  @UseInterceptors(CondominiumInterceptor)
   @Get()
-  findAll() {
-    return this.vehiclesService.findAll();
+  findAll(@Param('requestCondominium') requestCondominium: Types.ObjectId) {
+    return this.vehiclesService.findAll(requestCondominium);
   }
 
   @Get(':_id')

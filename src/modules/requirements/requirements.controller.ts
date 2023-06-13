@@ -7,12 +7,14 @@ import {
   Param,
   Delete,
   Logger,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RequirementsService } from './requirements.service';
 import { CreateRequirementDto } from './dto/create-requirement.dto';
 import { UpdateRequirementDto } from './dto/update-requirement.dto';
 import { ConvertToObjectId } from 'src/decorators/convert-to-objectId.decorator';
 import { Types } from 'mongoose';
+import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
 
 @Controller('requirements')
 export class RequirementsController {
@@ -23,10 +25,11 @@ export class RequirementsController {
     return this.requirementsService.create(createRequirementDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.requirementsService.findAll();
-  // }
+  @UseInterceptors(CondominiumInterceptor)
+  @Get()
+  findAll(@Param('requestCondominium') requestCondominium: Types.ObjectId) {
+    return this.requirementsService.findAll(requestCondominium);
+  }
 
   @Get(':_id')
   findOne(@ConvertToObjectId() _id: Types.ObjectId) {
