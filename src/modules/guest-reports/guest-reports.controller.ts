@@ -6,10 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { GuestReportsService } from './guest-reports.service';
 import { CreateGuestReportDto } from './dto/create-guest-report.dto';
 import { UpdateGuestReportDto } from './dto/update-guest-report.dto';
+import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
+import { Types } from 'mongoose';
+import { ConvertToObjectId } from 'src/decorators/convert-to-objectId.decorator';
 
 @Controller('guest-reports')
 export class GuestReportsController {
@@ -20,26 +24,27 @@ export class GuestReportsController {
     return this.guestReportsService.create(createGuestReportDto);
   }
 
+  @UseInterceptors(CondominiumInterceptor)
   @Get()
-  findAll() {
-    return this.guestReportsService.findAll();
+  findAll(@Param('requestCondominium') requestCondominium: Types.ObjectId) {
+    return this.guestReportsService.findAll(requestCondominium);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.guestReportsService.findOne(+id);
+  @Get(':_id')
+  findOne(@ConvertToObjectId() _id: Types.ObjectId) {
+    return this.guestReportsService.findOne(_id);
   }
 
-  @Patch(':id')
+  @Patch(':_id')
   update(
-    @Param('id') id: string,
+    @ConvertToObjectId() _id: Types.ObjectId,
     @Body() updateGuestReportDto: UpdateGuestReportDto,
   ) {
-    return this.guestReportsService.update(+id, updateGuestReportDto);
+    return this.guestReportsService.update(_id, updateGuestReportDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.guestReportsService.remove(+id);
+  @Delete(':_id')
+  remove(@ConvertToObjectId() _id: Types.ObjectId) {
+    return this.guestReportsService.remove(_id);
   }
 }

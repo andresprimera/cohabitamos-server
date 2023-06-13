@@ -8,5 +8,6 @@ import { VehiclesEntity } from 'src/entities/vehicle.entity';
   imports: [TypegooseModule.forFeature([VehiclesEntity])],
   controllers: [VehiclesController],
   providers: [VehiclesService],
+  exports: [VehiclesService],
 })
 export class VehiclesModule {}

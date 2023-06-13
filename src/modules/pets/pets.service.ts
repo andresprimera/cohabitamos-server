@@ -2,8 +2,9 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
-import { CreatePetDto } from './dto/create-pet.dto';
+import { CreatePetDto } from '../../common/dtos/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
 import { PetEntity } from 'src/entities/pet.entity';
 import { ReturnModelType } from '@typegoose/typegoose';
@@ -31,8 +32,19 @@ export class PetsService {
     });
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} pet`;
+  async findOne(_id: Types.ObjectId) {
+    const response = await this.petRepository
+      .findOne({ _id })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException('No pet was found for the provided _id');
+    }
+
+    return response;
   }
 
   async update(id: number, updatePetDto: UpdatePetDto) {

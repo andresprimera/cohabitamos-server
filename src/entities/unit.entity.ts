@@ -1,6 +1,7 @@
 import { Ref, Severity, modelOptions, prop } from '@typegoose/typegoose';
 import { CondominiumEntity } from './condominium.entity';
 import { PetEntity } from './pet.entity';
+import mongoose from 'mongoose';
 
 enum unitTypeEnum {
   APT = 'Apto',
@@ -13,6 +14,8 @@ enum unitTypeEnum {
   options: { allowMixed: Severity.ALLOW },
 })
 export class UnitEntity {
+  _id: mongoose.Types.ObjectId;
+
   @prop({})
   number: string;
 

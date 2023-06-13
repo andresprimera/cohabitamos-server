@@ -3,29 +3,33 @@ import { UnitEntity } from './unit.entity';
 import { UserEntity } from './user.entity';
 import { VehiclesEntity } from './vehicle.entity';
 import { PetEntity } from './pet.entity';
+import { CondominiumEntity } from './condominium.entity';
 
 @modelOptions({
   schemaOptions: { collection: 'guest-reports', timestamps: true },
 })
-export class GuestReport {
-  @prop({})
+export class GuestReportEntity {
+  @prop({ required: true })
   arrivalDate: Date;
 
-  @prop({})
+  @prop({ required: true })
   departureDate: Date;
 
-  @prop({})
+  @prop({ default: 1 })
   guestQty: number;
 
-  @prop({})
+  @prop({ required: true })
   unit: UnitEntity;
 
-  @prop({})
+  @prop({ required: true })
   user: UserEntity;
 
-  @prop({})
+  @prop({ default: null })
   pet: PetEntity;
 
-  @prop({})
+  @prop({ default: null })
   vehicle: VehiclesEntity;
+
+  @prop({ required: true })
+  condominium: CondominiumEntity;
 }

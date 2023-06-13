@@ -10,7 +10,7 @@ enum PetEnum {
 enum PetStatusEnum {
   RESIDENT = 'Residente',
   REMOVED = 'Retirado',
-  VISITOR = 'Visita',
+  VISITOR = 'Visitante',
   DECEASED = 'Fallecido',
 }
 

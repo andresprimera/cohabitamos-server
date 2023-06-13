@@ -8,5 +8,6 @@ import { PetEntity } from 'src/entities/pet.entity';
   imports: [TypegooseModule.forFeature([PetEntity])],
   controllers: [PetsController],
   providers: [PetsService],
+  exports: [PetsService],
 })
 export class PetsModule {}
