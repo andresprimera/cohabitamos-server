@@ -50,17 +50,54 @@ export class UsersService {
 
   async findByEmail(email: string) {
     const response = await this.userRepository
-      .findOne({ email })
+      .aggregate([
+        {
+          $match: { email },
+        },
+        {
+          $lookup: {
+            from: 'users_by_unit',
+            localField: '_id',
+            foreignField: 'user',
+            as: 'units',
+            pipeline: [
+              {
+                $lookup: {
+                  from: 'units',
+                  localField: 'unit',
+                  foreignField: '_id',
+                  as: 'unit',
+                },
+              },
+              {
+                $unwind: '$unit',
+              },
+              {
+                $project: {
+                  _id: '$unit._id',
+                  number: '$unit.number',
+                  type: '$unit.type',
+                  block: '$unit.block',
+                  condominium: '$unit.condominium',
+                  condition: 1,
+                },
+              },
+            ],
+          },
+        },
+      ])
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
       });
 
-    if (!response) {
+    console.log({ response });
+
+    if (response.length === 0) {
       throw new NotFoundException('No user was found for the provided email');
     }
 
-    return response;
+    return response[0];
   }
 
   async update(_id: Types.ObjectId, updateUserDto: UpdateUserDto) {

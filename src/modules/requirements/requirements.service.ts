@@ -10,7 +10,7 @@ import { UpdateRequirementDto } from './dto/update-requirement.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { RequirementEntity } from 'src/entities/requirement.entity';
 import { ReturnModelType } from '@typegoose/typegoose';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { UsersService } from '../users/users.service';
 import { CondominiumsService } from '../condominiums/condominiums.service';
 import { UnitsService } from '../units/units.service';
