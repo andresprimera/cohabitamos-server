@@ -11,3 +11,15 @@ export enum DOC_TYPE {
   PTP = 'PERMISO TEMPORAL DE PERMANENCIA',
   UNASSIGNED = '',
 }
+
+export enum STATUS {
+  VISITOR = 'Visitante',
+  PERMANENT = 'Residente',
+  RETIRED = 'Retirado',
+}
+
+export enum ACCOUNT_STATUS {
+  ACTIVE = 'Activo',
+  SUSPENDED = 'Suspendido',
+  CLOSED = 'Cerrado',
+}

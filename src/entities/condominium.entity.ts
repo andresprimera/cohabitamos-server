@@ -1,6 +1,6 @@
 import { Ref, Severity, modelOptions, prop } from '@typegoose/typegoose';
 import { AccountEntity } from './account.entity';
-import mongoose, { Types } from 'mongoose';
+import mongoose from 'mongoose';
 
 @modelOptions({
   schemaOptions: { collection: 'condominiums', timestamps: true },

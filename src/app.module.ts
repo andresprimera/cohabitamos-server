@@ -14,6 +14,7 @@ import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { GuestReportsModule } from './modules/guest-reports/guest-reports.module';
 import { PetsModule } from './modules/pets/pets.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { OptionsModule } from './modules/options/options.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { AuthModule } from './modules/auth/auth.module';
     GuestReportsModule,
     PetsModule,
     AuthModule,
+    OptionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

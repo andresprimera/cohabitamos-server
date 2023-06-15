@@ -17,6 +17,6 @@ export class AccountEntity {
   startingDate: Date;
   @prop({})
   nextBillingDate: Date;
-  @prop({ enum: StatsEnum })
-  status: StatsEnum;
+  @prop({ enum: StatsEnum, default: StatsEnum.ACTIVE })
+  status: string;
 }

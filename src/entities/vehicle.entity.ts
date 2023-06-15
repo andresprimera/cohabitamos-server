@@ -5,7 +5,7 @@ import { CondominiumEntity } from './condominium.entity';
 enum VehicleConditionEnum {
   VISITOR = 'Visitante',
   PERMANENT = 'Residente',
-  RETIRED = 'Retired',
+  RETIRED = 'Retirado',
 }
 
 @modelOptions({

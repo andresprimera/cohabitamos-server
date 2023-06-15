@@ -1,17 +1,11 @@
 import { Ref, modelOptions, prop } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
 import { CondominiumEntity } from './condominium.entity';
+import { STATUS } from 'src/common/enums';
 
 enum PetEnum {
   DOG = 'Perro',
   CAT = 'Gato',
-}
-
-enum PetStatusEnum {
-  RESIDENT = 'Residente',
-  REMOVED = 'Retirado',
-  VISITOR = 'Visitante',
-  DECEASED = 'Fallecido',
 }
 
 @modelOptions({
@@ -27,7 +21,7 @@ export class PetEntity {
   @prop()
   name: string;
 
-  @prop({ enum: PetStatusEnum, default: PetStatusEnum.RESIDENT })
+  @prop({ enum: STATUS, default: STATUS.PERMANENT })
   status: string;
 
   @prop({ ref: () => UnitEntity })
