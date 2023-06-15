@@ -41,10 +41,10 @@ export class VehiclesController {
     return this.vehiclesService.findByPlate(plate);
   }
 
-  @Get(':_id')
-  findOne(@ConvertToObjectId() id: Types.ObjectId) {
-    return this.vehiclesService.findOne(id);
-  }
+  // @Get(':_id')
+  // findOne(@ConvertToObjectId() id: Types.ObjectId) {
+  //   return this.vehiclesService.findOne(id);
+  // }
 
   @Patch(':_id')
   update(

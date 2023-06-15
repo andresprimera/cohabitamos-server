@@ -48,20 +48,20 @@ export class PetsService {
     return response;
   }
 
-  async findOne(_id: Types.ObjectId) {
-    const response = await this.petRepository
-      .findOne({ _id })
-      .catch((error) => {
-        Logger.error(error);
-        throw new InternalServerErrorException(error.message);
-      });
+  // async findOne(_id: Types.ObjectId) {
+  //   const response = await this.petRepository
+  //     .findOne({ _id })
+  //     .catch((error) => {
+  //       Logger.error(error);
+  //       throw new InternalServerErrorException(error.message);
+  //     });
 
-    if (!response) {
-      throw new NotFoundException('No pet was found for the provided _id');
-    }
+  //   if (!response) {
+  //     throw new NotFoundException('No pet was found for the provided _id');
+  //   }
 
-    return response;
-  }
+  //   return response;
+  // }
 
   async update(id: number, updatePetDto: UpdatePetDto) {
     return `This action updates a #${id} pet`;

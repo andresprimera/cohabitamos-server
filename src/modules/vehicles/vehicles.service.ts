@@ -49,20 +49,20 @@ export class VehiclesService {
     return response;
   }
 
-  async findOne(_id: Types.ObjectId) {
-    const response = await this.vehicleRepository
-      .findOne({ _id })
-      .catch((error) => {
-        Logger.error(error);
-        throw new InternalServerErrorException(error.message);
-      });
+  // async findOne(_id: Types.ObjectId) {
+  //   const response = await this.vehicleRepository
+  //     .findOne({ _id })
+  //     .catch((error) => {
+  //       Logger.error(error);
+  //       throw new InternalServerErrorException(error.message);
+  //     });
 
-    if (!response) {
-      throw new NotFoundException('No vehicle was found for the provided _id');
-    }
+  //   if (!response) {
+  //     throw new NotFoundException('No vehicle was found for the provided _id');
+  //   }
 
-    return response;
-  }
+  //   return response;
+  // }
 
   async update(_id: Types.ObjectId, updateVehicleDto: UpdateVehicleDto) {
     const response = await this.vehicleRepository
