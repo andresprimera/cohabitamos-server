@@ -2,29 +2,27 @@ import { prop } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 
 export class CreateOptionDto {
-  _id: Types.ObjectId;
-
   @prop({ required: true, default: ['Activo', 'Suspendido', 'Cerrado'] })
-  accountStates: string[];
+  ACCOUNT_STATES: string[];
 
   @prop({
     required: true,
     default: ['Abierto', 'Cerrado', 'En curso', 'Esperando respuesta'],
   })
-  requirementStates: string[];
+  REQUIREMENT_STATE: string[];
 
   @prop({ required: true, default: ['Residente', 'Retirado', 'Visitante'] })
-  status: string[];
+  STATUS: string[];
 
   @prop({ required: true, default: ['Perro', 'Gato'] })
-  petKind: string[];
+  PET_KIND: string[];
 
   @prop({ required: true, default: ['Apto', 'Casa', 'Local'] })
-  unitTypes: string[];
+  UNIT_TYPES: string[];
 
   @prop({
     required: true,
     default: ['Propietario', 'Arrendatario', 'Residente', 'Visitante'],
   })
-  userConditions: string[];
+  USER_CONDITIONS: string[];
 }

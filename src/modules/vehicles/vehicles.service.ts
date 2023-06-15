@@ -34,6 +34,21 @@ export class VehiclesService {
     });
   }
 
+  async findByPlate(plate: string) {
+    const response = await this.vehicleRepository
+      .findOne({ plate })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException('No vehicle was found for the provided _id');
+    }
+
+    return response;
+  }
+
   async findOne(_id: Types.ObjectId) {
     const response = await this.vehicleRepository
       .findOne({ _id })

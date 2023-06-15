@@ -17,7 +17,6 @@ export class OptionsService {
   ) {}
 
   async create(createOptionDto: CreateOptionDto) {
-    console.log('This runs');
     return await this.optionsRepository
       .create(createOptionDto)
       .catch((error) => {
@@ -31,17 +30,5 @@ export class OptionsService {
       Logger.error(error);
       throw new InternalServerErrorException(error.message);
     });
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} option`;
-  }
-
-  update(id: number, updateOptionDto: UpdateOptionDto) {
-    return `This action updates a #${id} option`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} option`;
   }
 }

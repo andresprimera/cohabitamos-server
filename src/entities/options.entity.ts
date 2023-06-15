@@ -1,33 +1,28 @@
 import { modelOptions, prop } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
 
 @modelOptions({
   schemaOptions: { collection: 'options' },
 })
 export class OptionsEntity {
-  _id: Types.ObjectId;
-
-  @prop({ required: true, default: ['Activo', 'Suspendido', 'Cerrado'] })
-  accountStates: string[];
+  @prop({ default: ['Activo', 'Suspendido', 'Cerrado'] })
+  ACCOUNT_STATES: string[];
 
   @prop({
-    required: true,
     default: ['Abierto', 'Cerrado', 'En curso', 'Esperando respuesta'],
   })
-  requirementStates: string[];
+  REQUIREMENT_STATE: string[];
 
-  @prop({ required: true, default: ['Residente', 'Retirado', 'Visitante'] })
-  status: string[];
+  @prop({ default: ['Residente', 'Retirado', 'Visitante'] })
+  STATUS: string[];
 
-  @prop({ required: true, default: ['Perro', 'Gato'] })
-  petKind: string[];
+  @prop({ default: ['Perro', 'Gato'] })
+  PET_KIND: string[];
 
-  @prop({ required: true, default: ['Apto', 'Casa', 'Local'] })
-  unitTypes: string[];
+  @prop({ default: ['Apto', 'Casa', 'Local'] })
+  UNIT_TYPES: string[];
 
   @prop({
-    required: true,
     default: ['Propietario', 'Arrendatario', 'Residente', 'Visitante'],
   })
-  userConditions: string[];
+  USER_CONDITIONS: string[];
 }

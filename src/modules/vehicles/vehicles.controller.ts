@@ -36,6 +36,11 @@ export class VehiclesController {
     return this.vehiclesService.findAll(requestCondominium);
   }
 
+  @Get(':plate')
+  findByPlate(@Param('plate') plate: string) {
+    return this.vehiclesService.findByPlate(plate);
+  }
+
   @Get(':_id')
   findOne(@ConvertToObjectId() id: Types.ObjectId) {
     return this.vehiclesService.findOne(id);
