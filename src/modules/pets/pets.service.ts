@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -30,6 +31,21 @@ export class PetsService {
       Logger.error(error);
       throw new InternalServerErrorException(error.message);
     });
+  }
+
+  async findByName(name: string) {
+    const response = await this.petRepository
+      .findOne({ name })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException('No pet was found for the provided name');
+    }
+
+    return response;
   }
 
   async findOne(_id: Types.ObjectId) {

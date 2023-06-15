@@ -35,6 +35,11 @@ export class PetsController {
     return this.petsService.findAll(requestCondominium);
   }
 
+  @Get(':name')
+  findByName(@Param('name') name: string) {
+    return this.petsService.findByName(name);
+  }
+
   @Get(':_id')
   findOne(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.petsService.findOne(_id);
