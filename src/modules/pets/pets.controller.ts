@@ -40,10 +40,10 @@ export class PetsController {
     return this.petsService.findByName(name);
   }
 
-  // @Get(':_id')
-  // findOne(@ConvertToObjectId() _id: Types.ObjectId) {
-  //   return this.petsService.findOne(_id);
-  // }
+  @Get('get-by-name/:_id')
+  findOne(@ConvertToObjectId() _id: Types.ObjectId) {
+    return this.petsService.findOne(_id);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePetDto: UpdatePetDto) {

@@ -48,6 +48,21 @@ export class UsersService {
     return response;
   }
 
+  async findByUid(uid: string) {
+    const response = await this.userRepository
+      .findOne({ uid })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException('No user was found for the provided uid');
+    }
+
+    return response;
+  }
+
   async findByEmail(email: string) {
     const response = await this.userRepository
       .aggregate([
@@ -90,8 +105,6 @@ export class UsersService {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
       });
-
-    console.log({ response });
 
     if (response.length === 0) {
       throw new NotFoundException('No user was found for the provided email');

@@ -36,15 +36,15 @@ export class VehiclesController {
     return this.vehiclesService.findAll(requestCondominium);
   }
 
-  @Get(':plate')
+  @Get(':_id')
+  findOne(@ConvertToObjectId() _id: Types.ObjectId) {
+    return this.vehiclesService.findOne(_id);
+  }
+
+  @Get('by-plate/:plate')
   findByPlate(@Param('plate') plate: string) {
     return this.vehiclesService.findByPlate(plate);
   }
-
-  // @Get(':_id')
-  // findOne(@ConvertToObjectId() id: Types.ObjectId) {
-  //   return this.vehiclesService.findOne(id);
-  // }
 
   @Patch(':_id')
   update(

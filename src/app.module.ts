@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
@@ -15,6 +20,9 @@ import { GuestReportsModule } from './modules/guest-reports/guest-reports.module
 import { PetsModule } from './modules/pets/pets.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { OptionsModule } from './modules/options/options.module';
+import { MiddlewareBuilder } from '@nestjs/core';
+import { PreAuthMiddleware } from './middlewares/preauth.middleware';
+import path from 'path';
 
 @Module({
   imports: [
@@ -44,4 +52,20 @@ import { OptionsModule } from './modules/options/options.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(PreAuthMiddleware)
+      .exclude(
+        { path: 'condominiums/:_id', method: RequestMethod.GET },
+        { path: 'users/get-by-email/:email', method: RequestMethod.GET },
+        { path: 'requirement', method: RequestMethod.POST },
+        { path: 'requirement-types', method: RequestMethod.GET },
+        { path: 'guest-reports', method: RequestMethod.POST },
+        { path: 'options', method: RequestMethod.GET },
+        { path: 'pets/get-by-name/name', method: RequestMethod.GET },
+        { path: 'vehicles/get-by-plate/plate', method: RequestMethod.GET },
+      )
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

@@ -38,7 +38,6 @@ export class UsersController {
 
   @Get('get-by-email/:email')
   findByEmail(@Param('email') email: string) {
-    console.log({ email });
     return this.usersService.findByEmail(email);
   }
 

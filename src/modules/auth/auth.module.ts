@@ -5,23 +5,22 @@ import { UsersModule } from '../users/users.module';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Firebase } from 'src/providers/firebase';
 
 @Module({
   imports: [
     UsersModule,
-    ConfigModule.forRoot({}),
-    JwtModule.registerAsync({
-      useFactory: (configService: ConfigService) => {
-        return {
-          secret: configService.get<string>('JWT_SECRET'),
-          signOptions: { expiresIn: '300s' },
-        };
-      },
-      inject: [ConfigService],
-    }),
+    //   ConfigModule.forRoot({}),
+    //   JwtModule.registerAsync({
+    //     useFactory: (configService: ConfigService) => {
+    //       return {
+    //         secret: configService.get<string>('JWT_SECRET'),
+    //         signOptions: { expiresIn: '300s' },
+    //       };
+    //     },
+    //     inject: [ConfigService],
+    //   }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, Firebase],
+  providers: [AuthService],
 })
 export class AuthModule {}
