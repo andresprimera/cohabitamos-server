@@ -41,7 +41,7 @@ export class VehiclesController {
     return this.vehiclesService.findOne(_id);
   }
 
-  @Get('by-plate/:plate')
+  @Get('get-by-plate/:plate')
   findByPlate(@Param('plate') plate: string) {
     return this.vehiclesService.findByPlate(plate);
   }
