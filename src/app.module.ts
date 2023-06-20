@@ -52,6 +52,7 @@ import path from 'path';
   controllers: [AppController],
   providers: [AppService],
 })
+// export class AppModule {}
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
@@ -63,10 +64,11 @@ export class AppModule implements NestModule {
         { path: 'requirement', method: RequestMethod.POST },
         { path: 'requirement-types', method: RequestMethod.GET },
         { path: 'guest-reports', method: RequestMethod.POST },
+        { path: 'guest-reports', method: RequestMethod.GET },
         { path: 'options', method: RequestMethod.GET },
         { path: 'pets/get-by-name/name', method: RequestMethod.GET },
         { path: 'vehicles/get-by-plate/plate', method: RequestMethod.GET },
       )
-      .forRoutes({ path: 'auth', method: RequestMethod.ALL });
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

@@ -1,9 +1,6 @@
 // Import the functions you need from the SDKs you need
 import {
-  ForbiddenException,
-  HttpStatus,
   Injectable,
-  Logger,
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
