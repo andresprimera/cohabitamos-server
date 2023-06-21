@@ -8,6 +8,7 @@ import { TypegooseModule } from 'nestjs-typegoose';
 import { GuestReportEntity } from 'src/entities/guest-report.entity';
 import { PetsModule } from '../pets/pets.module';
 import { VehiclesModule } from '../vehicles/vehicles.module';
+import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { VehiclesModule } from '../vehicles/vehicles.module';
     CondominiumsModule,
     PetsModule,
     VehiclesModule,
+    UsersByUnitModule,
     TypegooseModule.forFeature([GuestReportEntity]),
   ],
   controllers: [GuestReportsController],

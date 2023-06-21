@@ -45,9 +45,12 @@ export class PetsController {
     return this.petsService.findOne(_id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePetDto: UpdatePetDto) {
-    return this.petsService.update(+id, updatePetDto);
+  @Patch(':_id')
+  update(
+    @ConvertToObjectId('_id') _id: Types.ObjectId,
+    @Body() updatePetDto: UpdatePetDto,
+  ) {
+    return this.petsService.update(_id, updatePetDto);
   }
 
   @Delete(':id')

@@ -21,6 +21,7 @@ import { PetEntity } from 'src/entities/pet.entity';
 import { PetsService } from '../pets/pets.service';
 import { VehiclesService } from '../vehicles/vehicles.service';
 import { VehiclesEntity } from 'src/entities/vehicle.entity';
+import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 
 @Injectable()
 export class GuestReportsService {
@@ -34,6 +35,7 @@ export class GuestReportsService {
     private readonly condominiumsService: CondominiumsService,
     private readonly petsService: PetsService,
     private readonly vehicleService: VehiclesService,
+    private readonly usersByUnitsService: UsersByUnitService,
   ) {}
 
   async create(createGuestReportDto: CreateGuestReportDto) {
@@ -70,6 +72,14 @@ export class GuestReportsService {
     let user: UserEntity;
     if (userId) {
       user = await this.usersService.findOne(new Types.ObjectId(userId));
+      const userByUnit = await this.usersByUnitsService.findByUserId(user._id);
+      if (!userByUnit) {
+        await this.usersByUnitsService.create({
+          unit: unit._id,
+          user: user._id,
+          condition: createUserDto.condition,
+        });
+      }
     } else {
       createUserDto.account = condominium.account;
       user = await this.usersService.create(createUserDto);
@@ -82,8 +92,21 @@ export class GuestReportsService {
 
     let pet: PetEntity | null = null;
     if (petId) {
-      //TODO: assign an existing pet to an appartment
       pet = await this.petsService.findOne(new Types.ObjectId(petId));
+      const petUnit = pet.unit;
+      const petCondominium = pet.condominium;
+
+      if (!pet.unit.includes(unit._id)) {
+        petUnit.push(unit._id as Ref<UnitEntity>);
+      }
+      if (!pet.condominium.includes(condominium._id)) {
+        petCondominium.push(condominium._id as Ref<CondominiumEntity>);
+      }
+
+      await this.petsService.update(pet._id, {
+        condominium: petCondominium,
+        unit: petUnit,
+      });
     } else if (kind && kind !== '') {
       createPetDto.unit = [unit._id];
       createPetDto.condominium = [condominium._id];

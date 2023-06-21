@@ -22,14 +22,14 @@ export class PetsService {
   async create(createPetDto: CreatePetDto) {
     return await this.petRepository.create(createPetDto).catch((error) => {
       Logger.error(error);
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     });
   }
 
   async findAll(condominium: Types.ObjectId) {
     return await this.petRepository.find({ condominium }).catch((error) => {
       Logger.error(error);
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     });
   }
 
@@ -42,7 +42,7 @@ export class PetsService {
       });
 
     if (!response) {
-      throw new NotFoundException('No pet was found for the provided name');
+      throw new BadRequestException('No pet was found for the provided name');
     }
 
     return response;
@@ -53,7 +53,7 @@ export class PetsService {
       .findOne({ _id })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -63,8 +63,21 @@ export class PetsService {
     return response;
   }
 
-  async update(id: number, updatePetDto: UpdatePetDto) {
-    return `This action updates a #${id} pet`;
+  async update(_id: Types.ObjectId, updatePetDto: UpdatePetDto) {
+    const response = await this.petRepository
+      .findOneAndUpdate({ _id }, updatePetDto, {
+        new: true,
+      })
+      .catch((error) => {
+        Logger.log(error.message);
+        throw new BadRequestException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException('No pet was found for the provided _id');
+    }
+
+    return response;
   }
 
   async remove(id: number) {
