@@ -34,6 +34,11 @@ export class UsersByUnitController {
   //   return this.usersByUnitService.findAll();
   // }
 
+  @Get(':get-by-user/:_id')
+  findByUserId(@ConvertToObjectId() _id: Types.ObjectId) {
+    return this.usersByUnitService.findOne(_id);
+  }
+
   @Get(':_id')
   findOne(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.usersByUnitService.findOne(_id);

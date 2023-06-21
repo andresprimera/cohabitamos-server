@@ -44,6 +44,15 @@ export class UsersByUnitService {
   //   });
   // }
 
+  async findByUserId(_id: Types.ObjectId) {
+    return await this.usersByUnitRepository
+      .findOne({ user: _id })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
+  }
+
   async findOne(_id: Types.ObjectId) {
     //TODO: get units for this condominium
     const response = await this.usersByUnitRepository
@@ -54,7 +63,7 @@ export class UsersByUnitService {
       });
 
     if (!response) {
-      throw new NotFoundException('No user was found for the provided _id');
+      throw new NotFoundException('No user was found for the provided _id ');
     }
 
     return response;

@@ -17,6 +17,7 @@ import { UnitsService } from '../units/units.service';
 import { UnitEntity } from 'src/entities/unit.entity';
 import { CondominiumEntity } from 'src/entities/condominium.entity';
 import { UserEntity } from 'src/entities/user.entity';
+import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 
 @Injectable()
 export class RequirementsService {
@@ -28,9 +29,9 @@ export class RequirementsService {
     private readonly usersService: UsersService,
     private readonly unitsService: UnitsService,
     private readonly condominiumsService: CondominiumsService,
+    private readonly usersByUnitsService: UsersByUnitService,
   ) {}
 
-  //TODO: modify dto to bring all the info the requirement needs
   async create(createRequirementDto: CreateRequirementDto) {
     const {
       user: createUserDto,
@@ -58,6 +59,16 @@ export class RequirementsService {
     let user: UserEntity;
     if (userId) {
       user = await this.usersService.findOne(new Types.ObjectId(userId));
+
+      const userByUnit = await this.usersByUnitsService.findByUserId(user._id);
+
+      if (!userByUnit) {
+        await this.usersByUnitsService.create({
+          unit: unit._id,
+          user: user._id,
+          condition: createUserDto.condition,
+        });
+      }
     } else {
       createUserDto.account = condominium.account;
       user = await this.usersService.create(createUserDto);

@@ -6,12 +6,14 @@ import { RequirementEntity } from 'src/entities/requirement.entity';
 import { UsersModule } from '../users/users.module';
 import { CondominiumsModule } from '../condominiums/condominiums.module';
 import { UnitsModule } from '../units/units.module';
+import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
 
 @Module({
   imports: [
     UsersModule,
     CondominiumsModule,
     UnitsModule,
+    UsersByUnitModule,
     TypegooseModule.forFeature([RequirementEntity]),
   ],
   controllers: [RequirementsController],
