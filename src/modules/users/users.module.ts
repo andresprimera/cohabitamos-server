@@ -3,9 +3,15 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { UserEntity } from '../../entities/user.entity';
 import { TypegooseModule } from 'nestjs-typegoose';
+import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
+import { UnitsModule } from '../units/units.module';
 
 @Module({
-  imports: [TypegooseModule.forFeature([UserEntity])],
+  imports: [
+    UnitsModule,
+    UsersByUnitModule,
+    TypegooseModule.forFeature([UserEntity]),
+  ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

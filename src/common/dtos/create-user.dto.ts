@@ -1,6 +1,7 @@
 import { Ref, prop } from '@typegoose/typegoose';
-import { DOC_TYPE, ROLE } from '../enums';
+import { DOC_TYPE, ROLE, USER_CONDITION } from '../enums';
 import { AccountEntity } from 'src/entities/account.entity';
+import { Types } from 'mongoose';
 
 export class CreateUserDto {
   @prop({})
@@ -34,4 +35,10 @@ export class CreateUserDto {
   docNumber?: string;
   @prop({})
   nationality?: string;
+
+  @prop({ enum: USER_CONDITION, default: USER_CONDITION.RESIDENT })
+  condition: string;
+
+  @prop({})
+  unit: Types.ObjectId;
 }

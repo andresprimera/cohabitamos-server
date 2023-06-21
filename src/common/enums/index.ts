@@ -23,3 +23,10 @@ export enum ACCOUNT_STATUS {
   SUSPENDED = 'Suspendido',
   CLOSED = 'Cerrado',
 }
+
+export enum USER_CONDITION {
+  OWNER = 'Propietario',
+  TENANT = 'Arrendatario',
+  RESIDENT = 'Residente',
+  VISITOR = 'Visitante',
+}

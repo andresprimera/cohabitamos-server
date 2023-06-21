@@ -2,12 +2,15 @@ import { prop, modelOptions, Ref } from '@typegoose/typegoose';
 import { Severity } from '@typegoose/typegoose';
 import { DOC_TYPE, ROLE } from 'src/common/enums';
 import { AccountEntity } from './account.entity';
+import mongoose from 'mongoose';
 
 @modelOptions({
   schemaOptions: { collection: 'users', timestamps: true },
   options: { allowMixed: Severity.ALLOW },
 })
 export class UserEntity {
+  _id: mongoose.Types.ObjectId;
+
   @prop({
     required: true,
   })

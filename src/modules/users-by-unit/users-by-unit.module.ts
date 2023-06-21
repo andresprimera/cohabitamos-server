@@ -9,5 +9,6 @@ import { UnitsModule } from '../units/units.module';
   imports: [UnitsModule, TypegooseModule.forFeature([UsersByUnitEntity])],
   controllers: [UsersByUnitController],
   providers: [UsersByUnitService],
+  exports: [UsersByUnitService],
 })
 export class UsersByUnitModule {}
