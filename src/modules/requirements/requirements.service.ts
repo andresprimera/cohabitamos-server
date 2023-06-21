@@ -89,7 +89,6 @@ export class RequirementsService {
       });
   }
 
-  //TODO: retrieve every requirement by several filters: date, unit, type
   async findAll(condominium: Types.ObjectId) {
     const response = await this.requirementRepository
       .find({

@@ -10,6 +10,7 @@ import { CondominiumEntity } from 'src/entities/condominium.entity';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nestjs-typegoose';
 import mongoose, { Types } from 'mongoose';
+import { UnitsService } from '../units/units.service';
 
 @Injectable()
 export class CondominiumsService {
@@ -18,6 +19,8 @@ export class CondominiumsService {
     private readonly condominiumRepository: ReturnModelType<
       typeof CondominiumEntity
     >,
+
+    private readonly unitsService: UnitsService,
   ) {}
 
   async create(createCondominiumDto: CreateCondominiumDto) {
@@ -87,13 +90,20 @@ export class CondominiumsService {
   }
 
   async remove(_id: Types.ObjectId) {
-    return await this.condominiumRepository
+    const removedUnits = await this.unitsService
+      .deleteMany(_id)
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
+
+    const removedCondominium = await this.condominiumRepository
       .deleteOne({ _id })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
       });
 
-    //TODO: delete the units for this condo
+    return { removedUnits, removedCondominium };
   }
 }

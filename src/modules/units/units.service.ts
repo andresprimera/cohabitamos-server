@@ -78,4 +78,13 @@ export class UnitsService {
       throw new InternalServerErrorException(error.message);
     });
   }
+
+  async deleteMany(condominium: Types.ObjectId) {
+    return await this.unitRepository
+      .deleteMany({ condominium })
+      .catch((error) => {
+        Logger.error(error);
+        throw new InternalServerErrorException(error.message);
+      });
+  }
 }

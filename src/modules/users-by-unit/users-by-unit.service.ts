@@ -10,7 +10,6 @@ import { UsersByUnitEntity } from 'src/entities/users-by-unit.entity';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
-import { CondominiumsService } from '../condominiums/condominiums.service';
 import { UnitsService } from '../units/units.service';
 
 @Injectable()
@@ -35,15 +34,6 @@ export class UsersByUnitService {
       });
   }
 
-  //TODO: create this query for just this unit
-  // async findAll() {
-  //   //TODO: Pagination
-  //   return await this.usersByUnitRepository.find().catch((error) => {
-  //     Logger.error(error);
-  //     throw new InternalServerErrorException(error.message);
-  //   });
-  // }
-
   async findByUserId(_id: Types.ObjectId) {
     return await this.usersByUnitRepository
       .findOne({ user: _id })
@@ -54,7 +44,6 @@ export class UsersByUnitService {
   }
 
   async findOne(_id: Types.ObjectId) {
-    //TODO: get units for this condominium
     const response = await this.usersByUnitRepository
       .findOne({ _id })
       .catch((error) => {
