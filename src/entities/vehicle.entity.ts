@@ -1,4 +1,4 @@
-import { Ref, modelOptions, prop } from '@typegoose/typegoose';
+import { Ref, modelOptions, mongoose, prop } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
 import { CondominiumEntity } from './condominium.entity';
 
@@ -12,6 +12,7 @@ enum VehicleConditionEnum {
   schemaOptions: { collection: 'vehicles', timestamps: true },
 })
 export class VehiclesEntity {
+  _id: mongoose.Types.ObjectId;
   @prop({ required: true })
   plate: string;
 

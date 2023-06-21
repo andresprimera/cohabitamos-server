@@ -10,7 +10,7 @@ import { UpdateGuestReportDto } from './dto/update-guest-report.dto';
 import { UnitEntity } from 'src/entities/unit.entity';
 import { InjectModel } from 'nestjs-typegoose';
 import { GuestReportEntity } from 'src/entities/guest-report.entity';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { Ref, ReturnModelType } from '@typegoose/typegoose';
 import { UsersService } from '../users/users.service';
 import { UnitsService } from '../units/units.service';
 import { CondominiumsService } from '../condominiums/condominiums.service';
@@ -101,6 +101,19 @@ export class GuestReportsService {
       vehicle = await this.vehicleService.findOne(
         new Types.ObjectId(vehicleId),
       );
+      const vehicleUnit = vehicle.unit;
+      const vehicleCondominium = vehicle.condominium;
+
+      if (!vehicle.unit.includes(unit._id)) {
+        vehicleUnit.push(unit._id as Ref<UnitEntity>);
+      }
+      if (!vehicle.condominium.includes(condominium._id)) {
+        vehicleCondominium.push(condominium._id as Ref<CondominiumEntity>);
+      }
+      await this.vehicleService.update(vehicle._id, {
+        condominium: vehicleCondominium,
+        unit: vehicleUnit,
+      });
     } else if (plate && plate !== '') {
       createVehicleDto.unit = [unit._id];
       createVehicleDto.condominium = [condominium._id];
