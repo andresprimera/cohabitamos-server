@@ -2,13 +2,7 @@ import { modelOptions, prop } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
 import { UserEntity } from './user.entity';
 import { CondominiumEntity } from './condominium.entity';
-
-export enum statusEnum {
-  OPEN = 'Abierto',
-  CLOSED = 'Cerrado',
-  IN_PROGRESS = 'En curso',
-  ON_HOLD = 'Esperando respuesta',
-}
+import { REQUIREMENT_STATE } from 'src/common/enums';
 
 @modelOptions({
   schemaOptions: { collection: 'requirements', timestamps: true },
@@ -29,6 +23,6 @@ export class RequirementEntity {
   @prop({ required: true })
   condominium: CondominiumEntity;
 
-  @prop({ enum: statusEnum, default: statusEnum.OPEN })
+  @prop({ enum: REQUIREMENT_STATE, default: REQUIREMENT_STATE.OPEN })
   status: string;
 }

@@ -14,6 +14,7 @@ import { UpdateRequirementDto } from './dto/update-requirement.dto';
 import { ConvertToObjectId } from 'src/decorators/convert-to-objectId.decorator';
 import { Types } from 'mongoose';
 import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
+import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 
 @Controller('requirements')
 export class RequirementsController {
@@ -25,9 +26,15 @@ export class RequirementsController {
   }
 
   @UseInterceptors(CondominiumInterceptor)
-  @Get()
-  findAll(@Param('requestCondominium') requestCondominium: Types.ObjectId) {
-    return this.requirementsService.findAll(requestCondominium);
+  @Post('find-all')
+  findAll(
+    @Param('requestCondominium') requestCondominium: Types.ObjectId,
+    @Body() requirementFiltersDto: RequirementFiltersDto,
+  ) {
+    return this.requirementsService.findAll(
+      requestCondominium,
+      requirementFiltersDto,
+    );
   }
 
   @Get(':_id')

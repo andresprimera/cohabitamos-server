@@ -30,3 +30,10 @@ export enum USER_CONDITION {
   RESIDENT = 'Residente',
   VISITOR = 'Visitante',
 }
+
+export enum REQUIREMENT_STATE {
+  OPEN = 'Abierto',
+  CLOSED = 'Cerrado',
+  IN_PROGRESS = 'En curso',
+  ON_HOLD = 'Esperando respuesta',
+}

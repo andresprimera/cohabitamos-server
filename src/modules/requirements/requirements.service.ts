@@ -18,6 +18,7 @@ import { UnitEntity } from 'src/entities/unit.entity';
 import { CondominiumEntity } from 'src/entities/condominium.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
+import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 
 @Injectable()
 export class RequirementsService {
@@ -89,11 +90,27 @@ export class RequirementsService {
       });
   }
 
-  async findAll(condominium: Types.ObjectId) {
+  async findAll(
+    condominium: Types.ObjectId,
+    requirementFiltersDto: RequirementFiltersDto,
+  ) {
+    const { limit = 10, page = 1 } = requirementFiltersDto.metadata || {};
+
+    const query: any = {};
+
+    query['condominium._id'] = condominium;
+
+    if (requirementFiltersDto?.status) {
+      query['status'] = requirementFiltersDto.status;
+    }
+
+    const totalDocs = await this.requirementRepository.find(query).count();
+
     const response = await this.requirementRepository
-      .find({
-        'condominium._id': condominium,
-      })
+      .find(query)
+      .skip(limit * (page - 1))
+      .limit(limit)
+      .sort({ createdAt: -1 })
       .catch((error) => {
         Logger.error(error);
         throw new InternalServerErrorException(error.message);
@@ -105,7 +122,7 @@ export class RequirementsService {
       );
     }
 
-    return response;
+    return { response, metadata: { totalDocs, limit, page } };
   }
 
   async findOne(_id: Types.ObjectId) {
