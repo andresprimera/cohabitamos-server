@@ -1,6 +1,6 @@
 import {
   Injectable,
-  InternalServerErrorException,
+  BadRequestException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -25,7 +25,7 @@ export class RequirementTypesService {
       .create(createRequirementTypeDto)
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
   }
 
@@ -35,7 +35,7 @@ export class RequirementTypesService {
       .find({ condominium })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
   }
 
@@ -44,7 +44,7 @@ export class RequirementTypesService {
       .findOne({ _id })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -59,7 +59,7 @@ export class RequirementTypesService {
       .deleteOne({ _id })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
   }
 }

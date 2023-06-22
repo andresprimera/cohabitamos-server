@@ -1,6 +1,6 @@
 import {
   Injectable,
-  InternalServerErrorException,
+  BadRequestException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -35,7 +35,7 @@ export class UsersService {
       .create(createUserDto)
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     await this.usersByUnitService.create({
@@ -51,7 +51,7 @@ export class UsersService {
     //TODO: Pagination
     return await this.userRepository.find().catch((error) => {
       Logger.error(error);
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     });
   }
 
@@ -60,7 +60,7 @@ export class UsersService {
       .findOne({ _id })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -75,7 +75,7 @@ export class UsersService {
       .findOne({ uid })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -125,7 +125,7 @@ export class UsersService {
       ])
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (response.length === 0) {
@@ -142,7 +142,7 @@ export class UsersService {
       })
       .catch((error) => {
         Logger.log(error.message);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -155,7 +155,7 @@ export class UsersService {
   async remove(_id: Types.ObjectId) {
     return await this.userRepository.deleteOne({ _id }).catch((error) => {
       Logger.error(error);
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     });
   }
 }

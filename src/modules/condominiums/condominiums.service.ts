@@ -1,6 +1,6 @@
 import {
+  BadRequestException,
   Injectable,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -28,7 +28,7 @@ export class CondominiumsService {
       .create(createCondominiumDto)
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
   }
 
@@ -36,7 +36,7 @@ export class CondominiumsService {
     //TODO: Pagination
     return await this.condominiumRepository.find().catch((error) => {
       Logger.error(error);
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     });
   }
 
@@ -55,7 +55,7 @@ export class CondominiumsService {
       ])
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (response && response.length === 0) {
@@ -77,7 +77,7 @@ export class CondominiumsService {
       })
       .catch((error) => {
         Logger.log(error.message);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -94,14 +94,14 @@ export class CondominiumsService {
       .deleteMany(_id)
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     const removedCondominium = await this.condominiumRepository
       .deleteOne({ _id })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     return { removedUnits, removedCondominium };

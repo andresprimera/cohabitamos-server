@@ -1,6 +1,6 @@
 import {
   Injectable,
-  InternalServerErrorException,
+  BadRequestException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -23,14 +23,14 @@ export class VehiclesService {
       .create(createVehicleDto)
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
   }
 
   async findAll(condominium: Types.ObjectId) {
     return await this.vehicleRepository.find({ condominium }).catch((error) => {
       Logger.error(error);
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     });
   }
 
@@ -39,7 +39,7 @@ export class VehiclesService {
       .findOne({ plate })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -54,7 +54,7 @@ export class VehiclesService {
       .findOne({ _id })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -71,7 +71,7 @@ export class VehiclesService {
       })
       .catch((error) => {
         Logger.log(error.message);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -84,7 +84,7 @@ export class VehiclesService {
   async remove(_id: Types.ObjectId) {
     return await this.vehicleRepository.deleteOne({ _id }).catch((error) => {
       Logger.error(error);
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     });
   }
 }

@@ -2,7 +2,7 @@ import { prop, modelOptions, Ref } from '@typegoose/typegoose';
 import { Severity } from '@typegoose/typegoose';
 import { DOC_TYPE, ROLE } from 'src/common/enums';
 import { AccountEntity } from './account.entity';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 @modelOptions({
   schemaOptions: { collection: 'users', timestamps: true },
@@ -46,4 +46,17 @@ export class UserEntity {
   docNumber?: string;
   @prop({ default: '' })
   nationality?: string;
+}
+
+export class ShortUserEntity {
+  _id: Types.ObjectId;
+
+  @prop({})
+  firstName: string;
+
+  @prop({})
+  lastName: string;
+
+  @prop({ enum: ROLE, default: ROLE.USER })
+  role: ROLE;
 }

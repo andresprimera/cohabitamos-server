@@ -18,5 +18,6 @@ import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
   ],
   controllers: [RequirementsController],
   providers: [RequirementsService],
+  exports: [RequirementsService],
 })
 export class RequirementsModule {}

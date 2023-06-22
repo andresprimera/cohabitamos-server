@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -86,7 +85,7 @@ export class RequirementsService {
       })
       .catch((error) => {
         Logger.error('This is the error is running =>', error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
   }
 
@@ -113,7 +112,7 @@ export class RequirementsService {
       .sort({ createdAt: -1 })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -130,7 +129,7 @@ export class RequirementsService {
       .findOne({ _id })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -156,7 +155,7 @@ export class RequirementsService {
       )
       .catch((error) => {
         Logger.log(error.message);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -173,7 +172,7 @@ export class RequirementsService {
       .deleteOne({ _id })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
   }
 }

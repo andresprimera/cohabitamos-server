@@ -1,6 +1,6 @@
 import {
   Injectable,
-  InternalServerErrorException,
+  BadRequestException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -21,7 +21,7 @@ export class UnitsService {
   async create(createUnitDto: CreateUnitDto) {
     return await this.unitRepository.create(createUnitDto).catch((error) => {
       Logger.error(error);
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     });
   }
 
@@ -30,7 +30,7 @@ export class UnitsService {
       .find({ condominium })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -45,7 +45,7 @@ export class UnitsService {
       .findOne({ _id })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -62,7 +62,7 @@ export class UnitsService {
       })
       .catch((error) => {
         Logger.log(error.message);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
 
     if (!response) {
@@ -75,7 +75,7 @@ export class UnitsService {
   async remove(_id: Types.ObjectId) {
     return await this.unitRepository.deleteOne({ _id }).catch((error) => {
       Logger.error(error);
-      throw new InternalServerErrorException(error.message);
+      throw new BadRequestException(error.message);
     });
   }
 
@@ -84,7 +84,7 @@ export class UnitsService {
       .deleteMany({ condominium })
       .catch((error) => {
         Logger.error(error);
-        throw new InternalServerErrorException(error.message);
+        throw new BadRequestException(error.message);
       });
   }
 }

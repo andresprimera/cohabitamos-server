@@ -22,6 +22,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { OptionsModule } from './modules/options/options.module';
 import { MiddlewareBuilder } from '@nestjs/core';
 import { PreAuthMiddleware } from './middlewares/preauth.middleware';
+import { RequirementsLogModule } from './modules/requirements-log/requirements-log.module';
 import path from 'path';
 
 @Module({
@@ -48,6 +49,7 @@ import path from 'path';
     PetsModule,
     AuthModule,
     OptionsModule,
+    RequirementsLogModule,
   ],
   controllers: [AppController],
   providers: [AppService],
