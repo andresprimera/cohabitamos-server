@@ -3,11 +3,14 @@ import { UnitEntity } from './unit.entity';
 import { UserEntity } from './user.entity';
 import { CondominiumEntity } from './condominium.entity';
 import { REQUIREMENT_STATE } from 'src/common/enums';
+import { Types } from 'mongoose';
 
 @modelOptions({
   schemaOptions: { collection: 'requirements', timestamps: true },
 })
 export class RequirementEntity {
+  _id: Types.ObjectId;
+
   @prop({ required: true })
   requirementType: string;
 

@@ -1,10 +1,8 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreateRequirementsLogDto } from './dto/create-requirements-log.dto';
-import { UpdateRequirementsLogDto } from './dto/update-requirements-log.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { RequirementsLogEntity } from 'src/entities/requirements-log.entity';
-import { RequirementsService } from '../requirements/requirements.service';
 import { UsersService } from '../users/users.service';
 import { Types } from 'mongoose';
 
@@ -15,15 +13,13 @@ export class RequirementsLogService {
   constructor(
     @InjectModel(RequirementsLogEntity)
     private readonly requirementsLogRepository: ModelType<RequirementsLogEntity>,
-    private readonly requirementsService: RequirementsService,
     private readonly usersService: UsersService,
   ) {}
 
   async create(createRequirementsLogDto: CreateRequirementsLogDto) {
-    const { requirementId, updatedBy, records } =
-      createRequirementsLogDto || {};
+    const { requirement, updatedBy, records } = createRequirementsLogDto || {};
 
-    if (!requirementId) {
+    if (!requirement) {
       throw new BadRequestException('Field requirementId not provided');
     }
 
@@ -31,7 +27,6 @@ export class RequirementsLogService {
       throw new BadRequestException('Field updatedBy not provided');
     }
 
-    const requirement = await this.requirementsService.findOne(requirementId);
     const user = await this.usersService.findOne(updatedBy);
 
     const updatedRecords: Record[] = [];
@@ -48,6 +43,7 @@ export class RequirementsLogService {
         ...createRequirementsLogDto,
         records: updatedRecords,
         updatedBy: user,
+        requirementId: requirement._id,
       })
       .catch((error) => {
         Logger.error(error);

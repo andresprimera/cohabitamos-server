@@ -7,6 +7,7 @@ import { UsersModule } from '../users/users.module';
 import { CondominiumsModule } from '../condominiums/condominiums.module';
 import { UnitsModule } from '../units/units.module';
 import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
+import { RequirementsLogModule } from '../requirements-log/requirements-log.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
     CondominiumsModule,
     UnitsModule,
     UsersByUnitModule,
+    RequirementsLogModule,
     TypegooseModule.forFeature([RequirementEntity]),
   ],
   controllers: [RequirementsController],

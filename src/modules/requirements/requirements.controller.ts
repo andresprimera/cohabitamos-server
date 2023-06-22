@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  Req,
 } from '@nestjs/common';
 import { RequirementsService } from './requirements.service';
 import { CreateRequirementDto } from './dto/create-requirement.dto';

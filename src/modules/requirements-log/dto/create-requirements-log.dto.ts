@@ -1,14 +1,14 @@
 import { Types } from 'mongoose';
 import { RequirementEntity } from 'src/entities/requirement.entity';
 
+export interface RecordDto {
+  field: keyof RequirementEntity;
+  newValue: any;
+}
+
 export class CreateRequirementsLogDto {
-  requirementId: Types.ObjectId;
+  requirement: RequirementEntity;
   updatedBy: Types.ObjectId;
-  mesaage: string;
-  records: [
-    {
-      field: keyof RequirementEntity;
-      newValue: any;
-    },
-  ];
+  message: string;
+  records: RecordDto[];
 }

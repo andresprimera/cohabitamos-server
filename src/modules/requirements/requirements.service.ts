@@ -18,6 +18,9 @@ import { CondominiumEntity } from 'src/entities/condominium.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { RequirementFiltersDto } from './dto/requirement-filter.dto';
+import { RequirementsLogService } from '../requirements-log/requirements-log.service';
+import { Record } from 'src/entities/requirements-log.entity';
+import { RecordDto } from '../requirements-log/dto/create-requirements-log.dto';
 
 @Injectable()
 export class RequirementsService {
@@ -30,6 +33,7 @@ export class RequirementsService {
     private readonly unitsService: UnitsService,
     private readonly condominiumsService: CondominiumsService,
     private readonly usersByUnitsService: UsersByUnitService,
+    private readonly requirementsLogsService: RequirementsLogService,
   ) {}
 
   async create(createRequirementDto: CreateRequirementDto) {
@@ -39,7 +43,8 @@ export class RequirementsService {
       unit: unitId,
       status,
       description,
-    } = createRequirementDto;
+      operator,
+    } = createRequirementDto || {};
 
     if (!createRequirementDto?.user) {
       throw new BadRequestException('Required field user not provided.');
@@ -74,7 +79,7 @@ export class RequirementsService {
       user = await this.usersService.create(createUserDto);
     }
 
-    return await this.requirementRepository
+    const requirement = await this.requirementRepository
       .create({
         requirementType,
         description,
@@ -87,6 +92,15 @@ export class RequirementsService {
         Logger.error('This is the error is running =>', error);
         throw new BadRequestException(error.message);
       });
+
+    await this.requirementsLogsService.create({
+      requirement,
+      message: 'Requerimiento creado',
+      records: [],
+      updatedBy: new Types.ObjectId(operator),
+    });
+
+    return requirement;
   }
 
   async findAll(

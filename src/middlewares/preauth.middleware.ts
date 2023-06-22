@@ -1,21 +1,23 @@
 // Import the functions you need from the SDKs you need
 import {
   Injectable,
+  Logger,
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ReturnModelType } from '@typegoose/typegoose';
 import { initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
-import { InjectModel } from 'nestjs-typegoose';
-import { UserEntity } from 'src/entities/user.entity';
+import { UsersService } from 'src/modules/users/users.service';
 
 @Injectable()
 export class PreAuthMiddleware implements NestMiddleware {
   private defaultApp: any;
 
-  constructor(private readonly config: ConfigService) {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly userRepository: UsersService,
+  ) {
     const firebaseConfig = {
       apiKey: this.config.get<string>('FIREBASE_API_KEY'),
       authDomain: this.config.get<string>('FIREBASE_AUTH_DOMAIN'),
@@ -48,15 +50,20 @@ export class PreAuthMiddleware implements NestMiddleware {
       return error;
     });
 
-    if (
-      !decodedToken?.uid
-      // decodedToken.code === 'auth/argument-error' ||
-      // decodedToken.code === 'auth/id-token-expired'
-    ) {
+    if (!decodedToken?.uid) {
       throw new UnauthorizedException('token could not be verified');
     }
 
-    req.user = decodedToken;
+    req.uid = decodedToken.uid;
+
+    if (req.headers?.operator) {
+      req.body.operator = await this.userRepository
+        .findOne(req.headers.operator)
+        .catch((error) => {
+          Logger.error(error);
+          return error;
+        });
+    }
     next();
   }
 }
