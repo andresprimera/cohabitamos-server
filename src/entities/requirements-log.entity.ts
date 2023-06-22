@@ -6,6 +6,7 @@ export interface Record {
   field: keyof RequirementEntity;
   newValue: any;
   oldValue: any;
+  timeElapsed?: number;
 }
 
 @modelOptions({

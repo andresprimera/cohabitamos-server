@@ -34,6 +34,13 @@ export class RequirementsLogService {
     records.map((record: Record) => {
       if (requirement[record.field]) {
         record.oldValue = requirement[record.field];
+
+        const requirementUpdatedAt = requirement?.updatedAt;
+
+        if (requirementUpdatedAt && record.field === 'status') {
+          record.timeElapsed = Date.now() - requirementUpdatedAt.getTime();
+        }
+
         updatedRecords.push(record);
       }
     });

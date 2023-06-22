@@ -159,6 +159,35 @@ export class RequirementsService {
     _id: Types.ObjectId,
     updateRequirementDto: UpdateRequirementDto,
   ) {
+    const { operator, message } = updateRequirementDto;
+
+    const requirement = await this.requirementRepository
+      .findOne({ _id })
+      .catch((error) => {
+        Logger.log(error.message);
+        throw new BadRequestException(error.message);
+      });
+
+    if (requirement?.status === updateRequirementDto.status) {
+      throw new BadRequestException(
+        'El estatus a actualizar debe ser diferente al actual',
+      );
+    }
+
+    await this.requirementsLogsService.create({
+      requirement: requirement as RequirementEntity,
+      message: `Estatus actualizado de ${requirement?.status} a ${
+        updateRequirementDto.status
+      }${message ? ': ' + message : ''}`,
+      records: [
+        {
+          field: 'status',
+          newValue: updateRequirementDto.status,
+        },
+      ],
+      updatedBy: new Types.ObjectId(operator),
+    });
+
     const response = await this.requirementRepository
       .findOneAndUpdate(
         { _id },
