@@ -48,6 +48,8 @@ export class GuestReportsService {
       vehicle: createVehicleDto,
     } = createGuestReportDto;
 
+    console.log({ createGuestReportDto });
+
     if (!createUserDto) {
       throw new BadRequestException('Required field user not provided.');
     }
@@ -69,8 +71,10 @@ export class GuestReportsService {
     const { _id: userId } = createUserDto;
 
     let user: UserEntity;
+
     if (userId) {
       user = await this.usersService.findOne(new Types.ObjectId(userId));
+
       const userByUnit = await this.usersByUnitsService.findByUserId(user._id);
       if (!userByUnit) {
         await this.usersByUnitsService.create({
@@ -81,6 +85,7 @@ export class GuestReportsService {
       }
     } else {
       createUserDto.account = condominium.account;
+      createUserDto.unit = unit._id;
       user = await this.usersService.create(createUserDto);
     }
 

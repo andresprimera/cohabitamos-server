@@ -35,7 +35,7 @@ export class UsersService {
     const auth = this.firebase.getAuth();
     const userRecord = await auth.createUser({
       email: createUserDto.email,
-      emailVerified: false,
+      emailVerified: true,
       password: 'qwerty',
       displayName: `${createUserDto.firstName} ${createUserDto.lastName} `,
       disabled: false,

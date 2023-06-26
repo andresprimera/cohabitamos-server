@@ -20,10 +20,8 @@ import { GuestReportsModule } from './modules/guest-reports/guest-reports.module
 import { PetsModule } from './modules/pets/pets.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { OptionsModule } from './modules/options/options.module';
-import { MiddlewareBuilder } from '@nestjs/core';
 import { authMiddleware } from './middlewares/auth.middleware';
 import { RequirementsLogModule } from './modules/requirements-log/requirements-log.module';
-import path from 'path';
 import { Firebase } from './providers/firebase';
 
 @Module({
