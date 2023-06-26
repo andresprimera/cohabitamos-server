@@ -21,9 +21,10 @@ import { PetsModule } from './modules/pets/pets.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { OptionsModule } from './modules/options/options.module';
 import { MiddlewareBuilder } from '@nestjs/core';
-import { PreAuthMiddleware } from './middlewares/preauth.middleware';
+import { authMiddleware } from './middlewares/auth.middleware';
 import { RequirementsLogModule } from './modules/requirements-log/requirements-log.module';
 import path from 'path';
+import { Firebase } from './providers/firebase';
 
 @Module({
   imports: [
@@ -52,13 +53,13 @@ import path from 'path';
     RequirementsLogModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, Firebase],
 })
 // export class AppModule {}
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(PreAuthMiddleware)
+      .apply(authMiddleware)
       .exclude(
         { path: 'condominiums', method: RequestMethod.GET },
         { path: 'condominiums/:_id', method: RequestMethod.GET },

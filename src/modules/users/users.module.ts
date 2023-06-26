@@ -5,6 +5,7 @@ import { UserEntity } from '../../entities/user.entity';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
 import { UnitsModule } from '../units/units.module';
+import { Firebase } from 'src/providers/firebase';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { UnitsModule } from '../units/units.module';
     TypegooseModule.forFeature([UserEntity]),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, Firebase],
   exports: [UsersService],
 })
 export class UsersModule {}

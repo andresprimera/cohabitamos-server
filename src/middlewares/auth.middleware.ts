@@ -1,40 +1,21 @@
-// Import the functions you need from the SDKs you need
 import {
   Injectable,
   Logger,
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { initializeApp } from 'firebase-admin/app';
-import { getAuth } from 'firebase-admin/auth';
 import { UsersService } from 'src/modules/users/users.service';
+import { Firebase } from 'src/providers/firebase';
 
 @Injectable()
-export class PreAuthMiddleware implements NestMiddleware {
-  private defaultApp: any;
-
+export class authMiddleware implements NestMiddleware {
   constructor(
-    private readonly config: ConfigService,
+    private readonly firebase: Firebase,
     private readonly userRepository: UsersService,
-  ) {
-    const firebaseConfig = {
-      apiKey: this.config.get<string>('FIREBASE_API_KEY'),
-      authDomain: this.config.get<string>('FIREBASE_AUTH_DOMAIN'),
-      projectId: this.config.get<string>('FIREBASE_PROJECT_ID'),
-      storageBucket: this.config.get<string>('FIREBASE_STORAGE_BUCKET'),
-      messagingSenderId: this.config.get<string>(
-        'FIREBASE_MESSANGIN_SERVER_ID',
-      ),
-      appId: this.config.get<string>('FIREBASE_APP_ID'),
-      measurementId: this.config.get<string>('FIREBASE_MEASUREMENT_ID'),
-    };
-
-    this.defaultApp = initializeApp(firebaseConfig);
-  }
+  ) {}
 
   async use(req: any, res: any, next: () => void) {
-    const auth = getAuth(this.defaultApp);
+    const auth = this.firebase.getAuth();
 
     if (!req.headers?.authorization) {
       throw new UnauthorizedException('No token provided');

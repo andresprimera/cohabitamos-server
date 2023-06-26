@@ -161,11 +161,22 @@ export class GuestReportsService {
       });
   }
 
-  async findAll(condominium: Types.ObjectId) {
+  async findAll(
+    condominium: Types.ObjectId,
+    startingDate: Date,
+    endingDate: Date,
+  ) {
     const response = await this.guestReportRepository
       .find({
         'condominium._id': condominium,
+        arrivalDate: {
+          $gte: startingDate,
+          $lte: endingDate,
+        },
+        departureDate: { $gte: startingDate, $lte: endingDate },
       })
+      .sort({ arrivalDate: 1 })
+      .sort({ departureDate: 1 })
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
@@ -176,6 +187,8 @@ export class GuestReportsService {
         'No guesst-report was found for this condominium',
       );
     }
+
+    Logger.log({ response });
 
     return response;
   }

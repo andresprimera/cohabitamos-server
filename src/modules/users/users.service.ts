@@ -11,8 +11,8 @@ import { ReturnModelType, types } from '@typegoose/typegoose';
 import { UserEntity } from '../../entities/user.entity';
 import mongoose, { Types } from 'mongoose';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
-import { UnitEntity } from 'src/entities/unit.entity';
 import { UnitsService } from '../units/units.service';
+import { Firebase } from 'src/providers/firebase';
 
 @Injectable()
 export class UsersService {
@@ -21,6 +21,7 @@ export class UsersService {
     private readonly userRepository: ReturnModelType<typeof UserEntity>,
     private readonly unitService: UnitsService,
     private readonly usersByUnitService: UsersByUnitService,
+    private readonly firebase: Firebase,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -31,8 +32,17 @@ export class UsersService {
       );
     }
 
+    const auth = this.firebase.getAuth();
+    const userRecord = await auth.createUser({
+      email: createUserDto.email,
+      emailVerified: false,
+      password: 'qwerty',
+      displayName: `${createUserDto.firstName} ${createUserDto.lastName} `,
+      disabled: false,
+    });
+
     const newUser = await this.userRepository
-      .create(createUserDto)
+      .create({ ...createUserDto, uid: userRecord.uid })
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
