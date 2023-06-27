@@ -7,12 +7,13 @@ import {
 import { CreateUserDto } from '../../common/dtos/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from 'nestjs-typegoose';
-import { ReturnModelType, types } from '@typegoose/typegoose';
+import { ReturnModelType } from '@typegoose/typegoose';
 import { UserEntity } from '../../entities/user.entity';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { UnitsService } from '../units/units.service';
 import { Firebase } from 'src/providers/firebase';
+import { AccountsService } from '../accounts/accounts.service';
 
 @Injectable()
 export class UsersService {
@@ -22,14 +23,19 @@ export class UsersService {
     private readonly unitService: UnitsService,
     private readonly usersByUnitService: UsersByUnitService,
     private readonly firebase: Firebase,
+    private readonly accountService: AccountsService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const unit = this.unitService.findOne(createUserDto.unit);
-    if (!unit) {
-      throw new NotFoundException(
-        'No unit was found for the provided unit _id',
-      );
+    let unit = null;
+
+    if (createUserDto.role !== 'administrador') {
+      unit = this.unitService.findOne(createUserDto.unit);
+      if (!unit) {
+        throw new NotFoundException(
+          'No unit was found for the provided unit _id',
+        );
+      }
     }
 
     const auth = this.firebase.getAuth();
@@ -48,11 +54,22 @@ export class UsersService {
         throw new BadRequestException(error.message);
       });
 
-    await this.usersByUnitService.create({
-      unit: createUserDto.unit,
-      user: newUser._id,
-      condition: createUserDto.condition,
-    });
+    if (unit) {
+      await this.usersByUnitService.create({
+        unit: createUserDto.unit,
+        user: newUser._id,
+        condition: createUserDto.condition,
+      });
+    } else {
+      await this.accountService.create({
+        owner: newUser._id,
+        startingDate: new Date(),
+        nextBillingDate: new Date(
+          new Date().getTime() + 30 * 24 * 60 * 60 * 1000,
+        ),
+        status: 'Activo',
+      });
+    }
 
     return newUser;
   }

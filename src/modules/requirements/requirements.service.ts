@@ -75,7 +75,6 @@ export class RequirementsService {
         });
       }
     } else {
-      createUserDto.account = condominium.account;
       user = await this.usersService.create(createUserDto);
     }
 

@@ -9,5 +9,6 @@ import { AccountEntity } from 'src/entities/account.entity';
   imports: [TypegooseModule.forFeature([UserEntity, AccountEntity])],
   controllers: [AccountsController],
   providers: [AccountsService],
+  exports: [AccountsService],
 })
 export class AccountsModule {}

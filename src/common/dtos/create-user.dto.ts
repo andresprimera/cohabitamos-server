@@ -1,6 +1,4 @@
-import { Ref } from '@typegoose/typegoose';
 import { DOC_TYPE, ROLE } from '../enums';
-import { AccountEntity } from 'src/entities/account.entity';
 import { Types } from 'mongoose';
 
 export class CreateUserDto {
@@ -9,7 +7,6 @@ export class CreateUserDto {
   firstName: string;
   lastName: string;
   role: ROLE;
-  account: Ref<AccountEntity>;
   email: string;
   phone?: string[] | [];
   whatsapp?: string;

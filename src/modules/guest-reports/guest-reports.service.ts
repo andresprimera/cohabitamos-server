@@ -84,7 +84,6 @@ export class GuestReportsService {
         });
       }
     } else {
-      createUserDto.account = condominium.account;
       createUserDto.unit = unit._id;
       user = await this.usersService.create(createUserDto);
     }
@@ -192,8 +191,6 @@ export class GuestReportsService {
         'No guesst-report was found for this condominium',
       );
     }
-
-    Logger.log({ response });
 
     return response;
   }

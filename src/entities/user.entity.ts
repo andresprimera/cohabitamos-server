@@ -3,6 +3,15 @@ import { Severity } from '@typegoose/typegoose';
 import { DOC_TYPE, ROLE } from 'src/common/enums';
 import { AccountEntity } from './account.entity';
 import mongoose, { Types } from 'mongoose';
+import { CondominiumEntity } from './condominium.entity';
+
+class Permissions {
+  @prop({ ref: () => AccountEntity })
+  account: Ref<AccountEntity>;
+
+  @prop({ default: [] })
+  condominiums: Ref<CondominiumEntity>[] | [];
+}
 
 @modelOptions({
   schemaOptions: { collection: 'users', timestamps: true },
@@ -11,22 +20,23 @@ import mongoose, { Types } from 'mongoose';
 export class UserEntity {
   _id: mongoose.Types.ObjectId;
 
-  @prop({
-    required: true,
-  })
+  @prop({ required: true })
   uid: string;
+
   @prop({ required: true })
   firstName: string;
+
   @prop({ required: true })
   lastName: string;
+
   @prop({
     default: true,
   })
   active: boolean;
+
   @prop({ enum: ROLE, default: ROLE.USER })
   role: ROLE;
-  @prop({ ref: () => AccountEntity, default: null })
-  account: Ref<AccountEntity> | null;
+
   @prop({
     trim: true,
     lowercase: true,
@@ -34,16 +44,21 @@ export class UserEntity {
     unique: true,
   })
   email: string;
+
   @prop({
     default: [],
   })
   phone: string[] | [];
+
   @prop({ default: '' })
   whatsapp: string;
+
   @prop({ enum: DOC_TYPE, default: DOC_TYPE.UNASSIGNED })
   docType: DOC_TYPE;
+
   @prop({ default: '' })
   docNumber?: string;
+
   @prop({ default: '' })
   nationality?: string;
 }
@@ -59,4 +74,7 @@ export class ShortUserEntity {
 
   @prop({ enum: ROLE, default: ROLE.USER })
   role: ROLE;
+
+  @prop({ default: null })
+  permissions: Permissions | null;
 }
