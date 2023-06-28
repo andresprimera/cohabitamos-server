@@ -19,8 +19,6 @@ import { UserEntity } from 'src/entities/user.entity';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { RequirementsLogService } from '../requirements-log/requirements-log.service';
-import { Record } from 'src/entities/requirements-log.entity';
-import { RecordDto } from '../requirements-log/dto/create-requirements-log.dto';
 
 @Injectable()
 export class RequirementsService {
@@ -158,7 +156,7 @@ export class RequirementsService {
     _id: Types.ObjectId,
     updateRequirementDto: UpdateRequirementDto,
   ) {
-    const { operator, message } = updateRequirementDto;
+    const { operator, message, status } = updateRequirementDto;
 
     const requirement = await this.requirementRepository
       .findOne({ _id })
@@ -167,7 +165,7 @@ export class RequirementsService {
         throw new BadRequestException(error.message);
       });
 
-    if (requirement?.status === updateRequirementDto.status) {
+    if (requirement?.status === status) {
       throw new BadRequestException(
         'El estatus a actualizar debe ser diferente al actual',
       );
@@ -190,7 +188,7 @@ export class RequirementsService {
     const response = await this.requirementRepository
       .findOneAndUpdate(
         { _id },
-        { status: updateRequirementDto.status },
+        { status },
         {
           new: true,
         },

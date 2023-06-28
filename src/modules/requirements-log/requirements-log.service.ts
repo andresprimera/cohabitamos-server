@@ -67,6 +67,9 @@ export class RequirementsLogService {
       {
         $match: { requirementId },
       },
+      {
+        $sort: { createdAt: -1 },
+      },
     ]);
 
     return { logs };
