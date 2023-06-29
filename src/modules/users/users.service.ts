@@ -14,6 +14,7 @@ import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { UnitsService } from '../units/units.service';
 import { Firebase } from 'src/providers/firebase';
 import { AccountsService } from '../accounts/accounts.service';
+import { error } from 'console';
 
 @Injectable()
 export class UsersService {
@@ -39,13 +40,18 @@ export class UsersService {
     }
 
     const auth = this.firebase.getAuth();
-    const userRecord = await auth.createUser({
-      email: createUserDto.email,
-      emailVerified: true,
-      password: 'qwerty',
-      displayName: `${createUserDto.firstName} ${createUserDto.lastName} `,
-      disabled: false,
-    });
+    const userRecord = await auth
+      .createUser({
+        email: createUserDto.email,
+        emailVerified: true,
+        password: 'qwerty',
+        displayName: `${createUserDto.firstName} ${createUserDto.lastName} `,
+        disabled: false,
+      })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
 
     const newUser = await this.userRepository
       .create({ ...createUserDto, uid: userRecord.uid })

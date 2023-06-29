@@ -28,6 +28,7 @@ export class authMiddleware implements NestMiddleware {
     }
 
     const decodedToken = await auth.verifyIdToken(token).catch((error) => {
+      
       return error;
     });
 
