@@ -20,6 +20,14 @@ import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { RequirementsLogService } from '../requirements-log/requirements-log.service';
 
+type MetricsResponse = {
+  totalRequirements: number;
+  requirementsByType: {
+    count: number;
+    requirementType: string;
+  }[];
+};
+
 @Injectable()
 export class RequirementsService {
   constructor(
@@ -214,5 +222,52 @@ export class RequirementsService {
         Logger.error(error);
         throw new BadRequestException(error.message);
       });
+  }
+
+  async getMetrics({
+    from,
+    until,
+    condominiumId,
+  }: {
+    from: Date;
+    until: Date;
+    condominiumId: Types.ObjectId;
+  }) {
+    const metrics = await this.requirementRepository.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: from,
+            $lte: until,
+          },
+          'condominium._id': condominiumId,
+        },
+      },
+      {
+        $group: {
+          _id: '$requirementType',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          requirementsByType: {
+            $push: {
+              requirementType: '$_id',
+              count: '$count',
+            },
+          },
+          totalRequirementsByType: { $sum: '$count' },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+    ]);
+
+    return metrics;
   }
 }

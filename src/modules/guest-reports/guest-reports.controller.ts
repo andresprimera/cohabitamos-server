@@ -50,11 +50,6 @@ export class GuestReportsController {
     );
   }
 
-  @Get(':_id')
-  findOne(@ConvertToObjectId() _id: Types.ObjectId) {
-    return this.guestReportsService.findOne(_id);
-  }
-
   @Patch(':_id')
   update(
     @ConvertToObjectId() _id: Types.ObjectId,

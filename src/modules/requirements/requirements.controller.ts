@@ -37,7 +37,14 @@ export class RequirementsController {
       requirementFiltersDto,
     );
   }
-
+  @Get('metrics')
+  getMetrics(@Req() req: any) {
+    return this.requirementsService.getMetrics({
+      from: new Date('2023/06/01'),
+      until: new Date('2023/06/29'),
+      condominiumId: new Types.ObjectId('64866e8c8a3d6771789e490d'),
+    });
+  }
   @Get(':_id')
   findOne(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.requirementsService.findOne(_id);
