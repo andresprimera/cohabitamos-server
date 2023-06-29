@@ -1,6 +1,9 @@
 import { modelOptions, prop, Ref } from '@typegoose/typegoose';
 import { UserEntity } from './user.entity';
 
+type NewType = {
+  collection: string;
+};
 export enum StatsEnum {
   ACTIVE = 'Activo',
   SUSPENDED = 'Suspendido',

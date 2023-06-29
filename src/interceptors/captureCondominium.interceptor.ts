@@ -14,6 +14,8 @@ export class CondominiumInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const requestCondominium = request.headers['requestcondominium'];
 
+    console.log('this is running');
+
     if (!requestCondominium)
       throw new BadRequestException('requestcondominium missing from header');
 

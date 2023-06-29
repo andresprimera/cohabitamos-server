@@ -29,5 +29,7 @@ export class RequirementEntity {
   @prop({ enum: REQUIREMENT_STATE, default: REQUIREMENT_STATE.OPEN })
   status: string;
 
+  createdAt?: Date;
+
   updatedAt?: Date;
 }
