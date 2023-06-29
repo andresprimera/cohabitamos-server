@@ -44,7 +44,7 @@ export class UsersService {
       .createUser({
         email: createUserDto.email,
         emailVerified: true,
-        password: 'qwerty',
+        password: createUserDto?.password || 'qwerty',
         displayName: `${createUserDto.firstName} ${createUserDto.lastName} `,
         disabled: false,
       })
