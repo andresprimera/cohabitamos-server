@@ -258,16 +258,22 @@ export class RequirementsService {
               count: '$count',
             },
           },
-          totalRequirementsByType: { $sum: '$count' },
-        },
-      },
-      {
-        $sort: {
-          count: -1,
+          totalRequirements: { $sum: '$count' },
         },
       },
     ]);
 
-    return metrics;
+    if (metrics.length !== 0) {
+      metrics[0].requirementsByType = metrics[0].requirementsByType.map(
+        (requirement: any, index: number) => ({
+          ...requirement,
+          index: index + 1,
+        }),
+      );
+    }
+
+    Logger.log({ metrics });
+
+    return metrics[0] || [];
   }
 }

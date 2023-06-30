@@ -26,4 +26,14 @@ export class OptionsEntity {
     default: ['Propietario', 'Arrendatario', 'Residente', 'Visitante'],
   })
   USER_CONDITIONS: string[];
+
+  @prop({
+    default: [
+      'Cédula de Ciudadanía',
+      'Cédula de Extranjería',
+      'Pasaporte',
+      'Permiso Especial',
+    ],
+  })
+  DOCUMENT_TYPES: string[];
 }

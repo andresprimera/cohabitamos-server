@@ -15,6 +15,7 @@ import { UpdateGuestReportDto } from './dto/update-guest-report.dto';
 import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
 import { Types } from 'mongoose';
 import { ConvertToObjectId } from 'src/decorators/convert-to-objectId.decorator';
+import { utils } from 'utils';
 
 @Controller('guest-reports')
 export class GuestReportsController {
@@ -31,15 +32,7 @@ export class GuestReportsController {
     @Param('requestCondominium') requestCondominium: Types.ObjectId,
     @Param('startingDate') startingDate: string,
   ) {
-    const parsedStartingDate = new Date(startingDate);
-
-    if (isNaN(parsedStartingDate.getTime())) {
-      throw new BadRequestException('Invalid date format.');
-    }
-
-    const adjustedDate = new Date(
-      parsedStartingDate.getTime() + 5 * 60 * 60000,
-    );
+    const adjustedDate = utils.prepareSearchDates(startingDate);
 
     const endDate = new Date(adjustedDate.getTime() + 27 * 24 * 60 * 60 * 1000);
 

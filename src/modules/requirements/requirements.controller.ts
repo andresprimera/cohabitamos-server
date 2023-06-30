@@ -16,6 +16,7 @@ import { ConvertToObjectId } from 'src/decorators/convert-to-objectId.decorator'
 import { Types } from 'mongoose';
 import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
 import { RequirementFiltersDto } from './dto/requirement-filter.dto';
+import { utils } from 'utils';
 
 @Controller('requirements')
 export class RequirementsController {
@@ -37,12 +38,21 @@ export class RequirementsController {
       requirementFiltersDto,
     );
   }
-  @Get('metrics')
-  getMetrics(@Req() req: any) {
+
+  @UseInterceptors(CondominiumInterceptor)
+  @Get('metrics/:from/:until')
+  getMetrics(
+    @Param('requestCondominium') requestCondominium: Types.ObjectId,
+    @Param('from') from: string,
+    @Param('until') until: string,
+  ) {
+    const adjustedFrom = utils.prepareSearchDates(from);
+    const adjustedUntil = utils.prepareSearchDates(until);
+
     return this.requirementsService.getMetrics({
-      from: new Date('2023/06/01'),
-      until: new Date('2023/06/29'),
-      condominiumId: new Types.ObjectId('64866e8c8a3d6771789e490d'),
+      from: adjustedFrom,
+      until: adjustedUntil,
+      condominiumId: requestCondominium,
     });
   }
   @Get(':_id')
