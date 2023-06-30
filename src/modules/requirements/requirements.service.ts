@@ -272,8 +272,6 @@ export class RequirementsService {
       );
     }
 
-    Logger.log({ metrics });
-
     return metrics[0] || [];
   }
 }

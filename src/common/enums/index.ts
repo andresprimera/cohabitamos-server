@@ -29,7 +29,6 @@ export enum USER_CONDITION {
   OWNER = 'Propietario',
   TENANT = 'Arrendatario',
   RESIDENT = 'Residente',
-  VISITOR = 'Visitante',
 }
 
 export enum REQUIREMENT_STATE {
@@ -37,4 +36,12 @@ export enum REQUIREMENT_STATE {
   CLOSED = 'Cerrado',
   IN_PROGRESS = 'En curso',
   ON_HOLD = 'Esperando respuesta',
+}
+
+export enum VISITOR_CONDITION {
+  MAIN_GUEST = 'Responsable',
+  AUTHORIZED = 'Autorizado',
+  HOME_ASSISTANT = 'Asistente de hogar',
+  RELATIVE = 'Familiar / Amigo',
+  PROVIDER = 'Proveedor',
 }

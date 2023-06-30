@@ -23,6 +23,7 @@ import { OptionsModule } from './modules/options/options.module';
 import { authMiddleware } from './middlewares/auth.middleware';
 import { RequirementsLogModule } from './modules/requirements-log/requirements-log.module';
 import { Firebase } from './providers/firebase';
+import { VisitorsModule } from './modules/visitors/visitors.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { Firebase } from './providers/firebase';
     AuthModule,
     OptionsModule,
     RequirementsLogModule,
+    VisitorsModule,
   ],
   controllers: [AppController],
   providers: [AppService, Firebase],
@@ -69,6 +71,7 @@ export class AppModule implements NestModule {
         { path: 'options', method: RequestMethod.GET },
         { path: 'pets/get-by-name/name', method: RequestMethod.GET },
         { path: 'vehicles/get-by-plate/plate', method: RequestMethod.GET },
+        { path: 'visitors', method: RequestMethod.POST },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
