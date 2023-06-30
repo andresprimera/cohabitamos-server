@@ -3,7 +3,6 @@ import { CreateVisitorDto } from './dto/create-visitor.dto';
 import { UpdateVisitorDto } from './dto/update-visitor.dto';
 import { VisitorsEntity } from 'src/entities/visitors.entity';
 import { ReturnModelType } from '@typegoose/typegoose';
-import { Condominium } from 'gatewaySchemas';
 import { CondominiumsService } from '../condominiums/condominiums.service';
 import { InjectModel } from 'nestjs-typegoose';
 import { Types } from 'mongoose';
