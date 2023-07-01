@@ -1,14 +1,6 @@
 const configuration = () => ({
-  PORT: parseInt(process.env.PORT as string, 10) || 4000,
+  PORT: parseInt(process.env.PORT as string, 10) || 8080,
   MONGO_CONNECTION_URL: process.env.MONGO_CONNECTION_URL,
-  JWT_SECRET: process.env.JWT_SECRET,
-  FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
-  FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
-  FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
-  FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
-  FIREBASE_MESSANGIN_SERVER_ID: process.env.FIREBASE_MESSANGIN_SERVER_ID,
-  FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
-  FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID,
 });
 
 export default configuration;
