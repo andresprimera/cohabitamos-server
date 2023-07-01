@@ -17,7 +17,7 @@ export class authMiddleware implements NestMiddleware {
   async use(req: any, res: any, next: () => void) {
     const auth = this.firebase.getAuth();
 
-    Logger.log('this middleware is running for some reason');
+    console.log('this middleware is running for some reason');
     if (!req.headers?.authorization) {
       throw new UnauthorizedException('No token provided');
     }
@@ -28,13 +28,13 @@ export class authMiddleware implements NestMiddleware {
       throw new UnauthorizedException('Incorrect token type');
     }
 
-    Logger.log('token is: ' + token);
+    console.log('token is: ' + token);
 
     const decodedToken = await auth.verifyIdToken(token).catch((error) => {
       return error;
     });
 
-    Logger.log('decoded token is: ', { decodedToken });
+    console.log('decoded token is: ', { decodedToken });
 
     if (!decodedToken?.uid) {
       throw new UnauthorizedException('token could not be verified');
