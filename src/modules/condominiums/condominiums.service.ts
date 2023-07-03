@@ -9,8 +9,10 @@ import { UpdateCondominiumDto } from './dto/update-condominium.dto';
 import { CondominiumEntity } from 'src/entities/condominium.entity';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nestjs-typegoose';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { UnitsService } from '../units/units.service';
+import { OptionsService } from '../options/options.service';
+import { RequirementTypesService } from '../requirement-types/requirement-types.service';
 
 @Injectable()
 export class CondominiumsService {
@@ -21,15 +23,32 @@ export class CondominiumsService {
     >,
 
     private readonly unitsService: UnitsService,
+    private readonly optionsService: OptionsService,
+    private readonly requirementsTypeService: RequirementTypesService,
   ) {}
 
   async create(createCondominiumDto: CreateCondominiumDto) {
-    return await this.condominiumRepository
+    const condominium = await this.condominiumRepository
       .create(createCondominiumDto)
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
       });
+
+    const data = await this.optionsService.findAll();
+
+    const defaultReqTypes = data[0].DEFAULT_REQUIREMENTS_TYPES;
+
+    defaultReqTypes.map(async (type) => {
+      await this.requirementsTypeService
+        .create({ value: type, condominium: condominium._id })
+        .catch((error) => {
+          Logger.error(error);
+          throw new BadRequestException(error.message);
+        });
+    });
+
+    return condominium;
   }
 
   async findAll() {

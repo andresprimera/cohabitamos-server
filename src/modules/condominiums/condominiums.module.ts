@@ -4,9 +4,16 @@ import { CondominiumsController } from './condominiums.controller';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { CondominiumEntity } from 'src/entities/condominium.entity';
 import { UnitsModule } from '../units/units.module';
+import { OptionsModule } from '../options/options.module';
+import { RequirementTypesModule } from '../requirement-types/requirement-types.module';
 
 @Module({
-  imports: [UnitsModule, TypegooseModule.forFeature([CondominiumEntity])],
+  imports: [
+    UnitsModule,
+    OptionsModule,
+    RequirementTypesModule,
+    TypegooseModule.forFeature([CondominiumEntity]),
+  ],
   controllers: [CondominiumsController],
   providers: [CondominiumsService],
   exports: [CondominiumsService],

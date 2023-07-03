@@ -36,4 +36,18 @@ export class OptionsEntity {
     ],
   })
   DOCUMENT_TYPES: string[];
+
+  @prop({
+    default: [
+      'Problema con cuenta de cobro',
+      'Novedad en áreas comunes',
+      'Novedad en parqueadero',
+      'Novedad con mascota',
+      'Novedad personal de servicios generales',
+      'Novedad con vigilancia',
+      'Novedad con correspondencia',
+      'Problema de convivencia',
+    ],
+  })
+  DEFAULT_REQUIREMENTS_TYPES: string[];
 }

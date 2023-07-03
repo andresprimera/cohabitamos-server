@@ -31,6 +31,8 @@ export class authMiddleware implements NestMiddleware {
       return error;
     });
 
+    console.log({ decodedToken });
+
     if (!decodedToken?.uid) {
       throw new UnauthorizedException('token could not be verified');
     }

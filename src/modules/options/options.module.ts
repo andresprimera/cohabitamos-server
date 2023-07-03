@@ -8,5 +8,6 @@ import { OptionsEntity } from 'src/entities/options.entity';
   imports: [TypegooseModule.forFeature([OptionsEntity])],
   controllers: [OptionsController],
   providers: [OptionsService],
+  exports: [OptionsService],
 })
 export class OptionsModule {}
