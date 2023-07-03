@@ -7,6 +7,7 @@ import { CondominiumsService } from '../condominiums/condominiums.service';
 import { InjectModel } from 'nestjs-typegoose';
 import { Types } from 'mongoose';
 import { UnitsService } from '../units/units.service';
+import { getModelForClass } from '@typegoose/typegoose';
 
 @Injectable()
 export class VisitorsService {
@@ -17,46 +18,39 @@ export class VisitorsService {
     private readonly unitRepository: UnitsService,
   ) {}
 
-  // async create(createVisitorDto: CreateVisitorDto) {
-  //   const unit = await this.unitRepository.findOne(
-  //     new Types.ObjectId(createVisitorDto.unit),
-  //   );
+  async create(createVisitorDto: CreateVisitorDto) {
+    const unit = await this.unitRepository.findOne(
+      new Types.ObjectId(createVisitorDto.unit),
+    );
 
-  //   const condominium = await this.condominiumRepository.findOne(
-  //     unit.condominium as Types.ObjectId,
-  //   );
+    const condominium = await this.condominiumRepository.findOne(
+      unit.condominium as Types.ObjectId,
+    );
 
-  //   const visitors = createVisitorDto.visitors.map((visitor) => {
-  //     // return new VisitorsEntity().getObject(
-  //     //   visitor,
-  //     //   createVisitorDto.unit,
-  //     //   condominium._id,
-  //     // );
+    const visitorModel = getModelForClass(VisitorsEntity);
 
-  //     const object = new VisitorsEntity();
+    const visitors = createVisitorDto.visitors.map((visitor) => {
+      const newVisitor = new visitorModel();
+      newVisitor.nationality = visitor.nationality;
+      newVisitor.docType = visitor.docType;
+      newVisitor.docNumber = visitor.docNumber;
+      newVisitor.condition = visitor.condition;
+      newVisitor.firstName = visitor.firstName;
+      newVisitor.lastName = visitor.lastName;
+      newVisitor.email = visitor.email;
+      newVisitor.phone = visitor.phone;
+      newVisitor.whatsapp = visitor.whatsapp;
+      newVisitor.unit = unit._id;
+      newVisitor.condominium = condominium._id;
+      newVisitor.guestReportId = new Types.ObjectId(
+        createVisitorDto.guestReportId,
+      );
 
-  //     object.guestReportId = new Types.ObjectId(visitor.guestReportId);
-  //     object.firstName = visitor.firstName;
-  //     object.lastName = visitor.lastName;
-  //     object.email = visitor.email;
-  //     object.phone = visitor.phone;
-  //     object.whatsapp = visitor.whatsapp;
-  //     object.nationality = visitor.nationality;
-  //     object.docType = visitor.docType;
-  //     object.docNumber = visitor.docNumber;
-  //     object.condition = visitor.condition;
-  //     object.unit = createVisitorDto.unit;
-  //     object.condominium = condominium._id;
+      return newVisitor;
+    });
 
-  //     return object;
-  //   });
-
-  //   const response = await this.visitorRepository.create(visitors);
-
-  //   console.log({ response });
-
-  //   return response;
-  // }
+    return await this.visitorRepository.bulkSave(visitors);
+  }
 
   findAll() {
     return `This action returns all visitors`;

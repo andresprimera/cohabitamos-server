@@ -4,6 +4,7 @@ import { GuestReportEntity } from './guest-report.entity';
 import { DOC_TYPE, VISITOR_CONDITION } from 'src/common/enums';
 import { CondominiumEntity } from './condominium.entity';
 import { Types } from 'mongoose';
+import { Visitor } from 'src/modules/visitors/dto/create-visitor.dto';
 
 @modelOptions({
   schemaOptions: { collection: 'visitors', timestamps: true },
@@ -44,25 +45,4 @@ export class VisitorsEntity {
 
   @prop({ ref: () => CondominiumEntity })
   condominium: Ref<CondominiumEntity>;
-
-  getObject(
-    visitor: VisitorsEntity,
-    unitId: Types.ObjectId,
-    condominiumId: Types.ObjectId,
-  ) {
-    this.guestReportId = visitor.guestReportId;
-    this.firstName = visitor.firstName;
-    this.lastName = visitor.lastName;
-    this.email = visitor.email;
-    this.phone = visitor.phone;
-    this.whatsapp = visitor.whatsapp;
-    this.nationality = visitor.nationality;
-    this.docType = visitor.docType;
-    this.docNumber = visitor.docNumber;
-    this.condition = visitor.condition;
-    this.unit = unitId;
-    this.condominium = condominiumId;
-
-    return this;
-  }
 }

@@ -71,6 +71,7 @@ export class AppModule implements NestModule {
         { path: 'options', method: RequestMethod.GET },
         { path: 'pets/get-by-name/name', method: RequestMethod.GET },
         { path: 'vehicles/get-by-plate/plate', method: RequestMethod.GET },
+        { path: 'visitors', method: RequestMethod.POST },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }

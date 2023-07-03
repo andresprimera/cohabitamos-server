@@ -15,10 +15,10 @@ import { UpdateVisitorDto } from './dto/update-visitor.dto';
 export class VisitorsController {
   constructor(private readonly visitorsService: VisitorsService) {}
 
-  // @Post()
-  // create(@Body() createVisitorDto: CreateVisitorDto) {
-  //   return this.visitorsService.create(createVisitorDto);
-  // }
+  @Post()
+  create(@Body() createVisitorDto: CreateVisitorDto) {
+    return this.visitorsService.create(createVisitorDto);
+  }
 
   @Get()
   findAll() {
