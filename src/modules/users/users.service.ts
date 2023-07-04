@@ -30,7 +30,10 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     let unit = null;
 
-    if (createUserDto.role !== 'administrador') {
+    if (
+      createUserDto.role !== 'administrador' &&
+      createUserDto.role !== 'superadmin'
+    ) {
       unit = this.unitService.findOne(createUserDto.unit);
       if (!unit) {
         throw new NotFoundException(
@@ -60,21 +63,23 @@ export class UsersService {
         throw new BadRequestException(error.message);
       });
 
-    if (unit) {
-      await this.usersByUnitService.create({
-        unit: createUserDto.unit,
-        user: newUser._id,
-        condition: createUserDto.condition,
-      });
-    } else {
-      await this.accountService.create({
-        owner: newUser._id,
-        startingDate: new Date(),
-        nextBillingDate: new Date(
-          new Date().getTime() + 30 * 24 * 60 * 60 * 1000,
-        ),
-        status: 'Activo',
-      });
+    if (createUserDto.role !== 'superadmin') {
+      if (unit) {
+        await this.usersByUnitService.create({
+          unit: createUserDto.unit,
+          user: newUser._id,
+          condition: createUserDto.condition,
+        });
+      } else {
+        await this.accountService.create({
+          owner: newUser._id,
+          startingDate: new Date(),
+          nextBillingDate: new Date(
+            new Date().getTime() + 30 * 24 * 60 * 60 * 1000,
+          ),
+          status: 'Activo',
+        });
+      }
     }
 
     return newUser;

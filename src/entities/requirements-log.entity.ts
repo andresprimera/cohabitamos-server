@@ -1,4 +1,10 @@
-import { Ref, modelOptions, mongoose, prop } from '@typegoose/typegoose';
+import {
+  Ref,
+  Severity,
+  modelOptions,
+  mongoose,
+  prop,
+} from '@typegoose/typegoose';
 import { RequirementEntity } from './requirement.entity';
 import { ShortUserEntity } from './user.entity';
 
@@ -11,6 +17,7 @@ export interface Record {
 
 @modelOptions({
   schemaOptions: { collection: 'requirements_logs', timestamps: true },
+  options: { allowMixed: Severity.ALLOW },
 })
 export class RequirementsLogEntity {
   _id: mongoose.Types.ObjectId;

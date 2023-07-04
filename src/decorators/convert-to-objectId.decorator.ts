@@ -11,14 +11,12 @@ import { Types } from 'mongoose';
 export const ConvertToObjectId = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    console.trace('convertToObjectId running =>', request.params._id);
     return new Types.ObjectId(request.params._id);
   },
 );
 
 export const ConvertParamToObjectId = createParamDecorator(
   (data: string[], ctx: ExecutionContext) => {
-    console.log('ConvertParamToObjectId running');
     const request = ctx.switchToHttp().getRequest();
     const params = request.body;
 

@@ -1,16 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 import {
   ConvertParamToObjectId,
   ConvertToObjectId,
@@ -32,9 +24,9 @@ export class AccountsController {
     return this.accountsService.findAll();
   }
 
-  @Get(':_id')
-  findOne(@ConvertToObjectId() _id: Types.ObjectId) {
-    return this.accountsService.findOne(_id);
+  @Get(':owner')
+  findOne(@ConvertToObjectId() owner: Types.ObjectId) {
+    return this.accountsService.findOne(owner);
   }
 
   @Patch(':_id')

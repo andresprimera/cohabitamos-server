@@ -1,7 +1,7 @@
 import { modelOptions, prop, Ref } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
 import { GuestReportEntity } from './guest-report.entity';
-import { DOC_TYPE, VISITOR_CONDITION } from 'src/common/enums';
+import { DOC_TYPE, VISITORS_CONDITION } from 'src/common/enums';
 import { CondominiumEntity } from './condominium.entity';
 import { Types } from 'mongoose';
 import { Visitor } from 'src/modules/visitors/dto/create-visitor.dto';
@@ -37,7 +37,7 @@ export class VisitorsEntity {
   @prop({})
   docNumber?: string;
 
-  @prop({ enum: VISITOR_CONDITION, default: VISITOR_CONDITION.MAIN_GUEST })
+  @prop({ enum: VISITORS_CONDITION, default: VISITORS_CONDITION.MAIN_GUEST })
   condition: string;
 
   @prop({ ref: () => UnitEntity })

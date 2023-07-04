@@ -34,16 +34,18 @@ export class AccountsService {
     });
   }
 
-  async findOne(_id: Types.ObjectId) {
+  async findOne(owner: Types.ObjectId) {
     const response = await this.accountRepository
-      .findOne({ _id })
+      .findOne({ owner })
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
       });
 
     if (!response) {
-      throw new NotFoundException('No account was found for the provided _id');
+      throw new NotFoundException(
+        'No account was found for the provided owner id',
+      );
     }
 
     return response;

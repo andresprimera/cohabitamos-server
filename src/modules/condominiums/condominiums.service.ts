@@ -13,6 +13,8 @@ import { Types } from 'mongoose';
 import { UnitsService } from '../units/units.service';
 import { OptionsService } from '../options/options.service';
 import { RequirementTypesService } from '../requirement-types/requirement-types.service';
+import { UserEntity } from 'src/entities/user.entity';
+import { AccountsService } from '../accounts/accounts.service';
 
 @Injectable()
 export class CondominiumsService {
@@ -25,6 +27,7 @@ export class CondominiumsService {
     private readonly unitsService: UnitsService,
     private readonly optionsService: OptionsService,
     private readonly requirementsTypeService: RequirementTypesService,
+    private readonly accountService: AccountsService,
   ) {}
 
   async create(createCondominiumDto: CreateCondominiumDto) {
@@ -51,12 +54,20 @@ export class CondominiumsService {
     return condominium;
   }
 
-  async findAll() {
-    //TODO: Pagination
-    return await this.condominiumRepository.find().catch((error) => {
-      Logger.error(error);
-      throw new BadRequestException(error.message);
-    });
+  async findAll(operator: UserEntity) {
+    const account = await this.accountService
+      .findOne(operator._id)
+      .catch((error) => {
+        Logger.log(error);
+        throw new NotFoundException(error.message);
+      });
+
+    return await this.condominiumRepository
+      .find({ account: account._id })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
   }
 
   async findOne(_id: Types.ObjectId) {

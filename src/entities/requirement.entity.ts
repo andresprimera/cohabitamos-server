@@ -1,6 +1,6 @@
 import { modelOptions, prop } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
-import { UserEntity } from './user.entity';
+import { ShortUserEntity } from './user.entity';
 import { CondominiumEntity } from './condominium.entity';
 import { REQUIREMENT_STATE } from 'src/common/enums';
 import { Types } from 'mongoose';
@@ -21,7 +21,7 @@ export class RequirementEntity {
   unit: UnitEntity;
 
   @prop({ required: true })
-  user: UserEntity;
+  user: ShortUserEntity;
 
   @prop({ required: true })
   condominium: CondominiumEntity;

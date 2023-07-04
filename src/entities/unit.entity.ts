@@ -2,12 +2,7 @@ import { Ref, Severity, modelOptions, prop } from '@typegoose/typegoose';
 import { CondominiumEntity } from './condominium.entity';
 import { PetEntity } from './pet.entity';
 import mongoose from 'mongoose';
-
-enum unitTypeEnum {
-  APT = 'Apto',
-  HOUSE = 'Casa',
-  BUSINESS = 'Local',
-}
+import { UNIT_TYPES } from 'src/common/enums';
 
 @modelOptions({
   schemaOptions: { collection: 'units', timestamps: true },
@@ -19,7 +14,7 @@ export class UnitEntity {
   @prop({})
   number: string;
 
-  @prop({ enum: unitTypeEnum, default: unitTypeEnum.APT })
+  @prop({ enum: UNIT_TYPES, default: UNIT_TYPES.APT })
   type: string;
 
   @prop({})

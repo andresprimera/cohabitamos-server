@@ -20,14 +20,6 @@ import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { RequirementsLogService } from '../requirements-log/requirements-log.service';
 
-type MetricsResponse = {
-  totalRequirements: number;
-  requirementsByType: {
-    count: number;
-    requirementType: string;
-  }[];
-};
-
 @Injectable()
 export class RequirementsService {
   constructor(

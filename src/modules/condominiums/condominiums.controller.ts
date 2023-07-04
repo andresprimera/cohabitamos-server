@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  Req,
 } from '@nestjs/common';
 import { CondominiumsService } from './condominiums.service';
 import { CreateCondominiumDto } from './dto/create-condominium.dto';
@@ -16,6 +17,8 @@ import {
   ConvertToObjectId,
 } from 'src/decorators/convert-to-objectId.decorator';
 import { Types } from 'mongoose';
+import { UserEntity } from 'src/entities/user.entity';
+import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
 
 @Controller('condominiums')
 export class CondominiumsController {
@@ -29,9 +32,10 @@ export class CondominiumsController {
     return this.condominiumsService.create(createCondominiumDto);
   }
 
+  @UseInterceptors(GetUserInterceptor)
   @Get()
-  findAll() {
-    return this.condominiumsService.findAll();
+  findAll(@Param('operator') operator: UserEntity) {
+    return this.condominiumsService.findAll(operator);
   }
 
   @Get(':_id')
