@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateVisitorDto } from './dto/create-visitor.dto';
+import { CreateVisitorDto } from '../../common/dtos/create-visitor.dto';
 import { UpdateVisitorDto } from './dto/update-visitor.dto';
 import { VisitorsEntity } from 'src/entities/visitors.entity';
 import { ReturnModelType } from '@typegoose/typegoose';
@@ -42,9 +42,7 @@ export class VisitorsService {
       newVisitor.whatsapp = visitor.whatsapp;
       newVisitor.unit = unit._id;
       newVisitor.condominium = condominium._id;
-      newVisitor.guestReportId = new Types.ObjectId(
-        createVisitorDto.guestReportId,
-      );
+      newVisitor.guestReportId = createVisitorDto.guestReportId;
 
       return newVisitor;
     });

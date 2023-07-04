@@ -17,6 +17,8 @@ import { Types } from 'mongoose';
 import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
 import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { utils } from 'utils';
+import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
+import { UserEntity } from 'src/entities/user.entity';
 
 @Controller('requirements')
 export class RequirementsController {
@@ -60,12 +62,14 @@ export class RequirementsController {
     return this.requirementsService.findOne(_id);
   }
 
+  @UseInterceptors(GetUserInterceptor)
   @Patch(':_id')
   update(
     @ConvertToObjectId() _id: Types.ObjectId,
     @Body() updateRequirementDto: UpdateRequirementDto,
+    @Param('operator') operator: UserEntity,
   ) {
-    return this.requirementsService.update(_id, updateRequirementDto);
+    return this.requirementsService.update(_id, updateRequirementDto, operator);
   }
 
   @Delete(':_id')

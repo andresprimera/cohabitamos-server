@@ -4,7 +4,7 @@ import { GuestReportEntity } from './guest-report.entity';
 import { DOC_TYPE, VISITORS_CONDITION } from 'src/common/enums';
 import { CondominiumEntity } from './condominium.entity';
 import { Types } from 'mongoose';
-import { Visitor } from 'src/modules/visitors/dto/create-visitor.dto';
+import { Visitor } from 'src/common/dtos/create-visitor.dto';
 
 @modelOptions({
   schemaOptions: { collection: 'visitors', timestamps: true },

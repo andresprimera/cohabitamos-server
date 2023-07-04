@@ -21,6 +21,9 @@ import { PetsService } from '../pets/pets.service';
 import { VehiclesService } from '../vehicles/vehicles.service';
 import { VehiclesEntity } from 'src/entities/vehicle.entity';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
+import { VisitorsService } from '../visitors/visitors.service';
+import { Visitor } from '../../common/dtos/create-visitor.dto';
+import { DOC_TYPE, VISITORS_CONDITION } from 'src/common/enums';
 
 @Injectable()
 export class GuestReportsService {
@@ -35,6 +38,7 @@ export class GuestReportsService {
     private readonly petsService: PetsService,
     private readonly vehicleService: VehiclesService,
     private readonly usersByUnitsService: UsersByUnitService,
+    private readonly visitorsService: VisitorsService,
   ) {}
 
   async create(createGuestReportDto: CreateGuestReportDto) {
@@ -46,9 +50,8 @@ export class GuestReportsService {
       user: createUserDto,
       pet: createPetDto,
       vehicle: createVehicleDto,
+      visitors,
     } = createGuestReportDto;
-
-    console.log({ createGuestReportDto });
 
     if (!createUserDto) {
       throw new BadRequestException('Required field user not provided.');
@@ -68,6 +71,7 @@ export class GuestReportsService {
       );
 
     //******************* HANDLING USER  *****************************************/
+
     const { _id: userId } = createUserDto;
 
     let user: UserEntity;
@@ -77,15 +81,23 @@ export class GuestReportsService {
 
       const userByUnit = await this.usersByUnitsService.findByUserId(user._id);
       if (!userByUnit) {
-        await this.usersByUnitsService.create({
-          unit: unit._id,
-          user: user._id,
-          condition: createUserDto.condition,
-        });
+        throw new BadRequestException(
+          'Usuario no autorizado para realizar esta transacción con el apartamento seleccionado.',
+        );
+
+        //TODO: clean this
+        // await this.usersByUnitsService.create({
+        //   unit: unit._id,
+        //   user: user._id,
+        //   condition: createUserDto.condition,
+        // });
       }
     } else {
-      createUserDto.unit = unit._id;
-      user = await this.usersService.create(createUserDto);
+      throw new BadRequestException(
+        'Usuario no autorizado para realizar esta transacción.',
+      );
+      // createUserDto.unit = unit._id;
+      // user = await this.usersService.create(createUserDto);
     }
 
     //****************************************************************************/
@@ -148,7 +160,7 @@ export class GuestReportsService {
 
     //****************************************************************************/
 
-    return await this.guestReportRepository
+    const newGuestReport = await this.guestReportRepository
       .create({
         arrivalDate,
         departureDate,
@@ -163,6 +175,14 @@ export class GuestReportsService {
         Logger.error(error);
         throw new BadRequestException(error.message);
       });
+
+    await this.visitorsService.create({
+      visitors,
+      unit: unit._id,
+      guestReportId: newGuestReport._id,
+    });
+
+    return newGuestReport;
   }
 
   async findAll(

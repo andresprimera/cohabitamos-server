@@ -14,5 +14,6 @@ import { UnitsModule } from '../units/units.module';
   ],
   controllers: [VisitorsController],
   providers: [VisitorsService],
+  exports: [VisitorsService],
 })
 export class VisitorsModule {}

@@ -8,7 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { VisitorsService } from './visitors.service';
-import { CreateVisitorDto } from './dto/create-visitor.dto';
+import { CreateVisitorDto } from '../../common/dtos/create-visitor.dto';
 import { UpdateVisitorDto } from './dto/update-visitor.dto';
 
 @Controller('visitors')

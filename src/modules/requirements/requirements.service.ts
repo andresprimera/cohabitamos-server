@@ -92,9 +92,9 @@ export class RequirementsService {
 
     await this.requirementsLogsService.create({
       requirement,
-      message: 'Requerimiento creado',
+      message: `Requerimiento creado: ${description}`,
       records: [],
-      updatedBy: new Types.ObjectId(operator),
+      updatedBy: user._id,
     });
 
     return requirement;
@@ -155,8 +155,9 @@ export class RequirementsService {
   async update(
     _id: Types.ObjectId,
     updateRequirementDto: UpdateRequirementDto,
+    operator: UserEntity,
   ) {
-    const { operator, message, status } = updateRequirementDto;
+    const { message, status } = updateRequirementDto;
 
     const requirement = await this.requirementRepository
       .findOne({ _id })
@@ -182,7 +183,7 @@ export class RequirementsService {
           newValue: updateRequirementDto.status,
         },
       ],
-      updatedBy: new Types.ObjectId(operator),
+      updatedBy: operator._id,
     });
 
     const response = await this.requirementRepository
