@@ -22,8 +22,6 @@ import { VehiclesService } from '../vehicles/vehicles.service';
 import { VehiclesEntity } from 'src/entities/vehicle.entity';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { VisitorsService } from '../visitors/visitors.service';
-import { Visitor } from '../../common/dtos/create-visitor.dto';
-import { DOC_TYPE, VISITORS_CONDITION } from 'src/common/enums';
 
 @Injectable()
 export class GuestReportsService {

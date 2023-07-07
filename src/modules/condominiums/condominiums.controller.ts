@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   Req,
+  UploadedFile,
 } from '@nestjs/common';
 import { CondominiumsService } from './condominiums.service';
 import { CreateCondominiumDto } from './dto/create-condominium.dto';
@@ -19,6 +20,7 @@ import {
 import { Types } from 'mongoose';
 import { UserEntity } from 'src/entities/user.entity';
 import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('condominiums')
 export class CondominiumsController {
@@ -30,6 +32,12 @@ export class CondominiumsController {
     createCondominiumDto: CreateCondominiumDto,
   ) {
     return this.condominiumsService.create(createCondominiumDto);
+  }
+
+  @UseInterceptors(FileInterceptor('file', { dest: 'temp/' }))
+  @Post('create-by-file-upload')
+  createByFileUpload(@UploadedFile() file: any) {
+    return this.condominiumsService.createByFileUpload(file);
   }
 
   @UseInterceptors(GetUserInterceptor)

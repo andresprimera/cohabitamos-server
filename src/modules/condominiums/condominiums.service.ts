@@ -15,6 +15,12 @@ import { OptionsService } from '../options/options.service';
 import { RequirementTypesService } from '../requirement-types/requirement-types.service';
 import { UserEntity } from 'src/entities/user.entity';
 import { AccountsService } from '../accounts/accounts.service';
+import { MulterFile } from 'src/common/interfaces';
+import { Workbook } from 'exceljs';
+import { excelValidate } from 'validation/excel.validations';
+import { headers, worksheetNames } from './excelFile.definition';
+
+import { unlinkSync } from 'fs';
 
 @Injectable()
 export class CondominiumsService {
@@ -52,6 +58,12 @@ export class CondominiumsService {
     });
 
     return condominium;
+  }
+
+  async createByFileUpload(file: MulterFile) {
+    const condominiumInfo = await this.extractCondominiumData(file.path);
+
+    return { condominiumInfo };
   }
 
   async findAll(operator: UserEntity) {
@@ -135,5 +147,63 @@ export class CondominiumsService {
       });
 
     return { removedUnits, removedCondominium };
+  }
+
+  //************* HELPER FUNCTIONS  **************************************/
+
+  private async extractCondominiumData(filePath: string) {
+    const workbook = new Workbook();
+    await workbook.xlsx.readFile(filePath);
+    unlinkSync(filePath);
+
+    const errors: string[] = [];
+
+    //************** VALIDATING WORKSHEETS ********************************/
+
+    const areWorksheetsValid = excelValidate.worksheets(
+      worksheetNames,
+      workbook,
+    );
+
+    //************** VALIDATING HEADERS ********************************/
+
+    const areHeadersValid = excelValidate.headers(headers, workbook);
+
+    //************** EXTRACTING DATA ***********************************/
+
+    if (areWorksheetsValid && areHeadersValid) {
+      return worksheetNames.map((worksheetName, index) => {
+        const worksheet = workbook.getWorksheet(index + 1);
+
+        let data: any = [];
+
+        worksheet.eachRow((row: any, rowNumber: number) => {
+          if (rowNumber === 1) return; // Skipping headers
+
+          const values = row.values;
+          values.shift();
+
+          const jsonRow: any = {};
+
+          headers[index].map((header, index) => {
+            const error = excelValidate.cellTypes(
+              header,
+              values[index],
+              rowNumber,
+            );
+
+            if (error) errors.push(error);
+
+            jsonRow[header.title] = values[index];
+          });
+
+          data.push(jsonRow);
+        });
+
+        data = errors.length > 0 ? [] : data; //NOT SENDING DATA IN CASE OF ERRORS
+
+        return { [worksheetName]: { data, errors } };
+      });
+    }
   }
 }
