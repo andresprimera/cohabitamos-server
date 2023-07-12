@@ -25,9 +25,9 @@ export class VisitorsController {
     return this.visitorsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.visitorsService.findOne(+id);
+  @Get(':docNumber')
+  findOne(@Param('docNumber') id: string) {
+    return this.visitorsService.findOne(id);
   }
 
   @Patch(':id')

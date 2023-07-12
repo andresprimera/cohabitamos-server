@@ -75,11 +75,8 @@ export class GuestReportsService {
     let user: UserEntity;
 
     if (userId) {
-
-      console.log({'before user')
       user = await this.usersService.findOne(new Types.ObjectId(userId));
 
-          console.log('after user')
       const userByUnit = await this.usersByUnitsService.findByUserId(user._id);
       if (!userByUnit) {
         throw new BadRequestException(

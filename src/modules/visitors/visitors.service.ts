@@ -54,8 +54,8 @@ export class VisitorsService {
     return `This action returns all visitors`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} visitor`;
+  findOne(docNumber: string) {
+    return this.visitorRepository.findOne({ docNumber });
   }
 
   update(id: number, updateVisitorDto: UpdateVisitorDto) {
