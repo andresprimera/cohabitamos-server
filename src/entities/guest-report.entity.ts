@@ -1,6 +1,6 @@
 import { modelOptions, prop } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
-import { ShortUserEntity, UserEntity } from './user.entity';
+import { ShortUserEntity } from './user.entity';
 import { VehiclesEntity } from './vehicle.entity';
 import { PetEntity } from './pet.entity';
 import { CondominiumEntity } from './condominium.entity';

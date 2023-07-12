@@ -61,6 +61,9 @@ export class UserEntity {
 
   @prop({ default: '' })
   nationality?: string;
+
+  @prop({ default: null })
+  permissions: Permissions | null;
 }
 
 @modelOptions({ options: { allowMixed: Severity.ALLOW } })

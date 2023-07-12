@@ -51,8 +51,6 @@ export class GuestReportsService {
       visitors,
     } = createGuestReportDto;
 
-    console.log({ createGuestReportDto });
-
     if (!createUserDto) {
       throw new BadRequestException('Required field user not provided.');
     }
@@ -172,6 +170,7 @@ export class GuestReportsService {
         condominium,
       })
       .catch((error) => {
+        console.log('Here is the error');
         Logger.error(error);
         throw new BadRequestException(error.message);
       });
