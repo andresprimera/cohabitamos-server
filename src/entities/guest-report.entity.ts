@@ -1,6 +1,6 @@
 import { modelOptions, prop } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
-import { UserEntity } from './user.entity';
+import { ShortUserEntity, UserEntity } from './user.entity';
 import { VehiclesEntity } from './vehicle.entity';
 import { PetEntity } from './pet.entity';
 import { CondominiumEntity } from './condominium.entity';
@@ -22,7 +22,7 @@ export class GuestReportEntity {
   unit: UnitEntity;
 
   @prop({ required: true })
-  user: UserEntity;
+  user: ShortUserEntity;
 
   @prop({ default: null })
   pet: PetEntity;
