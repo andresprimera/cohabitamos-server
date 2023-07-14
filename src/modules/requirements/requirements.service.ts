@@ -157,7 +157,7 @@ export class RequirementsService {
     updateRequirementDto: UpdateRequirementDto,
     operator: UserEntity,
   ) {
-    const { message, status } = updateRequirementDto;
+    const { message, status, assignee } = updateRequirementDto;
 
     const requirement = await this.requirementRepository
       .findOne({ _id })
@@ -166,34 +166,53 @@ export class RequirementsService {
         throw new BadRequestException(error.message);
       });
 
-    if (requirement?.status === status) {
+    if (!assignee && requirement?.status === status) {
       throw new BadRequestException(
         'El estatus a actualizar debe ser diferente al actual',
       );
     }
 
+    if (!status && requirement?.assignee === assignee) {
+      throw new BadRequestException(
+        'El responseble a actualizar debe ser diferente al actual',
+      );
+    }
+
     await this.requirementsLogsService.create({
       requirement: requirement as RequirementEntity,
-      message: `Estatus actualizado de ${requirement?.status} a ${
-        updateRequirementDto.status
-      }${message ? ': ' + message : ''}`,
+      message: `Nueva actualización de requerimiento${
+        message ? ': ' + message : '.'
+      }`,
       records: [
-        {
-          field: 'status',
-          newValue: updateRequirementDto.status,
-        },
+        ...(status
+          ? [
+              {
+                field: 'status' as keyof RequirementEntity,
+                newValue: updateRequirementDto.status,
+              },
+            ]
+          : []),
+        ...(assignee
+          ? [
+              {
+                field: 'assignee' as keyof RequirementEntity,
+                newValue: updateRequirementDto.assignee,
+              },
+            ]
+          : []),
       ],
       updatedBy: operator._id,
     });
 
+    const updateObject = {
+      ...(status ? { status } : {}),
+      ...(assignee ? { assignee } : {}),
+    };
+
     const response = await this.requirementRepository
-      .findOneAndUpdate(
-        { _id },
-        { status },
-        {
-          new: true,
-        },
-      )
+      .findOneAndUpdate({ _id }, updateObject, {
+        new: true,
+      })
       .catch((error) => {
         Logger.log(error.message);
         throw new BadRequestException(error.message);

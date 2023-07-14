@@ -29,6 +29,9 @@ export class RequirementEntity {
   @prop({ enum: REQUIREMENT_STATE, default: REQUIREMENT_STATE.OPEN })
   status: string;
 
+  @prop({ default: null })
+  assignee: ShortUserEntity | null;
+
   createdAt?: Date;
 
   updatedAt?: Date;
