@@ -24,6 +24,7 @@ import { authMiddleware } from './middlewares/auth.middleware';
 import { RequirementsLogModule } from './modules/requirements-log/requirements-log.module';
 import { Firebase } from './providers/firebase';
 import { VisitorsModule } from './modules/visitors/visitors.module';
+import { UserRegistrationLinkModule } from './modules/user-registration-link/user-registration-link.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { VisitorsModule } from './modules/visitors/visitors.module';
     OptionsModule,
     RequirementsLogModule,
     VisitorsModule,
+    UserRegistrationLinkModule,
   ],
   controllers: [AppController],
   providers: [AppService, Firebase],
@@ -73,8 +75,16 @@ export class AppModule implements NestModule {
         { path: 'pets/get-by-name/name', method: RequestMethod.GET },
         { path: 'vehicles/get-by-plate/plate', method: RequestMethod.GET },
         {
-          path: 'users/create-by-file-upload',
+          path: 'user-registration-link/:_id',
+          method: RequestMethod.GET,
+        },
+        {
+          path: 'user-registration-link',
           method: RequestMethod.POST,
+        },
+        {
+          path: 'user-registration-link/:_id',
+          method: RequestMethod.PATCH,
         },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });

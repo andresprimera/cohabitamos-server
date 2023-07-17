@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  Req,
   UploadedFile,
 } from '@nestjs/common';
 import { CondominiumsService } from './condominiums.service';
