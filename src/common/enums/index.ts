@@ -33,13 +33,14 @@ export enum USER_CONDITION {
   OWNER = 'Propietario',
   TENANT = 'Arrendatario',
   RESIDENT = 'Residente',
+  AUTHORIZED = 'Autorizado',
 }
 
 export enum DOC_TYPE {
   CC = 'Cédula de Ciudadanía',
   CE = 'Cédula de Extranjería',
   PA = 'Pasaporte',
-  PEP = 'Permiso Especial De permanencia',
+  PEP = 'Permiso Especial de Permanencia',
   OTHER = 'Otro',
   UNASSIGNED = '',
 }

@@ -16,11 +16,9 @@ import { RequirementTypesService } from '../requirement-types/requirement-types.
 import { UserEntity } from 'src/entities/user.entity';
 import { AccountsService } from '../accounts/accounts.service';
 import { MulterFile } from 'src/common/interfaces';
-import { Workbook } from 'exceljs';
-import { excelValidate } from 'validation/excel.validations';
+import { excelUtils } from 'utils';
 import { headers, worksheetNames } from './excelFile.definition';
-
-import { unlinkSync } from 'fs';
+import { UNIT_TYPES } from 'src/common/enums';
 
 @Injectable()
 export class CondominiumsService {
@@ -60,10 +58,84 @@ export class CondominiumsService {
     return condominium;
   }
 
-  async createByFileUpload(file: MulterFile) {
-    const condominiumInfo = await this.extractCondominiumData(file.path);
+  async createByFileUpload(file: MulterFile, operator: UserEntity) {
+    const account = await this.accountService.findOne(operator._id);
 
-    return { condominiumInfo };
+    const excelInfo: any = await excelUtils.extractData(
+      file.path,
+      worksheetNames,
+      headers,
+    );
+
+    if (!excelInfo.success) {
+      return excelInfo;
+    }
+
+    const condoData = excelInfo.worksheets['DATOS DE COPROPIEDAD'].data[0];
+    const blocksData = excelInfo.worksheets['TORRES'].data;
+    const unitsData = excelInfo.worksheets['UNIDADES'].data;
+
+    //************* VALIDATE UNIT QTY BY BLOCK ***************/
+
+    const unitQtyByBlock = blocksData.reduce(
+      (total: any, unit: any) => total + unit['CANTIDAD-DE-UNIDADES'],
+      0,
+    );
+
+    if (condoData['CANTIDAD-DE-UNIDADES'] !== unitQtyByBlock) {
+      throw new BadRequestException(
+        `La suma del número de unidades reportadas en la hoja TORRE es de ${unitQtyByBlock} unidades, pero en la hoja DATOS DE COPROPIEDAD se registraron ${condoData['CANTIDAD-DE-UNIDADES']}.`,
+      );
+    }
+
+    const blocks = blocksData.map((block: any) => {
+      const unitQty = unitsData.reduce(
+        (total: number, unit: any) =>
+          String(unit['NOMBRE-TORRE']) === String(block['NOMBRE-TORRE'])
+            ? total + 1
+            : total,
+        0,
+      );
+
+      if (block['CANTIDAD-DE-UNIDADES'] !== unitQty) {
+        throw new BadRequestException(
+          `Para la torre ${block['NOMBRE-TORRE']} se registraron ${block['CANTIDAD-DE-UNIDADES']} en la pestaña TORRES pero su subieron ${unitQty} en la pestaña UNIDADES`,
+        );
+      }
+      return String(block['NOMBRE-TORRE']);
+    });
+
+    const condominium = {
+      account: account._id,
+      address: condoData['DIRECCION'],
+      unitQty: condoData['CANTIDAD-DE-UNIDADES'],
+      name: condoData['NOMBRE'],
+      email: condoData['CORREO-ADMINISTRACION'],
+      blocks: blocks,
+      nit: condoData['NIT'],
+      verificationDigit: condoData['DIGITO-VERIFICACION'],
+      receptionPhoneNumber: condoData['TELEFONO'],
+    };
+
+    const newCondominium = await this.condominiumRepository.create(condominium);
+
+    const units = unitsData.map((unit: any) => {
+      return {
+        number: unit['NUMERO'],
+        block: unit['NOMBRE-TORRE'],
+        type: unit['TIPO-UNIDAD'],
+        condominium: newCondominium._id,
+      };
+    });
+
+    await this.unitsService.createMany(units);
+
+    return {
+      message: 'Edificio creado con éxito',
+      success: true,
+      condoData,
+      unitsData,
+    };
   }
 
   async findAll(operator: UserEntity) {
@@ -147,63 +219,5 @@ export class CondominiumsService {
       });
 
     return { removedUnits, removedCondominium };
-  }
-
-  //************* HELPER FUNCTIONS  **************************************/
-
-  private async extractCondominiumData(filePath: string) {
-    const workbook = new Workbook();
-    await workbook.xlsx.readFile(filePath);
-    unlinkSync(filePath);
-
-    const errors: string[] = [];
-
-    //************** VALIDATING WORKSHEETS ********************************/
-
-    const areWorksheetsValid = excelValidate.worksheets(
-      worksheetNames,
-      workbook,
-    );
-
-    //************** VALIDATING HEADERS ********************************/
-
-    const areHeadersValid = excelValidate.headers(headers, workbook);
-
-    //************** EXTRACTING DATA ***********************************/
-
-    if (areWorksheetsValid && areHeadersValid) {
-      return worksheetNames.map((worksheetName, index) => {
-        const worksheet = workbook.getWorksheet(index + 1);
-
-        let data: any = [];
-
-        worksheet.eachRow((row: any, rowNumber: number) => {
-          if (rowNumber === 1) return; // Skipping headers
-
-          const values = row.values;
-          values.shift();
-
-          const jsonRow: any = {};
-
-          headers[index].map((header, index) => {
-            const error = excelValidate.cellTypes(
-              header,
-              values[index],
-              rowNumber,
-            );
-
-            if (error) errors.push(error);
-
-            jsonRow[header.title] = values[index];
-          });
-
-          data.push(jsonRow);
-        });
-
-        data = errors.length > 0 ? [] : data; //NOT SENDING DATA IN CASE OF ERRORS
-
-        return { [worksheetName]: { data, errors } };
-      });
-    }
   }
 }

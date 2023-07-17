@@ -11,4 +11,5 @@ export interface MulterFile {
 export interface ExcelHeader {
   title: string;
   type: string;
+  enum?: string[];
 }

@@ -20,7 +20,7 @@ class Permissions {
 export class UserEntity {
   _id: mongoose.Types.ObjectId;
 
-  @prop({ required: true })
+  @prop()
   uid: string;
 
   @prop({ required: true })

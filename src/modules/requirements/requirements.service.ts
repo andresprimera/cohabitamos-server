@@ -178,6 +178,12 @@ export class RequirementsService {
       );
     }
 
+    let assigneeUser = null;
+
+    if (assignee) {
+      assigneeUser = await this.usersService.findOne(assignee);
+    }
+
     await this.requirementsLogsService.create({
       requirement: requirement as RequirementEntity,
       message: `Nueva actualización de requerimiento${
@@ -196,7 +202,7 @@ export class RequirementsService {
           ? [
               {
                 field: 'assignee' as keyof RequirementEntity,
-                newValue: updateRequirementDto.assignee,
+                newValue: assigneeUser,
               },
             ]
           : []),
@@ -206,7 +212,7 @@ export class RequirementsService {
 
     const updateObject = {
       ...(status ? { status } : {}),
-      ...(assignee ? { assignee } : {}),
+      ...(assignee ? { assigneeUser } : {}),
     };
 
     const response = await this.requirementRepository

@@ -14,6 +14,7 @@ export class CreateUserDto {
   docNumber?: string;
   nationality?: string;
   condition: string;
-  unit: Types.ObjectId;
+  unit?: Types.ObjectId;
   password: string;
+  condominium?: Types.ObjectId;
 }

@@ -22,7 +22,8 @@ const headers: ExcelHeader[][] = [
     { title: 'NOMBRE-TORRE', type: 'string' },
     {
       title: 'TIPO-UNIDAD',
-      type: 'string',
+      type: 'enum',
+      enum: Object.values(UNIT_TYPES),
     },
     { title: 'NUMERO', type: 'string' },
   ],

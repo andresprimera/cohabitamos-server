@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { CondominiumsService } from './condominiums.service';
 import { CondominiumsController } from './condominiums.controller';
 import { TypegooseModule } from 'nestjs-typegoose';
@@ -14,7 +14,7 @@ import { AccountsModule } from '../accounts/accounts.module';
     UnitsModule,
     OptionsModule,
     RequirementTypesModule,
-    UsersModule,
+    forwardRef(() => UsersModule),
     AccountsModule,
     TypegooseModule.forFeature([CondominiumEntity]),
   ],

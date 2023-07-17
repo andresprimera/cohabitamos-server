@@ -34,10 +34,14 @@ export class CondominiumsController {
     return this.condominiumsService.create(createCondominiumDto);
   }
 
+  @UseInterceptors(GetUserInterceptor)
   @UseInterceptors(FileInterceptor('file', { dest: 'temp/' }))
   @Post('create-by-file-upload')
-  createByFileUpload(@UploadedFile() file: any) {
-    return this.condominiumsService.createByFileUpload(file);
+  createByFileUpload(
+    @UploadedFile() file: any,
+    @Param('operator') operator: UserEntity,
+  ) {
+    return this.condominiumsService.createByFileUpload(file, operator);
   }
 
   @UseInterceptors(GetUserInterceptor)
