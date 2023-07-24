@@ -29,7 +29,7 @@ export class RequirementTypesService {
       });
   }
 
-  async findAll(condominium: Types.ObjectId) {
+  async findRequirementTypesByCondominium(condominium: Types.ObjectId) {
     //TODO: pagination
     return await this.requirementTypeRepository
       .find({ condominium })

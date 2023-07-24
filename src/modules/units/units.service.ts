@@ -44,7 +44,7 @@ export class UnitsService {
     });
   }
 
-  async findAll(condominium: Types.ObjectId) {
+  async findUnitsByCondominium(condominium: Types.ObjectId) {
     const response = await this.unitRepository
       .find({ condominium })
       .catch((error) => {

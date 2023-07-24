@@ -58,11 +58,11 @@ export class CondominiumsService {
     return condominium;
   }
 
-  async createByFileUpload(file: MulterFile, operator: UserEntity) {
+  async createByFileUpload(filePath: string, operator: UserEntity) {
     const account = await this.accountService.findOne(operator._id);
 
     const excelInfo: any = await excelUtils.extractData(
-      file.path,
+      filePath,
       worksheetNames,
       headers,
     );
@@ -152,6 +152,13 @@ export class CondominiumsService {
         Logger.error(error);
         throw new BadRequestException(error.message);
       });
+  }
+
+  async findEveryCondominium() {
+    return await this.condominiumRepository.find().catch((error) => {
+      Logger.error(error);
+      throw new BadRequestException(error.message);
+    });
   }
 
   async findOne(_id: Types.ObjectId) {

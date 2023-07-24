@@ -38,6 +38,11 @@ export class UserRegistrationLinkController {
     );
   }
 
+  @Get('/get-by-unit/:_id')
+  findByUnit(@ConvertToObjectId() _id: Types.ObjectId) {
+    return this.userRegistrationLinkService.findByUnit(_id);
+  }
+
   @Get(':_id')
   findOne(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.userRegistrationLinkService.findOne(_id);
