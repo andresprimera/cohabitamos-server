@@ -121,7 +121,7 @@ export class UsersService {
   }
 
   async createByFileUpload(
-    file: MulterFile,
+    filePath: string,
     requestCondominium: Types.ObjectId,
   ) {
     const condominium = await this.condominiumService.findOne(
@@ -135,7 +135,7 @@ export class UsersService {
     }
 
     const excelInfo: any = await excelUtils.extractData(
-      file.path,
+      filePath,
       worksheetNames,
       headers,
     );
@@ -239,7 +239,6 @@ export class UsersService {
     /* VALIDATING EMAILS EXISTANCE*/
     const existingUsers = await this.findManyByEmail(usersEmails);
 
-    console.log({ existingUsers });
     createAndUpdateInfo[0].forEach((user: any, rowIndex: number) => {
       const userToCreate = existingUsers.find(
         (existingUser: any) => existingUser.email === user['EMAIL'],
@@ -359,7 +358,7 @@ export class UsersService {
     return response;
   }
 
-  async findByEmail(email: string) {
+  async findUserByEmail(email: string) {
     const response = await this.userRepository
       .aggregate([
         {

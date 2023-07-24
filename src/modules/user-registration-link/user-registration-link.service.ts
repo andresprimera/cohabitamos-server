@@ -62,6 +62,44 @@ export class UserRegistrationLinkService {
     return response;
   }
 
+  async findByUnit(_id: Types.ObjectId) {
+    const response = await this.userRegistrationLinkRepository
+      .find({
+        'unit._id': _id,
+        used: false,
+      })
+      .sort({ createdAt: -1 })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+
+    const responseObject: {
+      message: string;
+      linkObject: UserRegistrationLinkEntity | null;
+    } = {
+      message: 'No se encontraron links para la unidad indicada',
+      linkObject: null,
+    };
+
+    if (response.length > 0) {
+      const { createdAt, expirationTime } = response[0];
+
+      responseObject.message = 'Link cargado con éxito';
+      responseObject.linkObject = response[0];
+
+      if (new Date().getTime() > createdAt.getTime() + expirationTime) {
+        responseObject.message =
+          'El link ha expirado. Contacte a la administración para solicitar otro.';
+        responseObject.linkObject = null;
+      }
+
+      return responseObject;
+    }
+
+    return responseObject;
+  }
+
   async update(
     _id: Types.ObjectId,
     updateUserRegistrationLinkDto: UpdateUserRegistrationLinkDto,

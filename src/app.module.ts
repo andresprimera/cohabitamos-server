@@ -25,6 +25,8 @@ import { RequirementsLogModule } from './modules/requirements-log/requirements-l
 import { Firebase } from './providers/firebase';
 import { VisitorsModule } from './modules/visitors/visitors.module';
 import { UserRegistrationLinkModule } from './modules/user-registration-link/user-registration-link.module';
+import { ChatModule } from './modules/chat/chat.module';
+import { OpenAI } from './providers/openAi';
 
 @Module({
   imports: [
@@ -53,9 +55,10 @@ import { UserRegistrationLinkModule } from './modules/user-registration-link/use
     RequirementsLogModule,
     VisitorsModule,
     UserRegistrationLinkModule,
+    ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService, Firebase],
+  providers: [AppService, Firebase, OpenAI],
 })
 // export class AppModule {}
 export class AppModule implements NestModule {
@@ -78,14 +81,8 @@ export class AppModule implements NestModule {
           path: 'user-registration-link/:_id',
           method: RequestMethod.GET,
         },
-        {
-          path: 'user-registration-link',
-          method: RequestMethod.POST,
-        },
-        {
-          path: 'user-registration-link/:_id',
-          method: RequestMethod.PATCH,
-        },
+
+        { path: 'chat', method: RequestMethod.POST },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }

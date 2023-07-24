@@ -34,14 +34,13 @@ export class RequirementsService {
     private readonly requirementsLogsService: RequirementsLogService,
   ) {}
 
-  async create(createRequirementDto: CreateRequirementDto) {
+  async createRequest(createRequirementDto: CreateRequirementDto) {
     const {
       user: createUserDto,
       requirementType,
       unit: unitId,
       status,
       description,
-      operator,
     } = createRequirementDto || {};
 
     if (!createRequirementDto?.user) {

@@ -35,7 +35,9 @@ export class RequirementTypesController {
   @UseInterceptors(CondominiumInterceptor)
   @Get()
   findAll(@Param('requestCondominium') requestCondominium: Types.ObjectId) {
-    return this.requirementTypesService.findAll(requestCondominium);
+    return this.requirementTypesService.findRequirementTypesByCondominium(
+      requestCondominium,
+    );
   }
 
   @Get(':_id')
