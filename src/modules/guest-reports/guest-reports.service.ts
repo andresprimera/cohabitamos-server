@@ -170,7 +170,6 @@ export class GuestReportsService {
         condominium,
       })
       .catch((error) => {
-        console.log('Here is the error');
         Logger.error(error);
         throw new BadRequestException(error.message);
       });

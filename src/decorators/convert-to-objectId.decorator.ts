@@ -1,17 +1,23 @@
-import { createParamDecorator, ExecutionContext, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  createParamDecorator,
+  ExecutionContext,
+  Logger,
+} from '@nestjs/common';
 import { Types } from 'mongoose';
-
-// export const ConvertToObjectId = (paramName: string) =>
-//   createParamDecorator((data: unknown, ctx: ExecutionContext) => {
-//     const request = ctx.switchToHttp().getRequest();
-//     const paramValue = request.params[paramName];
-//     return new Types.ObjectId(paramValue);
-//   });
 
 export const ConvertToObjectId = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return new Types.ObjectId(request.params._id);
+    const _id = request.params._id;
+
+    try {
+      return new Types.ObjectId(_id);
+    } catch (error) {
+      const logger = new Logger();
+      logger.error(`${request.url}: ${_id} is not a valid ObjectId`);
+      throw new BadRequestException(`${_id} is not a valid ObjectId`);
+    }
   },
 );
 
@@ -21,7 +27,15 @@ export const ConvertParamToObjectId = createParamDecorator(
     const params = request.body;
 
     Object.keys(params).forEach((key) => {
-      if (data.includes(key)) params[key] = new Types.ObjectId(params[key]);
+      if (data.includes(key)) {
+        try {
+          params[key] = new Types.ObjectId(params[key]);
+        } catch (error) {
+          const logger = new Logger();
+          logger.error(`${key} is not a valid ObjectId`);
+          throw new BadRequestException(`${key} is not a valid ObjectId`);
+        }
+      }
     });
 
     return params;

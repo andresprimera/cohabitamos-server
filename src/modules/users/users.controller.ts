@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  Logger,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
@@ -18,10 +17,11 @@ import {
   ConvertToObjectId,
 } from 'src/decorators/convert-to-objectId.decorator';
 import { Types } from 'mongoose';
-import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
-import { UserEntity } from 'src/entities/user.entity';
-import { FileInterceptor } from '@nestjs/platform-express';
+
+import * as path from 'path';
+
 import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
+import { createWriteStream } from 'fs';
 
 @Controller('users')
 export class UsersController {
@@ -36,13 +36,22 @@ export class UsersController {
   }
 
   @UseInterceptors(CondominiumInterceptor)
-  @UseInterceptors(FileInterceptor('file', { dest: 'temp/' }))
   @Post('create-by-file-upload')
   createByFileUpload(
-    @UploadedFile() file: any,
+    // @UploadedFile() file: any,
     @Param('requestCondominium') requestCondominium: Types.ObjectId,
+    @Body() body: { file: string },
   ) {
-    return this.usersService.createByFileUpload(file, requestCondominium);
+    // Decode the base64 string to a buffer
+    const fileBuffer = Buffer.from(body.file, 'base64');
+
+    // Write the buffer to a file (you can modify the path and filename as needed)
+    const filePath = path.join(__dirname, './', 'usersFile.txt');
+
+    const writeStream = createWriteStream(filePath);
+    writeStream.write(fileBuffer);
+    writeStream.end();
+    return this.usersService.createByFileUpload(filePath, requestCondominium);
   }
 
   @Get()
@@ -57,7 +66,7 @@ export class UsersController {
 
   @Get('get-by-email/:email')
   findByEmail(@Param('email') email: string) {
-    return this.usersService.findByEmail(email);
+    return this.usersService.findUserByEmail(email);
   }
 
   @Patch(':_id')

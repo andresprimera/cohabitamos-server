@@ -26,7 +26,7 @@ export class RequirementsController {
 
   @Post()
   create(@Body() createRequirementDto: CreateRequirementDto) {
-    return this.requirementsService.create(createRequirementDto);
+    return this.requirementsService.createRequest(createRequirementDto);
   }
 
   @UseInterceptors(CondominiumInterceptor)

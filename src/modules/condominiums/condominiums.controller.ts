@@ -20,6 +20,8 @@ import { Types } from 'mongoose';
 import { UserEntity } from 'src/entities/user.entity';
 import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { createWriteStream } from 'fs';
+import * as path from 'path';
 
 @Controller('condominiums')
 export class CondominiumsController {
@@ -34,13 +36,21 @@ export class CondominiumsController {
   }
 
   @UseInterceptors(GetUserInterceptor)
-  @UseInterceptors(FileInterceptor('file', { dest: 'temp/' }))
   @Post('create-by-file-upload')
   createByFileUpload(
-    @UploadedFile() file: any,
     @Param('operator') operator: UserEntity,
+    @Body() body: { file: string },
   ) {
-    return this.condominiumsService.createByFileUpload(file, operator);
+    // Decode the base64 string to a buffer
+    const fileBuffer = Buffer.from(body.file, 'base64');
+
+    // Write the buffer to a file (you can modify the path and filename as needed)
+    const filePath = path.join(__dirname, './', 'usersFile.txt');
+
+    const writeStream = createWriteStream(filePath);
+    writeStream.write(fileBuffer);
+    writeStream.end();
+    return this.condominiumsService.createByFileUpload(filePath, operator);
   }
 
   @UseInterceptors(GetUserInterceptor)
