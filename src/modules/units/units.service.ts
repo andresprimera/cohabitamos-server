@@ -75,7 +75,6 @@ export class UnitsService {
   }
 
   async findOne(_id: Types.ObjectId) {
-    console.log({ _id });
     const response = await this.unitRepository
       .findOne({ _id })
       .catch((error) => {

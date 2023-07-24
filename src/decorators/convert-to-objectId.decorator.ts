@@ -1,4 +1,9 @@
-import { createParamDecorator, ExecutionContext, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  createParamDecorator,
+  ExecutionContext,
+  Logger,
+} from '@nestjs/common';
 import { Types } from 'mongoose';
 
 // export const ConvertToObjectId = (paramName: string) =>
@@ -11,7 +16,13 @@ import { Types } from 'mongoose';
 export const ConvertToObjectId = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return new Types.ObjectId(request.params._id);
+
+    try {
+      return new Types.ObjectId(request.params._id);
+    } catch (error) {
+      Logger.error(`${request.url}: invalid _id`);
+      throw new BadRequestException(`Invalid _id`);
+    }
   },
 );
 
@@ -21,7 +32,12 @@ export const ConvertParamToObjectId = createParamDecorator(
     const params = request.body;
 
     Object.keys(params).forEach((key) => {
-      if (data.includes(key)) params[key] = new Types.ObjectId(params[key]);
+      try {
+        if (data.includes(key)) params[key] = new Types.ObjectId(params[key]);
+      } catch (error) {
+        Logger.error(`${request.url}: ${params[key]} invalid _id`);
+        throw new BadRequestException(`${params[key]}: Invalid _id`);
+      }
     });
 
     return params;

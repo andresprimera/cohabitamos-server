@@ -239,7 +239,6 @@ export class UsersService {
     /* VALIDATING EMAILS EXISTANCE*/
     const existingUsers = await this.findManyByEmail(usersEmails);
 
-    console.log({ existingUsers });
     createAndUpdateInfo[0].forEach((user: any, rowIndex: number) => {
       const userToCreate = existingUsers.find(
         (existingUser: any) => existingUser.email === user['EMAIL'],
