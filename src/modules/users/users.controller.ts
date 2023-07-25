@@ -22,6 +22,8 @@ import * as path from 'path';
 
 import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
 import { createWriteStream } from 'fs';
+import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
+import { UserEntity } from 'src/entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -67,6 +69,12 @@ export class UsersController {
   @Get('get-by-email/:email')
   findByEmail(@Param('email') email: string) {
     return this.usersService.findUserByEmail(email);
+  }
+
+  @UseInterceptors(GetUserInterceptor)
+  @Post('get-operators-by-account')
+  getOperatorsByAccount(@Param('operator') operator: UserEntity) {
+    return this.usersService.getOperatorsByAccount(operator._id);
   }
 
   @Patch(':_id')

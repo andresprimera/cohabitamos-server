@@ -151,6 +151,21 @@ export class RequirementsService {
     return response;
   }
 
+  async getByUser(email: string) {
+    const user = await this.usersService.findUserByEmail(email);
+
+    if (!user) {
+      throw new BadRequestException('No user was found for the provided email');
+    }
+
+    return await this.requirementRepository
+      .find({ 'user._id': user._id })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+  }
+
   async update(
     _id: Types.ObjectId,
     updateRequirementDto: UpdateRequirementDto,

@@ -109,12 +109,15 @@ export class UsersService {
         createUserDto.condominium as Types.ObjectId,
       );
 
-      await this.userRepository.findOneAndUpdate({
-        permissions: {
-          condominiums: [condominium._id],
-          account: condominium.account,
+      await this.userRepository.findOneAndUpdate(
+        { _id: newUser._id },
+        {
+          permissions: {
+            condominiums: [condominium._id],
+            account: condominium.account,
+          },
         },
-      });
+      );
     }
 
     return newUser;
@@ -406,6 +409,26 @@ export class UsersService {
     }
 
     return response[0];
+  }
+
+  async getOperatorsByAccount(ownerId: Types.ObjectId) {
+    const account = await this.accountService
+      .findOne(ownerId)
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+
+    if (!account) {
+      throw new NotFoundException('No account was found for the provided _id');
+    }
+
+    return await this.userRepository
+      .find({ 'permissions.account': account._id })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
   }
 
   async update(_id: Types.ObjectId, updateUserDto: UpdateUserDto) {

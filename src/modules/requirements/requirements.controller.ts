@@ -57,6 +57,12 @@ export class RequirementsController {
       condominiumId: requestCondominium,
     });
   }
+
+  @Get('get-by-user/:email')
+  getByEmail(@Param('email') email: string) {
+    return this.requirementsService.getByUser(email);
+  }
+
   @Get(':_id')
   findOne(@ConvertToObjectId() _id: Types.ObjectId) {
     return this.requirementsService.findOne(_id);
