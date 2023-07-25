@@ -15,7 +15,6 @@ import { UnitsService } from '../units/units.service';
 import { Firebase } from 'src/providers/firebase';
 import { AccountsService } from '../accounts/accounts.service';
 import { CondominiumsService } from '../condominiums/condominiums.service';
-import { MulterFile } from 'src/common/interfaces';
 import { excelUtils } from 'utils';
 import { headers, worksheetNames } from './userExcelFile.definition';
 

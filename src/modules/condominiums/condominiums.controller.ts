@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
 import { CondominiumsService } from './condominiums.service';
 import { CreateCondominiumDto } from './dto/create-condominium.dto';
@@ -19,7 +18,6 @@ import {
 import { Types } from 'mongoose';
 import { UserEntity } from 'src/entities/user.entity';
 import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { createWriteStream } from 'fs';
 import * as path from 'path';
 
