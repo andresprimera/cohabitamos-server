@@ -74,16 +74,13 @@ export class AppModule implements NestModule {
         { path: 'requirements/get-by-user/:email', method: RequestMethod.GET },
         { path: 'requirement-types', method: RequestMethod.GET },
         { path: 'requirements-logs/:_id', method: RequestMethod.GET },
+        { path: 'requirements-logs', method: RequestMethod.POST },
         { path: 'guest-reports', method: RequestMethod.POST },
         { path: 'guest-reports', method: RequestMethod.GET },
         { path: 'options', method: RequestMethod.GET },
         { path: 'pets/get-by-name/name', method: RequestMethod.GET },
         { path: 'vehicles/get-by-plate/plate', method: RequestMethod.GET },
-        {
-          path: 'user-registration-link/:_id',
-          method: RequestMethod.GET,
-        },
-
+        { path: 'user-registration-link/:_id', method: RequestMethod.GET },
         { path: 'chat', method: RequestMethod.POST },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
