@@ -117,7 +117,7 @@ export class CondominiumsService {
       receptionPhoneNumber: condoData['TELEFONO'],
     };
 
-    const newCondominium = await this.condominiumRepository.create(condominium);
+    const newCondominium = await this.create(condominium);
 
     const units = unitsData.map((unit: any) => {
       return {
@@ -133,8 +133,11 @@ export class CondominiumsService {
     return {
       message: 'Edificio creado con éxito',
       success: true,
-      condoData,
-      unitsData,
+      worksheets: {
+        ['DATOS DE COPROPIEDAD']: excelInfo.worksheets['DATOS DE COPROPIEDAD'],
+        ['TORRES']: excelInfo.worksheets['TORRES'],
+        ['UNIDADES']: excelInfo.worksheets['UNIDADES'],
+      },
     };
   }
 
