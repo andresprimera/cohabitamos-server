@@ -71,6 +71,7 @@ export class AppModule implements NestModule {
         { path: 'condominiums/:_id', method: RequestMethod.GET },
         { path: 'users/get-by-email/:email', method: RequestMethod.GET },
         { path: 'requirements', method: RequestMethod.POST },
+        { path: 'requirements/get-by-user/:email', method: RequestMethod.GET },
         { path: 'requirement-types', method: RequestMethod.GET },
         { path: 'guest-reports', method: RequestMethod.POST },
         { path: 'guest-reports', method: RequestMethod.GET },
