@@ -168,6 +168,7 @@ export class GuestReportsService {
         pet,
         vehicle,
         condominium,
+        visitors,
       })
       .catch((error) => {
         Logger.error(error);

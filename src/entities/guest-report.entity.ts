@@ -4,6 +4,7 @@ import { ShortUserEntity } from './user.entity';
 import { VehiclesEntity } from './vehicle.entity';
 import { PetEntity } from './pet.entity';
 import { CondominiumEntity } from './condominium.entity';
+import { Visitor } from 'src/common/dtos/create-visitor.dto';
 
 @modelOptions({
   schemaOptions: { collection: 'guest-reports', timestamps: true },
@@ -32,4 +33,6 @@ export class GuestReportEntity {
 
   @prop({ required: true })
   condominium: CondominiumEntity;
+  @prop()
+  visitors: Visitor[];
 }
