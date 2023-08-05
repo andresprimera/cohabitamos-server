@@ -47,6 +47,12 @@ export class RequirementEntity {
   @prop({ default: null })
   estEndDate: Date;
 
+  @prop({ default: null })
+  actualStartDate: Date;
+
+  @prop({ default: null })
+  actualEndDate: Date;
+
   createdAt?: Date;
 
   updatedAt?: Date;

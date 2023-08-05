@@ -6,4 +6,6 @@ export class UpdateRequirementDto extends PartialType(CreateRequirementDto) {
   operator: string;
   message: string;
   assignee?: Types.ObjectId;
+  actualStartDate?: Date;
+  actualEndDate?: Date;
 }
