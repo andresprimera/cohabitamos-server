@@ -212,6 +212,24 @@ export class RequirementsService {
         throw new BadRequestException(error.message);
       });
 
+    const restructeredResponse = [];
+
+    restructeredResponse.push(
+      response.filter((item) => item.isImportant && item.isUrgent),
+    );
+
+    restructeredResponse.push(
+      response.filter((item) => !item.isImportant && item.isUrgent),
+    );
+
+    restructeredResponse.push(
+      response.filter((item) => item.isImportant && !item.isUrgent),
+    );
+
+    restructeredResponse.push(
+      response.filter((item) => !item.isImportant && !item.isUrgent),
+    );
+
     if (!response) {
       throw new NotFoundException(
         'No requirement was found for this condominium',
@@ -219,7 +237,7 @@ export class RequirementsService {
     }
 
     return {
-      response,
+      restructeredResponse,
       metadata: {
         totalDocs,
         limit,
