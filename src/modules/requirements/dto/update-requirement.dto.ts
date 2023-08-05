@@ -8,4 +8,6 @@ export class UpdateRequirementDto extends PartialType(CreateRequirementDto) {
   assignee?: Types.ObjectId;
   actualStartDate?: Date;
   actualEndDate?: Date;
+  isUrget?: boolean;
+  isImportant?: boolean;
 }

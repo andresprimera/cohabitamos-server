@@ -6,7 +6,6 @@ export class CreateRequirementDto {
   unit: string;
   status?: string;
   user: CreateUserDto;
-  operator: string;
   isTask?: boolean;
   isUrgent?: boolean;
   isImportant?: boolean;

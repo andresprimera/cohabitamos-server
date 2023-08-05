@@ -6,6 +6,7 @@ import {
   BadRequestException,
   Logger,
 } from '@nestjs/common';
+import { ChildProcess } from 'child_process';
 import { Types } from 'mongoose';
 import { Observable } from 'rxjs';
 import { UsersService } from 'src/modules/users/users.service';

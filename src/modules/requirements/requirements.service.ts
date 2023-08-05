@@ -20,6 +20,8 @@ import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { RequirementsLogService } from '../requirements-log/requirements-log.service';
 import { ConvertToTaskDto } from './dto/convert-to-task.dto';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { REQUIREMENT_STATE } from 'src/common/enums';
 
 @Injectable()
 export class RequirementsService {
@@ -95,6 +97,54 @@ export class RequirementsService {
       message: `Requerimiento creado: ${description}`,
       records: [],
       updatedBy: user._id,
+    });
+
+    return requirement;
+  }
+
+  async createTask(
+    createRequirementDto: CreateTaskDto,
+    operator: UserEntity,
+    requestCondominium: Types.ObjectId,
+  ) {
+    const {
+      description,
+      status = REQUIREMENT_STATE.OPEN,
+      isUrgent,
+      isImportant,
+      estStartDate,
+      estEndDate,
+      actualStartDate = null,
+      actualEndDate = null,
+    } = createRequirementDto || {};
+
+    const condominium: CondominiumEntity =
+      await this.condominiumsService.findOne(requestCondominium);
+
+    const requirement = await this.requirementRepository
+      .create({
+        requirementType: 'Tarea',
+        description,
+        condominium,
+        status: status || 'Abierto',
+        isTask: true,
+        isUrgent,
+        isImportant,
+        estStartDate,
+        estEndDate,
+        actualStartDate,
+        actualEndDate,
+      })
+      .catch((error) => {
+        Logger.error('Error while creating the task', error);
+        throw new BadRequestException(error.message);
+      });
+
+    await this.requirementsLogsService.create({
+      requirement,
+      message: `Tarea creada: ${description}`,
+      records: [],
+      updatedBy: operator._id,
     });
 
     return requirement;
@@ -232,7 +282,7 @@ export class RequirementsService {
 
     if (!status && requirement?.assignee === assignee) {
       throw new BadRequestException(
-        'El responseble a actualizar debe ser diferente al actual',
+        'El responsable a actualizar debe ser diferente al actual',
       );
     }
 
@@ -271,6 +321,7 @@ export class RequirementsService {
     const updateObject = {
       ...(status ? { status } : {}),
       ...(assignee ? { assigneeUser } : {}),
+      ...updateRequirementDto,
     };
 
     const response = await this.requirementRepository

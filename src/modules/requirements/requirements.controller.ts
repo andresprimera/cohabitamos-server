@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { RequirementsService } from './requirements.service';
 import { CreateRequirementDto } from './dto/create-requirement.dto';
@@ -19,6 +21,7 @@ import { utils } from 'utils';
 import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
 import { UserEntity } from 'src/entities/user.entity';
 import { ConvertToTaskDto } from './dto/convert-to-task.dto';
+import { CreateTaskDto } from './dto/create-task.dto';
 
 @Controller('requirements')
 export class RequirementsController {
@@ -27,6 +30,22 @@ export class RequirementsController {
   @Post()
   create(@Body() createRequirementDto: CreateRequirementDto) {
     return this.requirementsService.createRequest(createRequirementDto);
+  }
+
+  @Post('create-task')
+  // @UsePipes(new ValidationPipe({ transform: true }))
+  @UseInterceptors(GetUserInterceptor)
+  @UseInterceptors(CondominiumInterceptor)
+  createTask(
+    @Body() createTaskDto: CreateTaskDto,
+    @Param('operator') operator: UserEntity,
+    @Param('requestCondominium') requestCondominium: Types.ObjectId,
+  ) {
+    return this.requirementsService.createTask(
+      createTaskDto,
+      operator,
+      requestCondominium,
+    );
   }
 
   @UseInterceptors(CondominiumInterceptor)

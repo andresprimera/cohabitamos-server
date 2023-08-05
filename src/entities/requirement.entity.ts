@@ -17,11 +17,11 @@ export class RequirementEntity {
   @prop({ required: true })
   description: string;
 
-  @prop({ required: true })
-  unit: UnitEntity;
+  @prop({ required: true, default: null })
+  unit?: UnitEntity | null;
 
-  @prop({ required: true })
-  user: ShortUserEntity;
+  @prop({ default: null })
+  user?: ShortUserEntity | null;
 
   @prop({ required: true })
   condominium: CondominiumEntity;
