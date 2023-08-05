@@ -42,7 +42,7 @@ export class RequirementsController {
   }
 
   @UseInterceptors(CondominiumInterceptor)
-  @Post('find-taks')
+  @Post('find-tasks')
   findTasks(
     @Param('requestCondominium') requestCondominium: Types.ObjectId,
     @Body() requirementFiltersDto: RequirementFiltersDto,
