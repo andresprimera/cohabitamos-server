@@ -32,6 +32,21 @@ export class RequirementEntity {
   @prop({ default: null })
   assignee: ShortUserEntity | null;
 
+  @prop({ default: false })
+  isTask: boolean;
+
+  @prop({ default: null })
+  isUrgent: boolean;
+
+  @prop({ default: null })
+  isImportant: boolean;
+
+  @prop({ default: null })
+  estStartDate: Date;
+
+  @prop({ default: null })
+  estEndDate: Date;
+
   createdAt?: Date;
 
   updatedAt?: Date;

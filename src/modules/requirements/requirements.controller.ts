@@ -18,6 +18,7 @@ import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { utils } from 'utils';
 import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
 import { UserEntity } from 'src/entities/user.entity';
+import { ConvertToTaskDto } from './dto/convert-to-task.dto';
 
 @Controller('requirements')
 export class RequirementsController {
@@ -35,6 +36,18 @@ export class RequirementsController {
     @Body() requirementFiltersDto: RequirementFiltersDto,
   ) {
     return this.requirementsService.findAll(
+      requestCondominium,
+      requirementFiltersDto,
+    );
+  }
+
+  @UseInterceptors(CondominiumInterceptor)
+  @Post('find-taks')
+  findTasks(
+    @Param('requestCondominium') requestCondominium: Types.ObjectId,
+    @Body() requirementFiltersDto: RequirementFiltersDto,
+  ) {
+    return this.requirementsService.findTasks(
       requestCondominium,
       requirementFiltersDto,
     );
@@ -75,6 +88,14 @@ export class RequirementsController {
     @Param('operator') operator: UserEntity,
   ) {
     return this.requirementsService.update(_id, updateRequirementDto, operator);
+  }
+
+  @Patch('convert-to-task/:_id')
+  convertToTask(
+    @ConvertToObjectId() _id: Types.ObjectId,
+    @Body() convertToTaskDto: ConvertToTaskDto,
+  ) {
+    return this.requirementsService.convertToTask(_id, convertToTaskDto);
   }
 
   @Delete(':_id')

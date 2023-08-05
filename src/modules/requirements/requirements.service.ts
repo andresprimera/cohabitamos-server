@@ -19,6 +19,7 @@ import { UserEntity } from 'src/entities/user.entity';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { RequirementsLogService } from '../requirements-log/requirements-log.service';
+import { ConvertToTaskDto } from './dto/convert-to-task.dto';
 
 @Injectable()
 export class RequirementsService {
@@ -134,6 +135,49 @@ export class RequirementsService {
     return { response, metadata: { totalDocs, limit, page } };
   }
 
+  async findTasks(
+    condominium: Types.ObjectId,
+    requirementFiltersDto: RequirementFiltersDto,
+  ) {
+    const { limit = 10, page = 1 } = requirementFiltersDto.metadata || {};
+
+    const query: any = {};
+
+    query['condominium._id'] = condominium;
+    query.isTask = true;
+
+    // if (requirementFiltersDto?.status) {
+    //   query['status'] = requirementFiltersDto.status;
+    // }
+
+    const totalDocs = await this.requirementRepository.find(query).count();
+
+    const response = await this.requirementRepository
+      .find(query)
+      .skip(limit * (page - 1))
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException(
+        'No requirement was found for this condominium',
+      );
+    }
+
+    return {
+      response,
+      metadata: {
+        totalDocs,
+        limit,
+        page,
+      },
+    };
+  }
+
   async findOne(_id: Types.ObjectId) {
     const response = await this.requirementRepository
       .findOne({ _id })
@@ -244,6 +288,42 @@ export class RequirementsService {
       );
     }
 
+    return response;
+  }
+
+  async convertToTask(_id: Types.ObjectId, convertToTaskDto: ConvertToTaskDto) {
+    const { isUrgent, isImportant, estStartDate, estEndDate } =
+      convertToTaskDto || {};
+
+    if (
+      isUrgent === undefined ||
+      isImportant === undefined ||
+      estStartDate === undefined ||
+      estEndDate === undefined
+    ) {
+      throw new BadRequestException(
+        'IsUrgent, isImportant, estStartDate and estEndDate fields are mandatory.',
+      );
+    }
+
+    const response = await this.requirementRepository
+      .findOneAndUpdate(
+        { _id },
+        { isTask: true, ...convertToTaskDto },
+        {
+          new: true,
+        },
+      )
+      .catch((error) => {
+        Logger.log(error.message);
+        throw new BadRequestException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException(
+        'No requirement was found for the provided _id',
+      );
+    }
     return response;
   }
 
