@@ -164,6 +164,8 @@ export class RequirementsService {
       query['status'] = requirementFiltersDto.status;
     }
 
+    query.isTask = false;
+
     const totalDocs = await this.requirementRepository.find(query).count();
 
     const response = await this.requirementRepository
