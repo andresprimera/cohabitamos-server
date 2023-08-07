@@ -70,3 +70,12 @@ export enum VISITORS_CONDITION {
   RELATIVE = 'Familiar / Amigo',
   PROVIDER = 'Proveedor',
 }
+
+export enum EXECUTION_STATUS {
+  ON_TIME = 'A tiempo',
+  BEGINING_SOON = 'Pronto a iniciar',
+  BEGINNING_DELAYED = 'Inicio demorado',
+  ENDING_SOON = 'Pronto a finalizar',
+  ENDING_DELAYED = 'Finalización demorada',
+  WAITING = 'En espera',
+}

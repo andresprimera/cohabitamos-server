@@ -237,7 +237,7 @@ export class RequirementsService {
     }
 
     return {
-      restructeredResponse,
+      response: restructeredResponse,
       metadata: {
         totalDocs,
         limit,
@@ -292,11 +292,11 @@ export class RequirementsService {
         throw new BadRequestException(error.message);
       });
 
-    if (!assignee && requirement?.status === status) {
-      throw new BadRequestException(
-        'El estatus a actualizar debe ser diferente al actual',
-      );
-    }
+    // if (!assignee && requirement?.status === status) {
+    //   throw new BadRequestException(
+    //     'El estatus a actualizar debe ser diferente al actual',
+    //   );
+    // }
 
     if (!status && requirement?.assignee === assignee) {
       throw new BadRequestException(
