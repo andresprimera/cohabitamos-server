@@ -17,7 +17,7 @@ export class RequirementEntity {
   @prop({ required: true })
   description: string;
 
-  @prop({ required: true, default: null })
+  @prop({ default: null })
   unit?: UnitEntity | null;
 
   @prop({ default: null })
