@@ -43,9 +43,36 @@ export class UsersByUnitService {
       });
   }
 
-  async findOne(_id: Types.ObjectId) {
+  async find(_id: Types.ObjectId) {
     const response = await this.usersByUnitRepository
-      .findOne({ _id })
+      .aggregate([
+        {
+          $match: { unit: _id },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        {
+          $unwind: '$user',
+        },
+        {
+          $project: {
+            _id: 0,
+            unit: 1,
+            user: {
+              _id: '$user._id',
+              name: '$user.name',
+              email: '$user.email',
+              // add other user fields as needed
+            },
+          },
+        },
+      ])
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);

@@ -28,14 +28,14 @@ export class UsersByUnitController {
     return this.usersByUnitService.create(createUsersByUnitDto);
   }
 
-  @Get(':get-by-user/:_id')
-  findByUserId(@ConvertToObjectId() _id: Types.ObjectId) {
-    return this.usersByUnitService.findOne(_id);
-  }
+  // @Get(':get-by-user/:_id')
+  // findByUserId(@ConvertToObjectId() _id: Types.ObjectId) {
+  //   return this.usersByUnitService.findOne(_id);
+  // }
 
   @Get(':_id')
-  findOne(@ConvertToObjectId() _id: Types.ObjectId) {
-    return this.usersByUnitService.findOne(_id);
+  find(@ConvertToObjectId() _id: Types.ObjectId) {
+    return this.usersByUnitService.find(_id);
   }
 
   @Patch(':_id')
