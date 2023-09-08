@@ -52,24 +52,9 @@ export class UsersByUnitService {
         {
           $lookup: {
             from: 'users',
-            localField: 'userId',
+            localField: 'user',
             foreignField: '_id',
             as: 'user',
-          },
-        },
-        {
-          $unwind: '$user',
-        },
-        {
-          $project: {
-            _id: 0,
-            unit: 1,
-            user: {
-              _id: '$user._id',
-              name: '$user.name',
-              email: '$user.email',
-              // add other user fields as needed
-            },
           },
         },
       ])
