@@ -5,8 +5,8 @@ import * as admin from 'firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
 import * as dotenv from 'dotenv';
 
-const jsonConfig = process.env.FIREBASE_CONFIG as string;
 dotenv.config();
+const jsonConfig = process.env.FIREBASE_CREDENTIALS as string;
 
 @Injectable()
 export class Firebase {
