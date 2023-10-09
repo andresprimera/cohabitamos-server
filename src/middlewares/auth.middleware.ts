@@ -4,6 +4,7 @@ import {
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { UsersService } from 'src/modules/users/users.service';
 import { Firebase } from 'src/providers/firebase';
 
@@ -28,7 +29,6 @@ export class authMiddleware implements NestMiddleware {
     }
 
     const decodedToken = await auth.verifyIdToken(token).catch((error) => {
-      
       return error;
     });
 
@@ -37,15 +37,6 @@ export class authMiddleware implements NestMiddleware {
     }
 
     req.uid = decodedToken.uid;
-
-    if (req.headers?.operator) {
-      req.body.operator = await this.userRepository
-        .findOne(req.headers.operator)
-        .catch((error) => {
-          Logger.error(error);
-          return error;
-        });
-    }
 
     next();
   }

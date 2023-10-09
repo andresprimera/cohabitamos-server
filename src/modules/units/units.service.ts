@@ -7,9 +7,9 @@ import {
 import { CreateUnitDto } from './dto/create-unit.dto';
 import { UpdateUnitDto } from './dto/update-unit.dto';
 import { UnitEntity } from 'src/entities/unit.entity';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { getModelForClass, ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nestjs-typegoose';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class UnitsService {
@@ -25,7 +25,26 @@ export class UnitsService {
     });
   }
 
-  async findAll(condominium: Types.ObjectId) {
+  async createMany(createManyUnitsDto: CreateUnitDto[]) {
+    const unitModel = getModelForClass(UnitEntity);
+
+    const units = createManyUnitsDto.map((unit) => {
+      const newUnit = new unitModel();
+      newUnit.number = unit.number;
+      newUnit.type = unit.type;
+      newUnit.block = unit.block;
+      newUnit.condominium = unit.condominium;
+
+      return newUnit;
+    });
+
+    return await this.unitRepository.bulkSave(units).catch((error) => {
+      Logger.error(error);
+      throw new BadRequestException(error.message);
+    });
+  }
+
+  async findUnitsByCondominium(condominium: Types.ObjectId) {
     const response = await this.unitRepository
       .find({ condominium })
       .catch((error) => {
@@ -35,6 +54,21 @@ export class UnitsService {
 
     if (!response) {
       throw new NotFoundException('No units was found for this condominium');
+    }
+
+    return response;
+  }
+
+  async findMany(units: any[]) {
+    const response = await this.unitRepository
+      .find({ $or: units })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException('No units was found for this criteria');
     }
 
     return response;

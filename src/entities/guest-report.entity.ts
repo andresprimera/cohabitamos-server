@@ -1,9 +1,10 @@
 import { modelOptions, prop } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
-import { UserEntity } from './user.entity';
+import { ShortUserEntity } from './user.entity';
 import { VehiclesEntity } from './vehicle.entity';
 import { PetEntity } from './pet.entity';
 import { CondominiumEntity } from './condominium.entity';
+import { Visitor } from 'src/common/dtos/create-visitor.dto';
 
 @modelOptions({
   schemaOptions: { collection: 'guest-reports', timestamps: true },
@@ -22,7 +23,7 @@ export class GuestReportEntity {
   unit: UnitEntity;
 
   @prop({ required: true })
-  user: UserEntity;
+  user: ShortUserEntity;
 
   @prop({ default: null })
   pet: PetEntity;
@@ -32,4 +33,6 @@ export class GuestReportEntity {
 
   @prop({ required: true })
   condominium: CondominiumEntity;
+  @prop()
+  visitors: Visitor[];
 }

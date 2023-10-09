@@ -32,7 +32,7 @@ export class UnitsController {
   @UseInterceptors(CondominiumInterceptor)
   @Get()
   findAll(@Param('requestCondominium') requestCondominium: Types.ObjectId) {
-    return this.unitsService.findAll(requestCondominium);
+    return this.unitsService.findUnitsByCondominium(requestCondominium);
   }
 
   @Get(':_id')

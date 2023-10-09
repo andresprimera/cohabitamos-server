@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { RequirementsService } from './requirements.service';
 import { RequirementsController } from './requirements.controller';
 import { TypegooseModule } from 'nestjs-typegoose';

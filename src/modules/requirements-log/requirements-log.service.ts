@@ -37,7 +37,7 @@ export class RequirementsLogService {
 
         const requirementUpdatedAt = requirement?.updatedAt;
 
-        if (requirementUpdatedAt && record.field === 'status') {
+        if (requirementUpdatedAt) {
           record.timeElapsed = Date.now() - requirementUpdatedAt.getTime();
         }
 

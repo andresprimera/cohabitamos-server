@@ -16,6 +16,10 @@ import {
   ConvertToObjectId,
 } from 'src/decorators/convert-to-objectId.decorator';
 import { Types } from 'mongoose';
+import { UserEntity } from 'src/entities/user.entity';
+import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
+import { createWriteStream } from 'fs';
+import * as path from 'path';
 
 @Controller('condominiums')
 export class CondominiumsController {
@@ -29,9 +33,28 @@ export class CondominiumsController {
     return this.condominiumsService.create(createCondominiumDto);
   }
 
+  @UseInterceptors(GetUserInterceptor)
+  @Post('create-by-file-upload')
+  createByFileUpload(
+    @Param('operator') operator: UserEntity,
+    @Body() body: { file: string },
+  ) {
+    // Decode the base64 string to a buffer
+    const fileBuffer = Buffer.from(body.file, 'base64');
+
+    // Write the buffer to a file (you can modify the path and filename as needed)
+    const filePath = path.join(__dirname, './', 'usersFile.txt');
+
+    const writeStream = createWriteStream(filePath);
+    writeStream.write(fileBuffer);
+    writeStream.end();
+    return this.condominiumsService.createByFileUpload(filePath, operator);
+  }
+
+  @UseInterceptors(GetUserInterceptor)
   @Get()
-  findAll() {
-    return this.condominiumsService.findAll();
+  findAll(@Param('operator') operator: UserEntity) {
+    return this.condominiumsService.findAll(operator);
   }
 
   @Get(':_id')

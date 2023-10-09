@@ -9,6 +9,7 @@ import { GuestReportEntity } from 'src/entities/guest-report.entity';
 import { PetsModule } from '../pets/pets.module';
 import { VehiclesModule } from '../vehicles/vehicles.module';
 import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
+import { VisitorsModule } from '../visitors/visitors.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
     PetsModule,
     VehiclesModule,
     UsersByUnitModule,
+    VisitorsModule,
     TypegooseModule.forFeature([GuestReportEntity]),
   ],
   controllers: [GuestReportsController],

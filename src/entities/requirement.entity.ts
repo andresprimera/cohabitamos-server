@@ -1,6 +1,6 @@
 import { modelOptions, prop } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
-import { UserEntity } from './user.entity';
+import { ShortUserEntity } from './user.entity';
 import { CondominiumEntity } from './condominium.entity';
 import { REQUIREMENT_STATE } from 'src/common/enums';
 import { Types } from 'mongoose';
@@ -17,17 +17,41 @@ export class RequirementEntity {
   @prop({ required: true })
   description: string;
 
-  @prop({ required: true })
-  unit: UnitEntity;
+  @prop({ default: null })
+  unit?: UnitEntity | null;
 
-  @prop({ required: true })
-  user: UserEntity;
+  @prop({ default: null })
+  user?: ShortUserEntity | null;
 
   @prop({ required: true })
   condominium: CondominiumEntity;
 
   @prop({ enum: REQUIREMENT_STATE, default: REQUIREMENT_STATE.OPEN })
   status: string;
+
+  @prop({ default: null })
+  assignee: ShortUserEntity | null;
+
+  @prop({ default: false })
+  isTask: boolean;
+
+  @prop({ default: null })
+  isUrgent: boolean;
+
+  @prop({ default: null })
+  isImportant: boolean;
+
+  @prop({ default: null })
+  estStartDate: Date;
+
+  @prop({ default: null })
+  estEndDate: Date;
+
+  @prop({ default: null })
+  actualStartDate: Date;
+
+  @prop({ default: null })
+  actualEndDate: Date;
 
   createdAt?: Date;
 

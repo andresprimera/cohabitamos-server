@@ -24,6 +24,9 @@ import { authMiddleware } from './middlewares/auth.middleware';
 import { RequirementsLogModule } from './modules/requirements-log/requirements-log.module';
 import { Firebase } from './providers/firebase';
 import { VisitorsModule } from './modules/visitors/visitors.module';
+import { UserRegistrationLinkModule } from './modules/user-registration-link/user-registration-link.module';
+import { ChatModule } from './modules/chat/chat.module';
+import { OpenAI } from './providers/openAi';
 
 @Module({
   imports: [
@@ -51,9 +54,11 @@ import { VisitorsModule } from './modules/visitors/visitors.module';
     OptionsModule,
     RequirementsLogModule,
     VisitorsModule,
+    UserRegistrationLinkModule,
+    ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService, Firebase],
+  providers: [AppService, Firebase, OpenAI],
 })
 // export class AppModule {}
 export class AppModule implements NestModule {
@@ -61,17 +66,23 @@ export class AppModule implements NestModule {
     consumer
       .apply(authMiddleware)
       .exclude(
+        { path: 'users', method: RequestMethod.POST },
         { path: 'condominiums', method: RequestMethod.GET },
         { path: 'condominiums/:_id', method: RequestMethod.GET },
         { path: 'users/get-by-email/:email', method: RequestMethod.GET },
-        { path: 'requirement', method: RequestMethod.POST },
+        { path: 'requirements', method: RequestMethod.POST },
+        { path: 'requirements/get-by-user/:email', method: RequestMethod.GET },
         { path: 'requirement-types', method: RequestMethod.GET },
+        { path: 'requirements-logs/:_id', method: RequestMethod.GET },
+        { path: 'requirements-logs', method: RequestMethod.POST },
         { path: 'guest-reports', method: RequestMethod.POST },
         { path: 'guest-reports', method: RequestMethod.GET },
         { path: 'options', method: RequestMethod.GET },
         { path: 'pets/get-by-name/name', method: RequestMethod.GET },
         { path: 'vehicles/get-by-plate/plate', method: RequestMethod.GET },
-        { path: 'visitors', method: RequestMethod.POST },
+        { path: 'user-registration-link/:_id', method: RequestMethod.GET },
+        { path: 'chat', method: RequestMethod.POST },
+        { path: 'visitors/:docNumber', method: RequestMethod.GET },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }

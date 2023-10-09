@@ -1,19 +1,14 @@
 import { Ref, modelOptions, mongoose, prop } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
 import { CondominiumEntity } from './condominium.entity';
-import { STATUS } from 'src/common/enums';
-
-enum PetEnum {
-  DOG = 'Perro',
-  CAT = 'Gato',
-}
+import { PET_KIND, STATUS } from 'src/common/enums';
 
 @modelOptions({
   schemaOptions: { collection: 'pets', timestamps: true },
 })
 export class PetEntity {
   _id: mongoose.Types.ObjectId;
-  @prop({ required: true, enum: PetEnum })
+  @prop({ required: true, enum: PET_KIND })
   kind: string;
 
   @prop()

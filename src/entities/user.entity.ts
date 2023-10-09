@@ -1,6 +1,6 @@
 import { prop, modelOptions, Ref } from '@typegoose/typegoose';
 import { Severity } from '@typegoose/typegoose';
-import { DOC_TYPE, ROLE } from 'src/common/enums';
+import { DOC_TYPE, ROLES } from 'src/common/enums';
 import { AccountEntity } from './account.entity';
 import mongoose, { Types } from 'mongoose';
 import { CondominiumEntity } from './condominium.entity';
@@ -20,7 +20,7 @@ class Permissions {
 export class UserEntity {
   _id: mongoose.Types.ObjectId;
 
-  @prop({ required: true })
+  @prop()
   uid: string;
 
   @prop({ required: true })
@@ -34,8 +34,8 @@ export class UserEntity {
   })
   active: boolean;
 
-  @prop({ enum: ROLE, default: ROLE.USER })
-  role: ROLE;
+  @prop({ enum: ROLES, default: ROLES.USER })
+  role: ROLES;
 
   @prop({
     trim: true,
@@ -61,8 +61,12 @@ export class UserEntity {
 
   @prop({ default: '' })
   nationality?: string;
+
+  @prop({ default: null })
+  permissions: Permissions | null;
 }
 
+@modelOptions({ options: { allowMixed: Severity.ALLOW } })
 export class ShortUserEntity {
   _id: Types.ObjectId;
 
@@ -72,8 +76,8 @@ export class ShortUserEntity {
   @prop({})
   lastName: string;
 
-  @prop({ enum: ROLE, default: ROLE.USER })
-  role: ROLE;
+  @prop({ enum: ROLES, default: ROLES.USER })
+  role: ROLES;
 
   @prop({ default: null })
   permissions: Permissions | null;

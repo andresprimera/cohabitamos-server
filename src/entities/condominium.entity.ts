@@ -26,4 +26,13 @@ export class CondominiumEntity {
 
   @prop({ default: ['1'] })
   blocks: string[];
+
+  @prop({ required: true })
+  nit: number;
+
+  @prop({ required: true })
+  verificationDigit: number;
+
+  @prop({})
+  receptionPhoneNumber?: string;
 }

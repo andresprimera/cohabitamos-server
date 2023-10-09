@@ -8,5 +8,6 @@ import { RequirementTypeEntity } from 'src/entities/requirement-type.entity';
   imports: [TypegooseModule.forFeature([RequirementTypeEntity])],
   controllers: [RequirementTypesController],
   providers: [RequirementTypesService],
+  exports: [RequirementTypesService],
 })
 export class RequirementTypesModule {}

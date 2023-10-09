@@ -19,14 +19,9 @@ import { UserEntity } from 'src/entities/user.entity';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { RequirementsLogService } from '../requirements-log/requirements-log.service';
-
-type MetricsResponse = {
-  totalRequirements: number;
-  requirementsByType: {
-    count: number;
-    requirementType: string;
-  }[];
-};
+import { ConvertToTaskDto } from './dto/convert-to-task.dto';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { REQUIREMENT_STATE } from 'src/common/enums';
 
 @Injectable()
 export class RequirementsService {
@@ -42,14 +37,13 @@ export class RequirementsService {
     private readonly requirementsLogsService: RequirementsLogService,
   ) {}
 
-  async create(createRequirementDto: CreateRequirementDto) {
+  async createRequest(createRequirementDto: CreateRequirementDto) {
     const {
       user: createUserDto,
       requirementType,
       unit: unitId,
       status,
       description,
-      operator,
     } = createRequirementDto || {};
 
     if (!createRequirementDto?.user) {
@@ -100,9 +94,57 @@ export class RequirementsService {
 
     await this.requirementsLogsService.create({
       requirement,
-      message: 'Requerimiento creado',
+      message: `Requerimiento creado: ${description}`,
       records: [],
-      updatedBy: new Types.ObjectId(operator),
+      updatedBy: user._id,
+    });
+
+    return requirement;
+  }
+
+  async createTask(
+    createRequirementDto: CreateTaskDto,
+    operator: UserEntity,
+    requestCondominium: Types.ObjectId,
+  ) {
+    const {
+      description,
+      status = REQUIREMENT_STATE.OPEN,
+      isUrgent,
+      isImportant,
+      estStartDate,
+      estEndDate,
+      actualStartDate = null,
+      actualEndDate = null,
+    } = createRequirementDto || {};
+
+    const condominium: CondominiumEntity =
+      await this.condominiumsService.findOne(requestCondominium);
+
+    const requirement = await this.requirementRepository
+      .create({
+        requirementType: 'Tarea',
+        description,
+        condominium,
+        status: status || 'Abierto',
+        isTask: true,
+        isUrgent,
+        isImportant,
+        estStartDate,
+        estEndDate,
+        actualStartDate,
+        actualEndDate,
+      })
+      .catch((error) => {
+        Logger.error('Error while creating the task', error);
+        throw new BadRequestException(error.message);
+      });
+
+    await this.requirementsLogsService.create({
+      requirement,
+      message: `Tarea creada: ${description}`,
+      records: [],
+      updatedBy: operator._id,
     });
 
     return requirement;
@@ -121,6 +163,8 @@ export class RequirementsService {
     if (requirementFiltersDto?.status) {
       query['status'] = requirementFiltersDto.status;
     }
+
+    query.isTask = false;
 
     const totalDocs = await this.requirementRepository.find(query).count();
 
@@ -143,6 +187,67 @@ export class RequirementsService {
     return { response, metadata: { totalDocs, limit, page } };
   }
 
+  async findTasks(
+    condominium: Types.ObjectId,
+    requirementFiltersDto: RequirementFiltersDto,
+  ) {
+    const { limit = 10, page = 1 } = requirementFiltersDto.metadata || {};
+
+    const query: any = {};
+
+    query['condominium._id'] = condominium;
+    query.isTask = true;
+
+    // if (requirementFiltersDto?.status) {
+    //   query['status'] = requirementFiltersDto.status;
+    // }
+
+    const totalDocs = await this.requirementRepository.find(query).count();
+
+    const response = await this.requirementRepository
+      .find(query)
+      .skip(limit * (page - 1))
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+
+    const restructeredResponse = [];
+
+    restructeredResponse.push(
+      response.filter((item) => item.isImportant && item.isUrgent),
+    );
+
+    restructeredResponse.push(
+      response.filter((item) => !item.isImportant && item.isUrgent),
+    );
+
+    restructeredResponse.push(
+      response.filter((item) => item.isImportant && !item.isUrgent),
+    );
+
+    restructeredResponse.push(
+      response.filter((item) => !item.isImportant && !item.isUrgent),
+    );
+
+    if (!response) {
+      throw new NotFoundException(
+        'No requirement was found for this condominium',
+      );
+    }
+
+    return {
+      response: restructeredResponse,
+      metadata: {
+        totalDocs,
+        limit,
+        page,
+      },
+    };
+  }
+
   async findOne(_id: Types.ObjectId) {
     const response = await this.requirementRepository
       .findOne({ _id })
@@ -160,11 +265,27 @@ export class RequirementsService {
     return response;
   }
 
+  async getByUser(email: string) {
+    const user = await this.usersService.findUserByEmail(email);
+
+    if (!user) {
+      throw new BadRequestException('No user was found for the provided email');
+    }
+
+    return await this.requirementRepository
+      .find({ 'user._id': user._id })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+  }
+
   async update(
     _id: Types.ObjectId,
     updateRequirementDto: UpdateRequirementDto,
+    operator: UserEntity,
   ) {
-    const { operator, message, status } = updateRequirementDto;
+    const { message, status, assignee } = updateRequirementDto;
 
     const requirement = await this.requirementRepository
       .findOne({ _id })
@@ -173,30 +294,93 @@ export class RequirementsService {
         throw new BadRequestException(error.message);
       });
 
-    if (requirement?.status === status) {
+    // if (!assignee && requirement?.status === status) {
+    //   throw new BadRequestException(
+    //     'El estatus a actualizar debe ser diferente al actual',
+    //   );
+    // }
+
+    if (!status && requirement?.assignee === assignee) {
       throw new BadRequestException(
-        'El estatus a actualizar debe ser diferente al actual',
+        'El responsable a actualizar debe ser diferente al actual',
       );
+    }
+
+    let assigneeUser = null;
+
+    if (assignee) {
+      assigneeUser = await this.usersService.findOne(assignee);
     }
 
     await this.requirementsLogsService.create({
       requirement: requirement as RequirementEntity,
-      message: `Estatus actualizado de ${requirement?.status} a ${
-        updateRequirementDto.status
-      }${message ? ': ' + message : ''}`,
+      message: `Nueva actualización de requerimiento${
+        message ? ': ' + message : '.'
+      }`,
       records: [
-        {
-          field: 'status',
-          newValue: updateRequirementDto.status,
-        },
+        ...(status
+          ? [
+              {
+                field: 'status' as keyof RequirementEntity,
+                newValue: updateRequirementDto.status,
+              },
+            ]
+          : []),
+        ...(assignee
+          ? [
+              {
+                field: 'assignee' as keyof RequirementEntity,
+                newValue: assigneeUser,
+              },
+            ]
+          : []),
       ],
-      updatedBy: new Types.ObjectId(operator),
+      updatedBy: operator._id,
     });
+
+    const updateObject = {
+      ...(status ? { status } : {}),
+      ...(assignee ? { assigneeUser } : {}),
+      ...updateRequirementDto,
+    };
+
+    const response = await this.requirementRepository
+      .findOneAndUpdate({ _id }, updateObject, {
+        new: true,
+      })
+      .catch((error) => {
+        Logger.log(error.message);
+        throw new BadRequestException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException(
+        'No requirement was found for the provided _id',
+      );
+    }
+
+    return response;
+  }
+
+  async convertToTask(_id: Types.ObjectId, convertToTaskDto: ConvertToTaskDto) {
+    const { isUrgent, isImportant, estStartDate, estEndDate } =
+      convertToTaskDto || {};
+
+    if (
+      isUrgent === undefined ||
+      isImportant === undefined ||
+      estStartDate === undefined ||
+      estEndDate === undefined
+    ) {
+      throw new BadRequestException(
+        'IsUrgent, isImportant, estStartDate and estEndDate fields are mandatory.',
+      );
+    }
 
     const response = await this.requirementRepository
       .findOneAndUpdate(
         { _id },
-        { status },
+        { isTask: true, ...convertToTaskDto },
         {
           new: true,
         },
@@ -211,7 +395,6 @@ export class RequirementsService {
         'No requirement was found for the provided _id',
       );
     }
-
     return response;
   }
 
