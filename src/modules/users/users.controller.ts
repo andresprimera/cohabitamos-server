@@ -56,9 +56,12 @@ export class UsersController {
   }
 
   @UseInterceptors(CondominiumInterceptor)
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @Get(':type?')
+  findAll(
+    @Param('requestCondominium') requestCondominium: Types.ObjectId,
+    @Param('type') type: string | undefined,
+  ) {
+    return this.usersService.findAll(type, requestCondominium);
   }
 
   @Get(':_id')

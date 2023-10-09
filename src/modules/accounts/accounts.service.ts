@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  Type,
 } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -45,6 +46,23 @@ export class AccountsService {
     if (!response) {
       throw new NotFoundException(
         'No account was found for the provided owner id',
+      );
+    }
+
+    return response;
+  }
+
+  async findOneById(_id: Types.ObjectId) {
+    const response = await this.accountRepository
+      .findOne({ _id })
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+
+    if (!response) {
+      throw new NotFoundException(
+        'No account was found for the provided account number',
       );
     }
 

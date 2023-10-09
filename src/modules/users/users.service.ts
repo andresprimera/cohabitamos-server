@@ -17,6 +17,7 @@ import { AccountsService } from '../accounts/accounts.service';
 import { CondominiumsService } from '../condominiums/condominiums.service';
 import { excelUtils } from 'utils';
 import { headers, worksheetNames } from './userExcelFile.definition';
+import { classToClassFromExist } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -313,12 +314,41 @@ export class UsersService {
     };
   }
 
-  async findAll() {
+  async findAll(type: string | undefined, requestCondominium: Types.ObjectId) {
     //TODO: Pagination
-    return await this.userRepository.find().catch((error) => {
-      Logger.error(error);
-      throw new BadRequestException(error.message);
-    });
+    const condominium = await this.condominiumService
+      .findOne(requestCondominium)
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+
+    const account = await this.accountService
+      .findOneById(condominium.account)
+      .catch((error) => {
+        Logger.error(error);
+        throw new BadRequestException(error.message);
+      });
+
+    if (type && type === 'usuarios-administrativos') {
+      return await this.userRepository
+        .find({ 'permissions.account': account._id })
+        .catch((error) => {
+          Logger.error(error);
+          throw new BadRequestException(error.message);
+        });
+    } else {
+      return await this.userRepository
+        .find({
+          'permissions.condominiums': {
+            $in: [condominium._id],
+          },
+        })
+        .catch((error) => {
+          Logger.error(error);
+          throw new BadRequestException(error.message);
+        });
+    }
   }
 
   async findManyByEmail(usersEmails: string[]) {
