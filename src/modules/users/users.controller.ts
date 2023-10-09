@@ -55,6 +55,7 @@ export class UsersController {
     return this.usersService.createByFileUpload(filePath, requestCondominium);
   }
 
+  @UseInterceptors(CondominiumInterceptor)
   @Get()
   findAll() {
     return this.usersService.findAll();
