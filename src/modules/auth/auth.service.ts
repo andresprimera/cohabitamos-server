@@ -7,6 +7,10 @@ export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
   async findSession(uid: any) {
-    return await this.usersService.findByUid(uid);
+    console.log({ uid });
+    return await this.usersService.findByUid(uid).catch((err) => {
+      Logger.error(err);
+      throw new UnauthorizedException();
+    });
   }
 }

@@ -7,6 +7,7 @@ export class AuthController {
 
   @Get('findSession')
   findSession(@Request() req: any) {
+    console.log({ req });
     return this.authService.findSession(req.uid);
   }
 }
