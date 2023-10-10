@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersByUnitService } from './users-by-unit.service';
 import { CreateUsersByUnitDto } from './dto/create-users-by-unit.dto';
@@ -15,6 +16,8 @@ import {
   ConvertToObjectId,
 } from 'src/decorators/convert-to-objectId.decorator';
 import { Types } from 'mongoose';
+import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
+import { CondominiumInterceptor } from 'src/interceptors/captureCondominium.interceptor';
 
 @Controller('users-by-unit')
 export class UsersByUnitController {
@@ -28,10 +31,13 @@ export class UsersByUnitController {
     return this.usersByUnitService.create(createUsersByUnitDto);
   }
 
-  // @Get(':get-by-user/:_id')
-  // findByUserId(@ConvertToObjectId() _id: Types.ObjectId) {
-  //   return this.usersByUnitService.findOne(_id);
-  // }
+  @UseInterceptors(CondominiumInterceptor)
+  @Get('pending-auth')
+  findAuthPending(
+    @Param('requestCondominium') requestCondominium: Types.ObjectId,
+  ) {
+    return this.usersByUnitService.findAuthPending(requestCondominium);
+  }
 
   @Get('unit-id/:_id')
   find(@ConvertToObjectId() _id: Types.ObjectId) {

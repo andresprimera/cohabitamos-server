@@ -104,18 +104,31 @@ export class UsersService {
     }
 
     //*************** ASSIGNING PERMITIONS TO OPERATOR ***********************/
-    if (createUserDto.role === 'operador') {
+
+    const role = createUserDto.role;
+
+    if (role === 'operador' || role === 'operador de administración') {
       const condominium = await this.condominiumService.findOne(
         createUserDto.condominium as Types.ObjectId,
       );
 
+      const permissions = {
+        condominiums: [] as Types.ObjectId[],
+        account: null,
+      };
+
+      if (role === 'operador de administración') {
+        permissions.account = condominium.account;
+      }
+
+      if (role === 'operador') {
+        permissions.condominiums.push(condominium._id);
+      }
+
       await this.userRepository.findOneAndUpdate(
         { _id: newUser._id },
         {
-          permissions: {
-            condominiums: [condominium._id],
-            account: condominium.account,
-          },
+          permissions,
         },
       );
     }

@@ -11,6 +11,7 @@ import { InjectModel } from 'nestjs-typegoose';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { UnitsService } from '../units/units.service';
+import { CondominiumsService } from '../condominiums/condominiums.service';
 
 @Injectable()
 export class UsersByUnitService {
@@ -21,6 +22,7 @@ export class UsersByUnitService {
     >,
 
     private readonly unitsService: UnitsService,
+    private readonly condominiumService: CondominiumsService,
   ) {}
 
   async create(createUsersByUnitDto: CreateUsersByUnitDto) {
@@ -68,6 +70,49 @@ export class UsersByUnitService {
     }
 
     return response;
+  }
+
+  async findAuthPending(requestCondominium: Types.ObjectId) {
+    const condominium = await this.condominiumService.findOne(
+      requestCondominium,
+    );
+
+    const pipeline = [
+      {
+        $match: {
+          condominium: condominium._id,
+          status: 'Pendiente',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: {
+          path: '$user',
+        },
+      },
+      {
+        $lookup: {
+          from: 'units',
+          localField: 'unit',
+          foreignField: '_id',
+          as: 'unit',
+        },
+      },
+      {
+        $unwind: {
+          path: '$unit',
+        },
+      },
+    ];
+
+    return await this.usersByUnitRepository.aggregate(pipeline);
   }
 
   async update(

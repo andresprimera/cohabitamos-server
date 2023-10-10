@@ -46,6 +46,8 @@ export class RequirementsService {
       description,
     } = createRequirementDto || {};
 
+    console.log({ createUserDto });
+
     if (!createRequirementDto?.user) {
       throw new BadRequestException('Required field user not provided.');
     }

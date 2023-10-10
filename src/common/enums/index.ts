@@ -61,6 +61,7 @@ export enum ROLES {
   ADMIN = 'administrador',
   USER = 'usuario',
   OPERATOR = 'operador',
+  ADMIN_OPERATOR = 'operador de administración',
 }
 
 export enum VISITORS_CONDITION {
@@ -78,4 +79,10 @@ export enum EXECUTION_STATUS {
   ENDING_SOON = 'Pronto a finalizar',
   ENDING_DELAYED = 'Finalización demorada',
   WAITING = 'En espera',
+}
+
+export enum AUTHORIZATION_STATUS {
+  PENDING = 'Pendiente',
+  AUTHORIZED = 'Autorizado',
+  REJECTED = 'Rechazado',
 }
