@@ -435,6 +435,7 @@ export class UsersService {
                   block: '$unit.block',
                   condominium: '$unit.condominium',
                   condition: 1,
+                  status: 1,
                 },
               },
             ],
