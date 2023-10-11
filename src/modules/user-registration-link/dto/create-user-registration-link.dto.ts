@@ -7,5 +7,4 @@ export class CreateUserRegistrationLinkDto {
   expirationTime: number; //milliseconds
   userId?: Types.ObjectId;
   email?: string;
-  condition?: string;
 }

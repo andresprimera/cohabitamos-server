@@ -6,7 +6,6 @@ import { UserRegistrationLinkEntity } from 'src/entities/user-registration-link.
 import { UserEntity } from 'src/entities/user.entity';
 import { UnitsService } from '../units/units.service';
 import { UsersService } from '../users/users.service';
-import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { CreateUserRegistrationLinkDto } from './dto/create-user-registration-link.dto';
 import { UpdateUserRegistrationLinkDto } from './dto/update-user-registration-link.dto';
 
@@ -19,33 +18,29 @@ export class UserRegistrationLinkService {
     >,
     private readonly unitService: UnitsService,
     private readonly userService: UsersService,
-    private readonly userByUnitService: UsersByUnitService,
   ) {}
 
   async create(
     createUserRegistrationLinkDto: CreateUserRegistrationLinkDto,
     operator: UserEntity,
     email: string | undefined,
-    condition: string | undefined,
   ) {
     const { userId, unitId } = createUserRegistrationLinkDto;
-
     const unit = await this.unitService.findOne(unitId);
+    let user = null;
 
-    if (userId && condition) {
-      await this.userByUnitService.create({
-        unit: unitId,
-        user: userId,
-        condition,
-      });
+    if (userId) {
+      user = await this.userService.findOne(userId);
     }
 
-    return this.userRegistrationLinkRepository
+    const response = await this.userRegistrationLinkRepository
       .create({ unit, createdBy: operator, ...(email && { email }) })
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
       });
+
+    return { user, response };
   }
 
   async findOne(_id: Types.ObjectId) {
