@@ -21,12 +21,12 @@ export class UsersByUnitEntity {
   @prop({ ref: () => UserEntity })
   user: Ref<UserEntity>; //ref
 
-  @prop({ enum: USER_CONDITION, default: USER_CONDITION.RESIDENT })
-  condition: string;
+  @prop({ default: USER_CONDITION.RESIDENT })
+  condition: USER_CONDITION;
 
   @prop({ ref: () => CondominiumEntity })
   condominium: Ref<CondominiumEntity>;
 
   @prop({ default: AUTHORIZATION_STATUS.PENDING })
-  status: string;
+  status: AUTHORIZATION_STATUS;
 }

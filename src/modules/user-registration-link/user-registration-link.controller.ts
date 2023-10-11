@@ -28,13 +28,17 @@ export class UserRegistrationLinkController {
   @UseInterceptors(GetUserInterceptor)
   @Post()
   create(
-    @ConvertParamToObjectId(['unitId'])
+    @ConvertParamToObjectId(['unitId', 'userId'])
     createUserRegistrationLinkDto: CreateUserRegistrationLinkDto,
     @Param('operator') operator: UserEntity,
+    @Body('email') email: string | undefined,
+    @Body('condition') condition: string | undefined,
   ) {
     return this.userRegistrationLinkService.create(
       createUserRegistrationLinkDto,
       operator,
+      email,
+      condition,
     );
   }
 

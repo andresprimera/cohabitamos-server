@@ -5,4 +5,7 @@ export class CreateUserRegistrationLinkDto {
   unitId: Types.ObjectId;
   createdBy: ShortUserEntity;
   expirationTime: number; //milliseconds
+  userId?: Types.ObjectId;
+  email?: string;
+  condition?: string;
 }

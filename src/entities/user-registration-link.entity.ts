@@ -1,4 +1,6 @@
 import { modelOptions, prop, Ref } from '@typegoose/typegoose';
+import { IsOptional } from 'class-validator';
+import { Types } from 'mongoose';
 import { UnitEntity } from './unit.entity';
 import { ShortUserEntity, UserEntity } from './user.entity';
 
@@ -20,6 +22,9 @@ export class UserRegistrationLinkEntity {
 
   @prop({ ref: () => UserEntity, nullable: true, default: null })
   createdUserId: Ref<UserEntity>;
+
+  @prop({ default: null })
+  email: Types.ObjectId | undefined;
 
   createdAt: Date;
 }
