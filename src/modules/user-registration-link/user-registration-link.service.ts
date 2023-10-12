@@ -22,19 +22,26 @@ export class UserRegistrationLinkService {
 
   async create(
     createUserRegistrationLinkDto: CreateUserRegistrationLinkDto,
-    operator: UserEntity | undefined,
+    operator: string | undefined,
     email: string | undefined,
   ) {
     const { userId, unitId } = createUserRegistrationLinkDto;
     const unit = await this.unitService.findOne(unitId);
     let user = null;
+    let operatorUser = null;
 
     if (userId) {
       user = await this.userService.findOne(userId);
     }
 
+    if (operator) {
+      operatorUser = await this.userService.findOne(
+        new Types.ObjectId(operator),
+      );
+    }
+
     const response = await this.userRegistrationLinkRepository
-      .create({ unit, createdBy: operator || null, ...(email && { email }) })
+      .create({ unit, createdBy: operatorUser, ...(email && { email }) })
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
