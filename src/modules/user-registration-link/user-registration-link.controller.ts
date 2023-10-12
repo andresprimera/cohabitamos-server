@@ -30,7 +30,7 @@ export class UserRegistrationLinkController {
   create(
     @ConvertParamToObjectId(['unitId', 'userId'])
     createUserRegistrationLinkDto: CreateUserRegistrationLinkDto,
-    @Param('operator') operator: UserEntity,
+    @Param('operator') operator: UserEntity | undefined,
     @Body('email') email: string | undefined,
   ) {
     return this.userRegistrationLinkService.create(

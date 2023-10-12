@@ -3,6 +3,7 @@ const configuration = () => ({
   MONGO_CONNECTION_URL: process.env.MONGO_CONNECTION_URL,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   FIREBASE_CREDENTIALS: process.env.FIREBASE_CREDENTIALS,
+  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
 });
 
 export default configuration;

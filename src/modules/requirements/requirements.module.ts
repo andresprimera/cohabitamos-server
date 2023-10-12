@@ -8,6 +8,7 @@ import { CondominiumsModule } from '../condominiums/condominiums.module';
 import { UnitsModule } from '../units/units.module';
 import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
 import { RequirementsLogModule } from '../requirements-log/requirements-log.module';
+import { SengridService } from 'src/providers/notifications';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { RequirementsLogModule } from '../requirements-log/requirements-log.modu
     TypegooseModule.forFeature([RequirementEntity]),
   ],
   controllers: [RequirementsController],
-  providers: [RequirementsService],
+  providers: [RequirementsService, SengridService],
   exports: [RequirementsService],
 })
 export class RequirementsModule {}

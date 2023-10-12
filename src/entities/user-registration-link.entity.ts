@@ -1,5 +1,4 @@
 import { modelOptions, prop, Ref } from '@typegoose/typegoose';
-import { IsOptional } from 'class-validator';
 import { Types } from 'mongoose';
 import { UnitEntity } from './unit.entity';
 import { ShortUserEntity, UserEntity } from './user.entity';
@@ -11,8 +10,8 @@ export class UserRegistrationLinkEntity {
   @prop({ required: true })
   unit: UnitEntity;
 
-  @prop()
-  createdBy: ShortUserEntity;
+  @prop({ default: null })
+  createdBy: ShortUserEntity | null;
 
   @prop({ default: false })
   used: boolean;

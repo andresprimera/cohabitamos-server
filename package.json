@@ -26,6 +26,7 @@
     "@nestjs/jwt": "^10.0.3",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^9.0.0",
+    "@sendgrid/mail": "^7.7.0",
     "@typegoose/typegoose": "^11.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",

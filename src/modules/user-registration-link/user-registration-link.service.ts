@@ -22,7 +22,7 @@ export class UserRegistrationLinkService {
 
   async create(
     createUserRegistrationLinkDto: CreateUserRegistrationLinkDto,
-    operator: UserEntity,
+    operator: UserEntity | undefined,
     email: string | undefined,
   ) {
     const { userId, unitId } = createUserRegistrationLinkDto;
@@ -34,7 +34,7 @@ export class UserRegistrationLinkService {
     }
 
     const response = await this.userRegistrationLinkRepository
-      .create({ unit, createdBy: operator, ...(email && { email }) })
+      .create({ unit, createdBy: operator || null, ...(email && { email }) })
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
