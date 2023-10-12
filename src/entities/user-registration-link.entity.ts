@@ -25,5 +25,8 @@ export class UserRegistrationLinkEntity {
   @prop({ default: null })
   email: Types.ObjectId | undefined;
 
+  @prop({ default: null })
+  user?: ShortUserEntity | null;
+
   createdAt: Date;
 }

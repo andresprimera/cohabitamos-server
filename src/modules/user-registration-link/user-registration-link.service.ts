@@ -41,7 +41,7 @@ export class UserRegistrationLinkService {
     }
 
     const response = await this.userRegistrationLinkRepository
-      .create({ unit, createdBy: operatorUser, ...(email && { email }) })
+      .create({ unit, createdBy: operatorUser, ...(email && { email }), user })
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);

@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { UserRegistrationLinkService } from './user-registration-link.service';
 import { CreateUserRegistrationLinkDto } from './dto/create-user-registration-link.dto';
 import { Types } from 'mongoose';
@@ -15,8 +6,6 @@ import {
   ConvertParamToObjectId,
   ConvertToObjectId,
 } from 'src/decorators/convert-to-objectId.decorator';
-import { GetUserInterceptor } from 'src/interceptors/getUser.interceptor';
-import { UserEntity } from 'src/entities/user.entity';
 import { UpdateUserRegistrationLinkDto } from './dto/update-user-registration-link.dto';
 
 @Controller('user-registration-link')
