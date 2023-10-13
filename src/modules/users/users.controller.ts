@@ -28,12 +28,15 @@ import { UserEntity } from 'src/entities/user.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseInterceptors(GetUserInterceptor)
   @Post()
   create(
     @ConvertParamToObjectId(['account', 'unit', 'condominium'])
+    @Param('operator')
+    operator: UserEntity,
     createUserDto: CreateUserDto,
   ) {
-    return this.usersService.create(createUserDto);
+    return this.usersService.create(createUserDto, operator);
   }
 
   @UseInterceptors(CondominiumInterceptor)

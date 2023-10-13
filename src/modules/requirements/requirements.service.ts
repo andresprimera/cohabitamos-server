@@ -21,8 +21,11 @@ import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { RequirementsLogService } from '../requirements-log/requirements-log.service';
 import { ConvertToTaskDto } from './dto/convert-to-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { REQUIREMENT_STATE } from 'src/common/enums';
-import { SengridService } from 'src/providers/notifications';
+import { AUTHORIZATION_STATUS, REQUIREMENT_STATE } from 'src/common/enums';
+import { NotificationService } from 'src/providers/notifications';
+import { IRequestCreatedUpdatedPayload } from 'src/providers/notifications/types';
+import { ETemplates } from 'src/providers/notifications/enums';
+import { UsersByUnitEntity } from 'src/entities/users-by-unit.entity';
 
 @Injectable()
 export class RequirementsService {
@@ -36,7 +39,7 @@ export class RequirementsService {
     private readonly condominiumsService: CondominiumsService,
     private readonly usersByUnitsService: UsersByUnitService,
     private readonly requirementsLogsService: RequirementsLogService,
-    private readonly sengridService: SengridService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async createRequest(createRequirementDto: CreateRequirementDto) {
@@ -48,66 +51,80 @@ export class RequirementsService {
       description,
     } = createRequirementDto || {};
 
-    this.sengridService.sendEmail({
-      msgs: {
-        from: 'andres',
+    if (!createRequirementDto?.user) {
+      throw new BadRequestException('Required field user not provided.');
+    }
+
+    const unit: UnitEntity = await this.unitsService.findOne(
+      new Types.ObjectId(unitId),
+    );
+
+    const condominium: CondominiumEntity =
+      await this.condominiumsService.findOne(
+        new Types.ObjectId(String(unit.condominium)),
+      );
+
+    const { _id: userId } = createUserDto;
+
+    let user: UserEntity;
+    let userByUnit: UsersByUnitEntity | null = null;
+
+    if (userId) {
+      user = await this.usersService.findOne(new Types.ObjectId(userId));
+
+      userByUnit = (await this.usersByUnitsService.findByUserId(
+        user._id,
+      )) as UsersByUnitEntity;
+
+      if (!userByUnit) {
+        userByUnit = await this.usersByUnitsService.create({
+          unit: unit._id,
+          user: user._id,
+          condition: createUserDto.condition,
+          status: AUTHORIZATION_STATUS.PENDING,
+        });
+      }
+    } else {
+      user = await this.usersService.create(createUserDto);
+    }
+
+    const requirement = await this.requirementRepository
+      .create({
+        requirementType,
+        description,
+        unit,
+        user,
+        condominium,
+        status: status || REQUIREMENT_STATE.OPEN,
+      })
+      .catch((error) => {
+        Logger.error('This is the error is running =>', error);
+        throw new BadRequestException(error.message);
+      });
+
+    await this.requirementsLogsService.create({
+      requirement,
+      message: `Requerimiento creado: ${description}`,
+      records: [],
+      updatedBy: user._id,
+    });
+
+    this.notificationService.sendEmail<IRequestCreatedUpdatedPayload>({
+      action: ETemplates.REQUEST_CREATED,
+      to: user.email,
+      payload: {
+        condominiumName: condominium.name,
+        userEmail: user.email,
+        unitNumber: unit.number,
+        unitType: unit.type,
+        unitBlock: unit.block,
+        name: `${user.firstName} ${user.lastName}`,
+        message: description,
+        status: status || REQUIREMENT_STATE.OPEN,
       },
     });
 
-    // if (!createRequirementDto?.user) {
-    //   throw new BadRequestException('Required field user not provided.');
-    // }
-
-    // const unit: UnitEntity = await this.unitsService.findOne(
-    //   new Types.ObjectId(unitId),
-    // );
-
-    // const condominium: CondominiumEntity =
-    //   await this.condominiumsService.findOne(
-    //     new Types.ObjectId(String(unit.condominium)),
-    //   );
-
-    // const { _id: userId } = createUserDto;
-
-    // let user: UserEntity;
-    // if (userId) {
-    //   user = await this.usersService.findOne(new Types.ObjectId(userId));
-
-    //   const userByUnit = await this.usersByUnitsService.findByUserId(user._id);
-
-    //   if (!userByUnit) {
-    //     await this.usersByUnitsService.create({
-    //       unit: unit._id,
-    //       user: user._id,
-    //       condition: createUserDto.condition,
-    //     });
-    //   }
-    // } else {
-    //   user = await this.usersService.create(createUserDto);
-    // }
-
-    // const requirement = await this.requirementRepository
-    //   .create({
-    //     requirementType,
-    //     description,
-    //     unit,
-    //     user,
-    //     condominium,
-    //     status: status || 'Abierto',
-    //   })
-    //   .catch((error) => {
-    //     Logger.error('This is the error is running =>', error);
-    //     throw new BadRequestException(error.message);
-    //   });
-
-    // await this.requirementsLogsService.create({
-    //   requirement,
-    //   message: `Requerimiento creado: ${description}`,
-    //   records: [],
-    //   updatedBy: user._id,
-    // });
-
-    // return requirement;
+    return requirement;
   }
 
   async createTask(
@@ -366,6 +383,23 @@ export class RequirementsService {
         'No requirement was found for the provided _id',
       );
     }
+
+    const { unit, user, condominium } = requirement as RequirementEntity;
+
+    this.notificationService.sendEmail<IRequestCreatedUpdatedPayload>({
+      action: ETemplates.NEW_REQUEST_MESSAGE,
+      to: user?.email || '',
+      payload: {
+        condominiumName: condominium?.name || '',
+        userEmail: user?.email || '',
+        unitNumber: unit?.number || '',
+        unitType: unit?.type || '',
+        unitBlock: unit?.block || '',
+        name: `${user?.firstName} ${user?.lastName}`,
+        message,
+        status: status || (requirement?.status as REQUIREMENT_STATE),
+      },
+    });
 
     return response;
   }

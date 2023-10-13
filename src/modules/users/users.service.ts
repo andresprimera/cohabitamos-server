@@ -18,6 +18,7 @@ import { CondominiumsService } from '../condominiums/condominiums.service';
 import { excelUtils } from 'utils';
 import { headers, worksheetNames } from './userExcelFile.definition';
 import { classToClassFromExist } from 'class-transformer';
+import { AUTHORIZATION_STATUS } from 'src/common/enums';
 
 @Injectable()
 export class UsersService {
@@ -31,7 +32,7 @@ export class UsersService {
     private readonly condominiumService: CondominiumsService,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto, operator?: UserEntity) {
     let unit = null;
 
     //*************** VALIDATIONS ***********************/
@@ -88,6 +89,7 @@ export class UsersService {
         unit: createUserDto.unit as Types.ObjectId,
         user: newUser._id,
         condition: createUserDto.condition,
+        status: AUTHORIZATION_STATUS.PENDING,
       });
     }
 
@@ -108,20 +110,26 @@ export class UsersService {
     const role = createUserDto.role;
 
     if (role === 'operador' || role === 'operador de administración') {
-      const condominium = await this.condominiumService.findOne(
-        createUserDto.condominium as Types.ObjectId,
-      );
-
       const permissions = {
         condominiums: [] as Types.ObjectId[],
-        account: null,
+        account: null as Types.ObjectId | null,
       };
 
-      if (role === 'operador de administración') {
-        permissions.account = condominium.account;
+      if (role === 'operador de administración' && operator) {
+        const account = await this.accountService
+          .findOne(operator._id)
+          .catch((error) => {
+            Logger.log(error);
+            throw new NotFoundException(error.message);
+          });
+
+        permissions.account = account._id as Types.ObjectId;
       }
 
       if (role === 'operador') {
+        const condominium = await this.condominiumService.findOne(
+          createUserDto.condominium as Types.ObjectId,
+        );
         permissions.condominiums.push(condominium._id);
       }
 

@@ -81,4 +81,12 @@ export class ShortUserEntity {
 
   @prop({ default: null })
   permissions: Permissions | null;
+
+  @prop({
+    trim: true,
+    lowercase: true,
+    required: true,
+    unique: true,
+  })
+  email: string;
 }

@@ -22,6 +22,11 @@ import { VehiclesService } from '../vehicles/vehicles.service';
 import { VehiclesEntity } from 'src/entities/vehicle.entity';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { VisitorsService } from '../visitors/visitors.service';
+import { NotificationService } from 'src/providers/notifications';
+import { ETemplates } from 'src/providers/notifications/enums';
+import { IGuestReportCreatedPayload } from 'src/providers/notifications/types';
+import dayjs from 'dayjs';
+import { VISITORS_CONDITION } from 'src/common/enums';
 
 @Injectable()
 export class GuestReportsService {
@@ -37,6 +42,7 @@ export class GuestReportsService {
     private readonly vehicleService: VehiclesService,
     private readonly usersByUnitsService: UsersByUnitService,
     private readonly visitorsService: VisitorsService,
+    private readonly notificationsService: NotificationService,
   ) {}
 
   async create(createGuestReportDto: CreateGuestReportDto) {
@@ -179,6 +185,36 @@ export class GuestReportsService {
       visitors,
       unit: unit._id,
       guestReportId: newGuestReport._id,
+    });
+
+    const mainVisitor = visitors.find(
+      (visitor) => visitor.condition === VISITORS_CONDITION.MAIN_GUEST,
+    );
+
+    const { firstName, lastName, phone, docType, docNumber, condition } =
+      mainVisitor || {};
+
+    this.notificationsService.sendEmail<IGuestReportCreatedPayload>({
+      action: ETemplates.GUEST_REPORT_CREATED,
+      to: user.email,
+      payload: {
+        condition: condition || '',
+        condominiumName: condominium.name,
+        userEmail: user.email,
+        unitNumber: unit.number,
+        unitType: unit.type,
+        unitBlock: unit.block,
+        name: `${user.firstName} ${user.lastName}`,
+        guestQty,
+        guestName: `${firstName} ${lastName}`,
+        phone: phone || '',
+        docType: docType || '',
+        docNumber: docNumber || '',
+        arrivalDate: 'dayjs',
+        departureDate: 'dayjs',
+        hasVehicle: vehicle?.plate ? 'Si' : 'No',
+        hasPet: pet?.name ? 'Si' : 'No',
+      },
     });
 
     return newGuestReport;

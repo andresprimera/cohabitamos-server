@@ -3,6 +3,8 @@ import {
   BadRequestException,
   Logger,
   NotFoundException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { CreateUsersByUnitDto } from './dto/create-users-by-unit.dto';
 import { UpdateUsersByUnitDto } from './dto/update-users-by-unit.dto';
@@ -12,6 +14,11 @@ import { ReturnModelType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { UnitsService } from '../units/units.service';
 import { CondominiumsService } from '../condominiums/condominiums.service';
+import { UsersService } from '../users/users.service';
+import { NotificationService } from 'src/providers/notifications';
+import { IUnitAuthRequestPayload } from 'src/providers/notifications/types';
+import { ETemplates } from 'src/providers/notifications/enums';
+import { AUTHORIZATION_STATUS } from 'src/common/enums';
 
 @Injectable()
 export class UsersByUnitService {
@@ -21,8 +28,11 @@ export class UsersByUnitService {
       typeof UsersByUnitEntity
     >,
 
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService,
     private readonly unitsService: UnitsService,
     private readonly condominiumService: CondominiumsService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async create(createUsersByUnitDto: CreateUsersByUnitDto) {
@@ -33,6 +43,26 @@ export class UsersByUnitService {
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
+      })
+      .finally(async () => {
+        const condominium = await this.condominiumService.findOne(
+          unit.condominium as Types.ObjectId,
+        );
+        const user = await this.usersService.findOne(createUsersByUnitDto.user);
+
+        this.notificationService.sendEmail<IUnitAuthRequestPayload>({
+          action: ETemplates.UNIT_AUTH_REQUEST_CREATED,
+          to: user?.email || '',
+          payload: {
+            condition: createUsersByUnitDto.condition,
+            condominiumName: condominium?.name || '',
+            userEmail: user?.email || '',
+            unitNumber: unit?.number || '',
+            unitType: unit?.type || '',
+            unitBlock: unit?.block || '',
+            name: `${user?.firstName} ${user?.lastName}`,
+          },
+        });
       });
   }
 
@@ -126,6 +156,33 @@ export class UsersByUnitService {
       .catch((error) => {
         Logger.log(error.message);
         throw new BadRequestException(error.message);
+      })
+      .finally(async () => {
+        if (updateUsersByUnitDto.status !== AUTHORIZATION_STATUS.AUTHORIZED) {
+          const userByUnit = await this.usersByUnitRepository
+            .find({ _id })
+            .toJSON();
+
+          const condominium = await this.condominiumService.findOne(
+            userByUnit?.condominium as Types.ObjectId,
+          );
+          const user = await this.usersService.findOne(userByUnit.user);
+          const unit = await this.unitsService.findOne(userByUnit.unit);
+
+          this.notificationService.sendEmail<IUnitAuthRequestPayload>({
+            action: ETemplates.UNIT_AUTH_REQUEST_APPROVED,
+            to: user?.email || '',
+            payload: {
+              condition: userByUnit.condition,
+              condominiumName: condominium?.name || '',
+              userEmail: user?.email || '',
+              unitNumber: unit?.number || '',
+              unitType: unit?.type || '',
+              unitBlock: unit?.block || '',
+              name: `${user?.firstName} ${user?.lastName}`,
+            },
+          });
+        }
       });
 
     if (!response) {
