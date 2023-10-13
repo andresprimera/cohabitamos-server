@@ -21,7 +21,7 @@ import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { RequirementsLogService } from '../requirements-log/requirements-log.service';
 import { ConvertToTaskDto } from './dto/convert-to-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { REQUIREMENT_STATE } from 'src/common/enums';
+import { AUTHORIZATION_STATUS, REQUIREMENT_STATE } from 'src/common/enums';
 import { NotificationService } from 'src/providers/notifications';
 import { IRequestCreatedUpdatedPayload } from 'src/providers/notifications/types';
 import { ETemplates } from 'src/providers/notifications/enums';
@@ -81,6 +81,7 @@ export class RequirementsService {
           unit: unit._id,
           user: user._id,
           condition: createUserDto.condition,
+          status: AUTHORIZATION_STATUS.PENDING,
         });
       }
     } else {
