@@ -81,6 +81,7 @@ export class AppModule implements NestModule {
         { path: 'pets/get-by-name/name', method: RequestMethod.GET },
         { path: 'vehicles/get-by-plate/plate', method: RequestMethod.GET },
         { path: 'user-registration-link/:_id', method: RequestMethod.GET },
+        { path: 'user-registration-link/:_id', method: RequestMethod.PATCH },
         { path: 'chat', method: RequestMethod.POST },
         { path: 'visitors/:docNumber', method: RequestMethod.GET },
         { path: 'user-registration-link', method: RequestMethod.POST },
