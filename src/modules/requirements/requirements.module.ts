@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { RequirementsService } from './requirements.service';
 import { RequirementsController } from './requirements.controller';
 import { TypegooseModule } from 'nestjs-typegoose';
@@ -8,7 +8,7 @@ import { CondominiumsModule } from '../condominiums/condominiums.module';
 import { UnitsModule } from '../units/units.module';
 import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
 import { RequirementsLogModule } from '../requirements-log/requirements-log.module';
-import { SengridService } from 'src/providers/notifications';
+import { NotificationService } from 'src/providers/notifications';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { SengridService } from 'src/providers/notifications';
     TypegooseModule.forFeature([RequirementEntity]),
   ],
   controllers: [RequirementsController],
-  providers: [RequirementsService, SengridService],
+  providers: [RequirementsService, NotificationService],
   exports: [RequirementsService],
 })
 export class RequirementsModule {}

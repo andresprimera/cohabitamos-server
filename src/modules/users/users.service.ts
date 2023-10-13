@@ -31,7 +31,7 @@ export class UsersService {
     private readonly condominiumService: CondominiumsService,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto, operator?: UserEntity) {
     let unit = null;
 
     //*************** VALIDATIONS ***********************/
@@ -108,20 +108,26 @@ export class UsersService {
     const role = createUserDto.role;
 
     if (role === 'operador' || role === 'operador de administración') {
-      const condominium = await this.condominiumService.findOne(
-        createUserDto.condominium as Types.ObjectId,
-      );
-
       const permissions = {
         condominiums: [] as Types.ObjectId[],
-        account: null,
+        account: null as Types.ObjectId | null,
       };
 
-      if (role === 'operador de administración') {
-        permissions.account = condominium.account;
+      if (role === 'operador de administración' && operator) {
+        const account = await this.accountService
+          .findOne(operator._id)
+          .catch((error) => {
+            Logger.log(error);
+            throw new NotFoundException(error.message);
+          });
+
+        permissions.account = account._id as Types.ObjectId;
       }
 
       if (role === 'operador') {
+        const condominium = await this.condominiumService.findOne(
+          createUserDto.condominium as Types.ObjectId,
+        );
         permissions.condominiums.push(condominium._id);
       }
 

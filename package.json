@@ -30,6 +30,7 @@
     "@typegoose/typegoose": "^11.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "dayjs": "^1.11.10",
     "exceljs": "^4.3.0",
     "firebase-admin": "^11.9.0",
     "helmet": "^7.0.0",

@@ -10,6 +10,7 @@ import { PetsModule } from '../pets/pets.module';
 import { VehiclesModule } from '../vehicles/vehicles.module';
 import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
 import { VisitorsModule } from '../visitors/visitors.module';
+import { NotificationService } from 'src/providers/notifications';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { VisitorsModule } from '../visitors/visitors.module';
     TypegooseModule.forFeature([GuestReportEntity]),
   ],
   controllers: [GuestReportsController],
-  providers: [GuestReportsService],
+  providers: [GuestReportsService, NotificationService],
 })
 export class GuestReportsModule {}
