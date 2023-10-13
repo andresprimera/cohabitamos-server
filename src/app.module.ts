@@ -85,6 +85,7 @@ export class AppModule implements NestModule {
         { path: 'chat', method: RequestMethod.POST },
         { path: 'visitors/:docNumber', method: RequestMethod.GET },
         { path: 'user-registration-link', method: RequestMethod.POST },
+        { path: 'users-by-unit', method: RequestMethod.POST },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
