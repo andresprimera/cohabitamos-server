@@ -18,6 +18,7 @@ import { CondominiumsService } from '../condominiums/condominiums.service';
 import { excelUtils } from 'utils';
 import { headers, worksheetNames } from './userExcelFile.definition';
 import { classToClassFromExist } from 'class-transformer';
+import { AUTHORIZATION_STATUS } from 'src/common/enums';
 
 @Injectable()
 export class UsersService {
@@ -88,6 +89,7 @@ export class UsersService {
         unit: createUserDto.unit as Types.ObjectId,
         user: newUser._id,
         condition: createUserDto.condition,
+        status: AUTHORIZATION_STATUS.PENDING,
       });
     }
 

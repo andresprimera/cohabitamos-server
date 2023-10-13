@@ -18,6 +18,7 @@ import { UsersService } from '../users/users.service';
 import { NotificationService } from 'src/providers/notifications';
 import { IUnitAuthRequestPayload } from 'src/providers/notifications/types';
 import { ETemplates } from 'src/providers/notifications/enums';
+import { AUTHORIZATION_STATUS } from 'src/common/enums';
 
 @Injectable()
 export class UsersByUnitService {
@@ -157,28 +158,31 @@ export class UsersByUnitService {
         throw new BadRequestException(error.message);
       })
       .finally(async () => {
-        const userByUnit = await this.usersByUnitRepository
-          .find({ _id })
-          .toJSON();
+        if (updateUsersByUnitDto.status !== AUTHORIZATION_STATUS.AUTHORIZED) {
+          const userByUnit = await this.usersByUnitRepository
+            .find({ _id })
+            .toJSON();
 
-        const condominium = await this.condominiumService.findOne(
-          userByUnit?.condominium as Types.ObjectId,
-        );
-        // const user = await this.usersService.findOne(createUsersByUnitDto.user);
+          const condominium = await this.condominiumService.findOne(
+            userByUnit?.condominium as Types.ObjectId,
+          );
+          const user = await this.usersService.findOne(userByUnit.user);
+          const unit = await this.unitsService.findOne(userByUnit.unit);
 
-        // this.notificationService.sendEmail<IUnitAuthRequestPayload>({
-        //   action: ETemplates.UNIT_AUTH_REQUEST_CREATED,
-        //   to: user?.email || '',
-        //   payload: {
-        //     condition: createUsersByUnitDto.condition,
-        //     condominiumName: condominium?.name || '',
-        //     userEmail: user?.email || '',
-        //     unitNumber: unit?.number || '',
-        //     unitType: unit?.type || '',
-        //     unitBlock: unit?.block || '',
-        //     name: `${user?.firstName} ${user?.lastName}`,
-        //   },
-        // });
+          this.notificationService.sendEmail<IUnitAuthRequestPayload>({
+            action: ETemplates.UNIT_AUTH_REQUEST_APPROVED,
+            to: user?.email || '',
+            payload: {
+              condition: userByUnit.condition,
+              condominiumName: condominium?.name || '',
+              userEmail: user?.email || '',
+              unitNumber: unit?.number || '',
+              unitType: unit?.type || '',
+              unitBlock: unit?.block || '',
+              name: `${user?.firstName} ${user?.lastName}`,
+            },
+          });
+        }
       });
 
     if (!response) {
