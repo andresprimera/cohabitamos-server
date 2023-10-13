@@ -32,9 +32,10 @@ export class UsersController {
   @Post()
   create(
     @ConvertParamToObjectId(['account', 'unit', 'condominium'])
+    @Body()
+    createUserDto: CreateUserDto,
     @Param('operator')
     operator: UserEntity,
-    createUserDto: CreateUserDto,
   ) {
     return this.usersService.create(createUserDto, operator);
   }

@@ -34,7 +34,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto, operator?: UserEntity) {
     let unit = null;
-
+    console.log({createUserDto});
     //*************** VALIDATIONS ***********************/
     if (createUserDto.role === 'usuario') {
       if (!createUserDto?.unit) {
