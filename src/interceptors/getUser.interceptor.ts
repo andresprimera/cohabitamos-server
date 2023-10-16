@@ -21,17 +21,16 @@ export class GetUserInterceptor implements NestInterceptor {
   ): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest();
     const operator = request.headers['operator'];
+    let user = null;
 
-    if (!operator)
-      throw new BadRequestException('Operator missing from header');
-
-    const user = await this.userRepository
-      .findOne(new Types.ObjectId(operator))
-      .catch((error) => {
-        Logger.error(error);
-        return error;
-      });
-
+    if (operator) {
+      user = await this.userRepository
+        .findOne(new Types.ObjectId(operator))
+        .catch((error) => {
+          Logger.error(error);
+          return error;
+        });
+    }
     request.params = {
       ...request.params,
       operator: user,

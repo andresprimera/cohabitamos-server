@@ -17,7 +17,6 @@ import { AccountsService } from '../accounts/accounts.service';
 import { CondominiumsService } from '../condominiums/condominiums.service';
 import { excelUtils } from 'utils';
 import { headers, worksheetNames } from './userExcelFile.definition';
-import { classToClassFromExist } from 'class-transformer';
 import { AUTHORIZATION_STATUS } from 'src/common/enums';
 
 @Injectable()
@@ -34,7 +33,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto, operator?: UserEntity) {
     let unit = null;
-    console.log({createUserDto});
+
     //*************** VALIDATIONS ***********************/
     if (createUserDto.role === 'usuario') {
       if (!createUserDto?.unit) {
