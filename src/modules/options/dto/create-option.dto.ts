@@ -1,28 +1,61 @@
 import { prop } from '@typegoose/typegoose';
-import { Types } from 'mongoose';
+import {
+  ACCOUNT_STATES,
+  AUTHORIZATION_STATUS,
+  DEFAULT_REQUIREMENTS_TYPES,
+  EXECUTION_STATUS,
+  PET_KIND,
+  REQUIREMENT_STATE,
+  ROLES,
+  STATUS,
+  UNIT_TYPES,
+  USER_CONDITION,
+  VISITORS_CONDITION,
+} from 'src/common/enums';
 
 export class CreateOptionDto {
-  @prop({ required: true, default: ['Activo', 'Suspendido', 'Cerrado'] })
-  ACCOUNT_STATES: string[];
+  @prop({
+    required: true,
+    default: [...Object.values(ACCOUNT_STATES)],
+  })
+  ACCOUNT_STATES: ACCOUNT_STATES[];
 
   @prop({
     required: true,
-    default: ['Abierto', 'Cerrado', 'En curso', 'Esperando respuesta'],
+    default: [...Object.values(REQUIREMENT_STATE)],
   })
-  REQUIREMENT_STATE: string[];
+  REQUIREMENT_STATE: REQUIREMENT_STATE[];
 
-  @prop({ required: true, default: ['Residente', 'Retirado', 'Visitante'] })
-  STATUS: string[];
+  @prop({ required: true, default: [...Object.values(STATUS)] })
+  STATUS: STATUS[];
 
-  @prop({ required: true, default: ['Perro', 'Gato'] })
-  PET_KIND: string[];
+  @prop({ required: true, default: [...Object.values(PET_KIND)] })
+  PET_KIND: PET_KIND[];
 
-  @prop({ required: true, default: ['Apto', 'Casa', 'Local'] })
-  UNIT_TYPES: string[];
+  @prop({ required: true, default: [...Object.values(UNIT_TYPES)] })
+  UNIT_TYPES: UNIT_TYPES[];
 
   @prop({
     required: true,
-    default: ['Propietario', 'Arrendatario', 'Residente', 'Visitante'],
+    default: [...Object.values(USER_CONDITION)],
   })
-  USER_CONDITIONS: string[];
+  USER_CONDITIONS: USER_CONDITION[];
+
+  @prop({
+    required: true,
+    default: [...Object.values(DEFAULT_REQUIREMENTS_TYPES)],
+  })
+  DEFAULT_REQUIREMENTS_TYPES: DEFAULT_REQUIREMENTS_TYPES[];
+
+  @prop({ required: true, default: [...Object.values(ROLES)] })
+  ROLES: ROLES[];
+
+  @prop({ required: true, default: [...Object.values(VISITORS_CONDITION)] })
+  VISITORS_CONDITION: VISITORS_CONDITION[];
+
+  @prop({ required: true, default: [...Object.values(EXECUTION_STATUS)] })
+  EXECUTION_STATUS: EXECUTION_STATUS[];
+
+  @prop({ required: true, default: [...Object.values(AUTHORIZATION_STATUS)] })
+  AUTHORIZATION_STATUS: AUTHORIZATION_STATUS[];
 }

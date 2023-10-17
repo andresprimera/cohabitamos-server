@@ -1,10 +1,11 @@
-import { modelOptions, prop, Ref } from '@typegoose/typegoose';
+import { modelOptions, prop, Ref, Severity } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { UnitEntity } from './unit.entity';
 import { ShortUserEntity, UserEntity } from './user.entity';
 
 @modelOptions({
   schemaOptions: { collection: 'user_registration_links', timestamps: true },
+  options: { allowMixed: Severity.ALLOW },
 })
 export class UserRegistrationLinkEntity {
   @prop({ required: true })

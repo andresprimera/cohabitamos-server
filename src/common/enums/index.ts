@@ -36,11 +36,11 @@ export enum USER_CONDITION {
   AUTHORIZED = 'Autorizado',
 }
 
-export enum DOC_TYPE {
+export enum DOCUMENT_TYPES {
   CC = 'Cédula de Ciudadanía',
   CE = 'Cédula de Extranjería',
   PA = 'Pasaporte',
-  PEP = 'Permiso Especial de Permanencia',
+  PTP = 'Permiso Temporal de Permanencia',
   OTHER = 'Otro',
   UNASSIGNED = '',
 }

@@ -1,6 +1,6 @@
 import { prop, modelOptions, Ref } from '@typegoose/typegoose';
 import { Severity } from '@typegoose/typegoose';
-import { DOC_TYPE, ROLES } from 'src/common/enums';
+import { DOCUMENT_TYPES, ROLES } from 'src/common/enums';
 import { AccountEntity } from './account.entity';
 import mongoose, { Types } from 'mongoose';
 import { CondominiumEntity } from './condominium.entity';
@@ -53,8 +53,8 @@ export class UserEntity {
   @prop({ default: '' })
   whatsapp: string;
 
-  @prop({ enum: DOC_TYPE, default: DOC_TYPE.UNASSIGNED })
-  docType: DOC_TYPE;
+  @prop({ enum: DOCUMENT_TYPES, default: DOCUMENT_TYPES.UNASSIGNED })
+  docType: DOCUMENT_TYPES;
 
   @prop({ default: '' })
   docNumber?: string;

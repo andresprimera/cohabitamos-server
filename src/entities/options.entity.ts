@@ -1,8 +1,11 @@
 import { Severity, modelOptions, prop } from '@typegoose/typegoose';
+import { Schema, Types } from 'mongoose';
 import {
   ACCOUNT_STATES,
+  AUTHORIZATION_STATUS,
   DEFAULT_REQUIREMENTS_TYPES,
-  DOC_TYPE,
+  DOCUMENT_TYPES,
+  EXECUTION_STATUS,
   PET_KIND,
   REQUIREMENT_STATE,
   ROLES,
@@ -17,82 +20,56 @@ import {
   options: { allowMixed: Severity.ALLOW },
 })
 export class OptionsEntity {
-  @prop({
-    default: [
-      ACCOUNT_STATES.ACTIVE,
-      ACCOUNT_STATES.CLOSED,
-      ACCOUNT_STATES.SUSPENDED,
-    ],
-  })
-  ACCOUNT_STATES: string[];
+  _id: { type: Types.ObjectId; auto: true };
 
   @prop({
-    default: [
-      REQUIREMENT_STATE.OPEN,
-      REQUIREMENT_STATE.CLOSED,
-      REQUIREMENT_STATE.IN_PROGRESS,
-      REQUIREMENT_STATE.ON_HOLD,
-    ],
+    required: true,
+    default: [...Object.values(ACCOUNT_STATES)],
   })
-  REQUIREMENT_STATE: string[];
-
-  @prop({ default: [STATUS.PERMANENT, STATUS.RETIRED, STATUS.VISITOR] })
-  STATUS: string[];
-
-  @prop({ default: [PET_KIND.DOG, PET_KIND.CAT, PET_KIND.OTHER] })
-  PET_KIND: string[];
-
-  @prop({ default: [UNIT_TYPES.APT, UNIT_TYPES.HOUSE, UNIT_TYPES.BUSINESS] })
-  UNIT_TYPES: string[];
+  ACCOUNT_STATES: ACCOUNT_STATES[];
 
   @prop({
-    default: [
-      USER_CONDITION.OWNER,
-      USER_CONDITION.TENANT,
-      USER_CONDITION.RESIDENT,
-    ],
+    required: true,
+    default: [...Object.values(REQUIREMENT_STATE)],
   })
-  USER_CONDITIONS: string[];
+  REQUIREMENT_STATE: REQUIREMENT_STATE[];
+
+  @prop({ required: true, default: [...Object.values(STATUS)] })
+  STATUS: STATUS[];
+
+  @prop({ required: true, default: [...Object.values(PET_KIND)] })
+  PET_KIND: PET_KIND[];
+
+  @prop({ required: true, default: [...Object.values(UNIT_TYPES)] })
+  UNIT_TYPES: UNIT_TYPES[];
 
   @prop({
-    default: [
-      DOC_TYPE.CC,
-      DOC_TYPE.CE,
-      DOC_TYPE.PA,
-      DOC_TYPE.PEP,
-      DOC_TYPE.OTHER,
-      DOC_TYPE.UNASSIGNED,
-    ],
+    required: true,
+    default: [...Object.values(USER_CONDITION)],
   })
-  DOCUMENT_TYPES: string[];
+  USER_CONDITIONS: USER_CONDITION[];
 
   @prop({
-    default: [
-      DEFAULT_REQUIREMENTS_TYPES.BILLING,
-      DEFAULT_REQUIREMENTS_TYPES.CONDOMINIUM,
-      DEFAULT_REQUIREMENTS_TYPES.PARKING,
-      DEFAULT_REQUIREMENTS_TYPES.PETS,
-      DEFAULT_REQUIREMENTS_TYPES.HELPERS,
-      DEFAULT_REQUIREMENTS_TYPES.SECURITY,
-      DEFAULT_REQUIREMENTS_TYPES.MAILING,
-      DEFAULT_REQUIREMENTS_TYPES.COEXISTENCE,
-    ],
+    required: true,
+    default: [...Object.values(DOCUMENT_TYPES)],
   })
-  DEFAULT_REQUIREMENTS_TYPES: string[];
+  DOCUMENT_TYPES: DOCUMENT_TYPES[];
 
   @prop({
-    default: [ROLES.ADMIN, ROLES.OPERATOR, ROLES.USER, ROLES.SUPER_ADMIN],
+    required: true,
+    default: [...Object.values(DEFAULT_REQUIREMENTS_TYPES)],
   })
-  ROLES: string[];
+  DEFAULT_REQUIREMENTS_TYPES: DEFAULT_REQUIREMENTS_TYPES[];
 
-  @prop({
-    default: [
-      VISITORS_CONDITION.MAIN_GUEST,
-      VISITORS_CONDITION.AUTHORIZED,
-      VISITORS_CONDITION.HOME_ASSISTANT,
-      VISITORS_CONDITION.RELATIVE,
-      VISITORS_CONDITION.PROVIDER,
-    ],
-  })
-  VISITORS_CONDITIONS: string[];
+  @prop({ required: true, default: [...Object.values(ROLES)] })
+  ROLES: ROLES[];
+
+  @prop({ required: true, default: [...Object.values(VISITORS_CONDITION)] })
+  VISITORS_CONDITION: VISITORS_CONDITION[];
+
+  @prop({ required: true, default: [...Object.values(EXECUTION_STATUS)] })
+  EXECUTION_STATUS: EXECUTION_STATUS[];
+
+  @prop({ required: true, default: [...Object.values(AUTHORIZATION_STATUS)] })
+  AUTHORIZATION_STATUS: AUTHORIZATION_STATUS[];
 }

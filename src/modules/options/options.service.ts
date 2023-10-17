@@ -1,6 +1,5 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { CreateOptionDto } from './dto/create-option.dto';
-import { UpdateOptionDto } from './dto/update-option.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { OptionsEntity } from 'src/entities/options.entity';
 import { ReturnModelType } from '@typegoose/typegoose';

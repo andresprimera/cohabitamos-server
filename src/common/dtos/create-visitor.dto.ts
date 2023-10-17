@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { DOC_TYPE, VISITORS_CONDITION } from '../enums';
+import { DOCUMENT_TYPES, VISITORS_CONDITION } from '../enums';
 
 export interface Visitor {
   firstName: string;
@@ -8,7 +8,7 @@ export interface Visitor {
   phone: string;
   whatsapp: string;
   nationality: string;
-  docType: DOC_TYPE;
+  docType: DOCUMENT_TYPES;
   docNumber: string;
   condition: VISITORS_CONDITION;
 }

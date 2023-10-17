@@ -1,4 +1,4 @@
-import { UNIT_TYPES, USER_CONDITION, DOC_TYPE } from 'src/common/enums';
+import { UNIT_TYPES, USER_CONDITION, DOCUMENT_TYPES } from 'src/common/enums';
 import { ExcelHeader } from 'src/common/interfaces';
 
 const worksheetNames = ['USUARIOS NUEVOS', 'ACTUALIZACION DE USUARIOS'];
@@ -19,7 +19,11 @@ const headers: ExcelHeader[][] = [
     { title: 'PRIMER-APELLIDO', type: 'string' },
     { title: 'TELEFONO', type: 'string' },
     { title: 'WHATSAPP', type: 'string' },
-    { title: 'TIPO-DOCUMENTO', type: 'enum', enum: Object.values(DOC_TYPE) },
+    {
+      title: 'TIPO-DOCUMENTO',
+      type: 'enum',
+      enum: Object.values(DOCUMENT_TYPES),
+    },
     { title: 'NUMERO-DOCUMENTO', type: 'string' },
   ],
   [

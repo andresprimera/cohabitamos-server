@@ -1,4 +1,4 @@
-import { DOC_TYPE, ROLES } from '../enums';
+import { DOCUMENT_TYPES, ROLES } from '../enums';
 import { Types } from 'mongoose';
 
 export class CreateUserDto {
@@ -10,7 +10,7 @@ export class CreateUserDto {
   email: string;
   phone?: string[] | [];
   whatsapp?: string;
-  docType?: DOC_TYPE;
+  docType?: DOCUMENT_TYPES;
   docNumber?: string;
   nationality?: string;
   condition: string;

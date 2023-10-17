@@ -1,4 +1,4 @@
-import { modelOptions, prop } from '@typegoose/typegoose';
+import { modelOptions, prop, Severity } from '@typegoose/typegoose';
 import { UnitEntity } from './unit.entity';
 import { ShortUserEntity } from './user.entity';
 import { VehiclesEntity } from './vehicle.entity';
@@ -8,6 +8,7 @@ import { Visitor } from 'src/common/dtos/create-visitor.dto';
 
 @modelOptions({
   schemaOptions: { collection: 'guest-reports', timestamps: true },
+  options: { allowMixed: Severity.ALLOW },
 })
 export class GuestReportEntity {
   @prop({ required: true })
