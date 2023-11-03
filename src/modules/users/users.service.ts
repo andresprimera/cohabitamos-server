@@ -504,4 +504,21 @@ export class UsersService {
       throw new BadRequestException(error.message);
     });
   }
+
+  async deleteAllUsersFirebase() {
+    const users = await this.userRepository.find().catch((error) => {
+      Logger.error(error);
+      throw new BadRequestException(error.message);
+    });
+
+    const auth = this.firebase.getAuth();
+
+    const usersUid: any = [];
+
+    users.forEach((user) => {
+      user.uid && usersUid.push(user.uid);
+    });
+
+    return await auth.deleteUsers(usersUid);
+  }
 }

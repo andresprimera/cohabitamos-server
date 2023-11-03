@@ -40,6 +40,11 @@ export class UsersController {
     return this.usersService.create(createUserDto, operator);
   }
 
+  @Get('delete-all-firebase-users')
+  deleteAllFirebaseUsers() {
+    return this.usersService.deleteAllUsersFirebase();
+  }
+
   @UseInterceptors(CondominiumInterceptor)
   @Post('create-by-file-upload')
   createByFileUpload(
