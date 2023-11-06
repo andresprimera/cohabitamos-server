@@ -25,7 +25,7 @@ export const excelUtils = {
     worksheetNames.map((worksheetName, index) => {
       const worksheet = workbook.getWorksheet(index + 1);
 
-      if (worksheet.name !== worksheetName) {
+      if (worksheet?.name !== worksheetName) {
         throw new BadRequestException(
           `Falta la hoja llamada ${worksheetName}, o el archivo está ordenado de manera incorrecta`,
         );
@@ -36,12 +36,12 @@ export const excelUtils = {
   headers: (headers: ExcelHeader[][], workbook: Workbook) => {
     headers.map((headerByWorkbook, worksheetIndex: number) => {
       const worksheet = workbook.getWorksheet(worksheetIndex + 1);
-      const titles = worksheet.getRow(1).values as string[];
+      const titles = worksheet?.getRow(1).values as string[];
 
       titles.shift();
 
       headerByWorkbook.map((header, columnIndex: number) => {
-        if (header.title !== titles[columnIndex]) {
+        if (header?.title !== titles[columnIndex]) {
           throw new BadRequestException(
             `Falta la columna ${header.title} de la hoja ${
               worksheetIndex + 1
@@ -91,7 +91,7 @@ export const excelUtils = {
     headers: ExcelHeader[][],
   ) => {
     const workbook = new Workbook();
-    await workbook.xlsx.readFile(filePath);
+    await workbook?.xlsx.readFile(filePath);
     unlinkSync(filePath);
 
     //************** VALIDATING WORKSHEETS ********************************/
@@ -109,12 +109,12 @@ export const excelUtils = {
       const response: any = {};
 
       worksheetNames.map((worksheetName, index) => {
-        const worksheet = workbook.getWorksheet(index + 1);
+        const worksheet = workbook?.getWorksheet(index + 1);
 
         let data: any = [];
         const errors: string[] = [];
 
-        worksheet.eachRow((row: any, rowNumber: number) => {
+        worksheet?.eachRow((row: any, rowNumber: number) => {
           if (rowNumber === 1) return; // Skipping headers
 
           const values = row.values;

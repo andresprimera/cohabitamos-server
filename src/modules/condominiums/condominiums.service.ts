@@ -15,10 +15,8 @@ import { OptionsService } from '../options/options.service';
 import { RequirementTypesService } from '../requirement-types/requirement-types.service';
 import { UserEntity } from 'src/entities/user.entity';
 import { AccountsService } from '../accounts/accounts.service';
-import { MulterFile } from 'src/common/interfaces';
 import { excelUtils } from 'utils';
 import { headers, worksheetNames } from './excelFile.definition';
-import { UNIT_TYPES } from 'src/common/enums';
 
 @Injectable()
 export class CondominiumsService {
