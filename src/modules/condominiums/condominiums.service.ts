@@ -143,7 +143,7 @@ export class CondominiumsService {
 
   async findAll(operator: UserEntity) {
     const account = await this.accountService
-      .findOne(operator._id)
+      .findOne(operator?._id)
       .catch((error) => {
         Logger.log(error);
         throw new NotFoundException(error.message);
