@@ -86,7 +86,6 @@ export class ShortUserEntity {
     trim: true,
     lowercase: true,
     required: true,
-    unique: true,
   })
   email: string;
 }
