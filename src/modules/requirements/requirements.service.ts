@@ -23,9 +23,10 @@ import { ConvertToTaskDto } from './dto/convert-to-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { AUTHORIZATION_STATUS, REQUIREMENT_STATE } from 'src/common/enums';
 import { NotificationService } from 'src/providers/notifications';
-import { IRequestCreatedUpdatedPayload } from 'src/providers/notifications/types';
+import { INewRequestMessagePayload, IRequestCreatedUpdatedPayload } from 'src/providers/notifications/types';
 import { ETemplates } from 'src/providers/notifications/enums';
 import { UsersByUnitEntity } from 'src/entities/users-by-unit.entity';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class RequirementsService {
@@ -119,7 +120,8 @@ export class RequirementsService {
         unitType: unit.type,
         unitBlock: unit.block,
         name: `${user.firstName} ${user.lastName}`,
-        message: description,
+        title: requirementType,
+        description: description,
         status: status || REQUIREMENT_STATE.OPEN,
       },
     });
@@ -384,9 +386,9 @@ export class RequirementsService {
       );
     }
 
-    const { unit, user, condominium } = requirement as RequirementEntity;
+    const { unit, user, condominium, createdAt  } = requirement as RequirementEntity;
 
-    this.notificationService.sendEmail<IRequestCreatedUpdatedPayload>({
+    this.notificationService.sendEmail<INewRequestMessagePayload>({
       action: ETemplates.NEW_REQUEST_MESSAGE,
       to: user?.email || '',
       payload: {
@@ -398,6 +400,9 @@ export class RequirementsService {
         name: `${user?.firstName} ${user?.lastName}`,
         message,
         status: status || (requirement?.status as REQUIREMENT_STATE),
+        dateTime: dayjs(createdAt).format("DD/MM/YYY HH:mm").toString(),
+        author: `${assignee}`,
+        condominiumId: String(condominium?._id) || ''
       },
     });
 

@@ -26,7 +26,7 @@ export interface IGuestReportCreatedPayload {
 }
 
 export interface INewRequestMessagePayload {
-  condition: string;
+  status: REQUIREMENT_STATE;
   condominiumName: string;
   userEmail: string;
   unitNumber: string;
@@ -36,6 +36,7 @@ export interface INewRequestMessagePayload {
   message: string;
   author: string;
   condominiumId: string;
+  dateTime: string;
 }
 
 export interface IRequestCreatedUpdatedPayload {
@@ -45,7 +46,8 @@ export interface IRequestCreatedUpdatedPayload {
   unitType: string;
   unitBlock: string;
   name: string;
-  message: string;
+  title: string;
+  description: string;
   status: REQUIREMENT_STATE;
 }
 
