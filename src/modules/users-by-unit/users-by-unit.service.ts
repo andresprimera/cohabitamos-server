@@ -158,7 +158,7 @@ export class UsersByUnitService {
         throw new BadRequestException(error.message);
       })
       .finally(async () => {
-        if (updateUsersByUnitDto.status === AUTHORIZATION_STATUS.AUTHORIZED) {
+        if (updateUsersByUnitDto.status !== AUTHORIZATION_STATUS.AUTHORIZED) {
           const userByUnit = await this.usersByUnitRepository
             .find({ _id })
             .toJSON();
