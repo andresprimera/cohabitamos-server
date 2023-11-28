@@ -2,13 +2,14 @@ import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from 'src/entities/user.entity';
+import { ROLES } from 'src/common/enums';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
   async findSession(firebaseUser: UserEntity) {
-    const user = await this.usersService
+    let user = await this.usersService
       .findByUid(firebaseUser.uid)
       .catch((err) => {
         Logger.error(err);
@@ -18,15 +19,17 @@ export class AuthService {
         Logger.error(error);
       });
 
-    // console.log('user =>', user);
-    // console.log({ firebaseUser });
-
-    // if (!user) {
-    //   user = await this.usersService.create({
-    //     email: firebaseUser.email,
-    //     uid: firebaseUser.uid,
-    //   });
-    // }
+    if (!user) {
+      user = await this.usersService.create({
+        uid: firebaseUser.uid,
+        active: false,
+        firstName: '',
+        lastName: '',
+        role: ROLES.ADMIN,
+        email: firebaseUser.email,
+        password: '',
+      });
+    }
 
     return user;
   }

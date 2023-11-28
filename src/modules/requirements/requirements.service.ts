@@ -21,7 +21,11 @@ import { RequirementFiltersDto } from './dto/requirement-filter.dto';
 import { RequirementsLogService } from '../requirements-log/requirements-log.service';
 import { ConvertToTaskDto } from './dto/convert-to-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { AUTHORIZATION_STATUS, REQUIREMENT_STATE } from 'src/common/enums';
+import {
+  AUTHORIZATION_STATUS,
+  REQUIREMENT_STATE,
+  USER_CONDITION,
+} from 'src/common/enums';
 import { NotificationService } from 'src/providers/notifications';
 import {
   INewRequestMessagePayload,
@@ -84,7 +88,7 @@ export class RequirementsService {
         userByUnit = await this.usersByUnitsService.create({
           unit: unit._id,
           user: user._id,
-          condition: createUserDto.condition,
+          condition: createUserDto.condition as USER_CONDITION,
           status: AUTHORIZATION_STATUS.PENDING,
         });
       }

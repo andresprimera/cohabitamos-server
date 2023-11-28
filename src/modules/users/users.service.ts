@@ -17,7 +17,7 @@ import { AccountsService } from '../accounts/accounts.service';
 import { CondominiumsService } from '../condominiums/condominiums.service';
 import { excelUtils } from 'utils';
 import { headers, worksheetNames } from './userExcelFile.definition';
-import { AUTHORIZATION_STATUS } from 'src/common/enums';
+import { AUTHORIZATION_STATUS, USER_CONDITION } from 'src/common/enums';
 
 @Injectable()
 export class UsersService {
@@ -33,6 +33,8 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto, operator?: UserEntity) {
     let unit = null;
+
+    console.log({ createUserDto });
 
     //*************** VALIDATIONS ***********************/
     if (createUserDto.role === 'usuario') {
@@ -57,7 +59,8 @@ export class UsersService {
     let firebaseUser = null;
     //*************** CREATE USER ON FIREBASE AUTH ***********************/
 
-    if (createUserDto.role !== 'usuario') {
+    //if uid was passed, it means that the user logged in with a social media
+    if (createUserDto.role !== 'usuario' && !createUserDto?.uid) {
       const auth = this.firebase.getAuth();
       firebaseUser = await auth
         .createUser({
@@ -75,8 +78,13 @@ export class UsersService {
     }
 
     //*************** CREATE USER ON DATABASE ***********************/
+
+    //if no firebase user was created, I use the uid passed on the dto
     const newUser = await this.userRepository
-      .create({ ...createUserDto, uid: firebaseUser?.uid || null })
+      .create({
+        ...createUserDto,
+        uid: firebaseUser?.uid || createUserDto?.uid || null,
+      })
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
@@ -87,7 +95,7 @@ export class UsersService {
       await this.usersByUnitService.create({
         unit: createUserDto.unit as Types.ObjectId,
         user: newUser._id,
-        condition: createUserDto.condition,
+        condition: createUserDto?.condition || USER_CONDITION.OTHER,
         status: AUTHORIZATION_STATUS.PENDING,
       });
     }

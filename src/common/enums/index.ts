@@ -34,6 +34,7 @@ export enum USER_CONDITION {
   TENANT = 'Arrendatario',
   RESIDENT = 'Residente',
   AUTHORIZED = 'Autorizado',
+  OTHER = 'Otro',
 }
 
 export enum DOCUMENT_TYPES {

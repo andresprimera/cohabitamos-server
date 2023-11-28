@@ -23,10 +23,10 @@ export class UserEntity {
   @prop()
   uid: string;
 
-  @prop({ required: true })
+  @prop()
   firstName: string;
 
-  @prop({ required: true })
+  @prop()
   lastName: string;
 
   @prop({
