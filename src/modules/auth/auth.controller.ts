@@ -7,7 +7,6 @@ export class AuthController {
 
   @Get('findSession')
   findSession(@Request() req: any) {
-    console.log('firebaseUser =>', req.firebaseUser);
     return this.authService.findSession(req.firebaseUser);
   }
 }

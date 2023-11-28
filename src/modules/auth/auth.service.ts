@@ -10,7 +10,7 @@ export class AuthService {
 
   async findSession(firebaseUser: UserEntity) {
     let user = await this.usersService
-      .findByUid(firebaseUser.uid)
+      .findUserByEmail(firebaseUser.email)
       .catch((err) => {
         Logger.error(err);
         throw new UnauthorizedException();
@@ -18,6 +18,12 @@ export class AuthService {
       .catch((error) => {
         Logger.error(error);
       });
+
+    if (user && user?.uid !== firebaseUser?.uid) {
+      throw new UnauthorizedException(
+        'Ya existe un usuario registrado con ese correo. Por favor inicie sesión con su correo y contraseña.',
+      );
+    }
 
     if (!user) {
       user = await this.usersService.create({
