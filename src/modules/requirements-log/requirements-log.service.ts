@@ -7,6 +7,9 @@ import { UsersService } from '../users/users.service';
 import { Types } from 'mongoose';
 
 import { Record } from 'src/entities/requirements-log.entity';
+import { NotificationService } from 'src/providers/notifications';
+import { ETemplates } from 'src/providers/notifications/enums';
+import { INewRequestMessagePayload } from 'src/providers/notifications/types';
 
 @Injectable()
 export class RequirementsLogService {
@@ -14,6 +17,7 @@ export class RequirementsLogService {
     @InjectModel(RequirementsLogEntity)
     private readonly requirementsLogRepository: ModelType<RequirementsLogEntity>,
     private readonly usersService: UsersService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async create(createRequirementsLogDto: CreateRequirementsLogDto) {
@@ -27,7 +31,7 @@ export class RequirementsLogService {
       throw new BadRequestException('Field updatedBy not provided');
     }
 
-    const user = await this.usersService.findOne(updatedBy);
+    const msgAuthor = await this.usersService.findOne(updatedBy);
 
     const updatedRecords: Record[] = [];
 
@@ -49,12 +53,34 @@ export class RequirementsLogService {
       .create({
         ...createRequirementsLogDto,
         records: updatedRecords,
-        updatedBy: user,
+        updatedBy: msgAuthor,
         requirementId: requirement._id,
       })
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
+      })
+      .finally(async () => {
+        const { condominium, unit, user: pqrAuthor } = requirement;
+
+        this.notificationService.sendEmail<INewRequestMessagePayload>({
+          action: ETemplates.NEW_REQUEST_MESSAGE,
+          to: pqrAuthor?.email || '',
+          payload: {
+            condominiumName: condominium?.name || '',
+            userEmail: pqrAuthor?.email || '',
+            unitNumber: unit?.number || '',
+            unitType: unit?.type || '',
+            unitBlock: unit?.block || '',
+            name: `${pqrAuthor?.firstName} ${pqrAuthor?.lastName}`,
+            message: createRequirementsLogDto.message,
+            author: `${msgAuthor.firstName} ${msgAuthor.lastName}`,
+            condominiumId: condominium._id.toString(),
+            status: requirement.status,
+            requirementType: requirement.requirementType,
+            dateTime: new Date().toLocaleString(),
+          },
+        });
       });
   }
 

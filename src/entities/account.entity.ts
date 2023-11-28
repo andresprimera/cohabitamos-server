@@ -1,9 +1,6 @@
 import { modelOptions, prop, Ref } from '@typegoose/typegoose';
 import { UserEntity } from './user.entity';
 
-type NewType = {
-  collection: string;
-};
 export enum StatsEnum {
   ACTIVE = 'Activo',
   SUSPENDED = 'Suspendido',
@@ -22,4 +19,6 @@ export class AccountEntity {
   nextBillingDate: Date;
   @prop({ enum: StatsEnum, default: StatsEnum.ACTIVE })
   status: string;
+  @prop({})
+  logoUrl: string;
 }

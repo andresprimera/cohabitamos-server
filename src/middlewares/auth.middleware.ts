@@ -36,7 +36,7 @@ export class authMiddleware implements NestMiddleware {
       throw new UnauthorizedException('token could not be verified');
     }
 
-    req.uid = decodedToken.uid;
+    req.firebaseUser = decodedToken;
 
     next();
   }

@@ -7,7 +7,7 @@ import {
 import { CreateUnitDto } from './dto/create-unit.dto';
 import { UpdateUnitDto } from './dto/update-unit.dto';
 import { UnitEntity } from 'src/entities/unit.entity';
-import { getModelForClass, ReturnModelType } from '@typegoose/typegoose';
+import { getModelForClass, Ref, ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nestjs-typegoose';
 import { Types } from 'mongoose';
 
@@ -74,7 +74,7 @@ export class UnitsService {
     return response;
   }
 
-  async findOne(_id: Types.ObjectId) {
+  async findOne(_id: Ref<UnitEntity>) {
     const response = await this.unitRepository
       .findOne({ _id })
       .catch((error) => {

@@ -7,4 +7,5 @@ export class CreateAccountDto {
   startingDate: Date;
   nextBillingDate: Date;
   status: string;
+  logoUrl?: string;
 }

@@ -7,7 +7,7 @@ import {
 import { CreateUserDto } from '../../common/dtos/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from 'nestjs-typegoose';
-import { ReturnModelType } from '@typegoose/typegoose';
+import { Ref, ReturnModelType } from '@typegoose/typegoose';
 import { UserEntity } from '../../entities/user.entity';
 import { Types } from 'mongoose';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
@@ -380,7 +380,7 @@ export class UsersService {
       });
   }
 
-  async findOne(_id: Types.ObjectId) {
+  async findOne(_id: Ref<UserEntity>) {
     const response = await this.userRepository
       .findOne({ _id })
       .catch((error) => {

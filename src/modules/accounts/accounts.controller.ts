@@ -24,6 +24,11 @@ export class AccountsController {
     return this.accountsService.findAll();
   }
 
+  @Get('/by-id/:_id')
+  findOneById(@ConvertToObjectId() _id: Types.ObjectId) {
+    return this.accountsService.findOne(_id);
+  }
+
   @Get(':owner')
   findOne(@ConvertToObjectId() owner: Types.ObjectId) {
     return this.accountsService.findOne(owner);

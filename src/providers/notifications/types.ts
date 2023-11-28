@@ -1,4 +1,4 @@
-import { REQUIREMENT_STATE } from 'src/common/enums';
+import { AUTHORIZATION_STATUS, REQUIREMENT_STATE } from 'src/common/enums';
 import { ETemplates } from './enums';
 
 export interface ITemplate {
@@ -26,7 +26,7 @@ export interface IGuestReportCreatedPayload {
 }
 
 export interface INewRequestMessagePayload {
-  status: REQUIREMENT_STATE;
+  status: REQUIREMENT_STATE | string;
   condominiumName: string;
   userEmail: string;
   unitNumber: string;
@@ -37,6 +37,7 @@ export interface INewRequestMessagePayload {
   author: string;
   condominiumId: string;
   dateTime: string;
+  requirementType: string;
 }
 
 export interface IRequestCreatedUpdatedPayload {
@@ -59,4 +60,5 @@ export interface IUnitAuthRequestPayload {
   unitType: string;
   unitBlock: string;
   name: string;
+  status: AUTHORIZATION_STATUS;
 }

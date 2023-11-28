@@ -61,6 +61,7 @@ export class UsersByUnitService {
             unitType: unit?.type || '',
             unitBlock: unit?.block || '',
             name: `${user?.firstName} ${user?.lastName}`,
+            status: AUTHORIZATION_STATUS.PENDING,
           },
         });
       });
@@ -158,16 +159,18 @@ export class UsersByUnitService {
         throw new BadRequestException(error.message);
       })
       .finally(async () => {
-        if (updateUsersByUnitDto.status !== AUTHORIZATION_STATUS.AUTHORIZED) {
-          const userByUnit = await this.usersByUnitRepository
-            .find({ _id })
-            .toJSON();
+        if (updateUsersByUnitDto.status === AUTHORIZATION_STATUS.AUTHORIZED) {
+          const userByUnit = await this.usersByUnitRepository.findOne({
+            _id,
+          });
 
+          if (!userByUnit) return null;
           const condominium = await this.condominiumService.findOne(
             userByUnit?.condominium as Types.ObjectId,
           );
-          const user = await this.usersService.findOne(userByUnit.user);
-          const unit = await this.unitsService.findOne(userByUnit.unit);
+
+          const user = await this.usersService.findOne(userByUnit?.user);
+          const unit = await this.unitsService.findOne(userByUnit?.unit);
 
           this.notificationService.sendEmail<IUnitAuthRequestPayload>({
             action: ETemplates.UNIT_AUTH_REQUEST_APPROVED,
@@ -180,6 +183,7 @@ export class UsersByUnitService {
               unitType: unit?.type || '',
               unitBlock: unit?.block || '',
               name: `${user?.firstName} ${user?.lastName}`,
+              status: AUTHORIZATION_STATUS.AUTHORIZED,
             },
           });
         }

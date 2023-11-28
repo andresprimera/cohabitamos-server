@@ -4,11 +4,12 @@ import { RequirementsLogController } from './requirements-log.controller';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { RequirementsLogEntity } from 'src/entities/requirements-log.entity';
 import { UsersModule } from '../users/users.module';
+import { NotificationService } from 'src/providers/notifications';
 
 @Module({
   imports: [UsersModule, TypegooseModule.forFeature([RequirementsLogEntity])],
   controllers: [RequirementsLogController],
-  providers: [RequirementsLogService],
+  providers: [RequirementsLogService, NotificationService],
   exports: [RequirementsLogService],
 })
 export class RequirementsLogModule {}
