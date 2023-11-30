@@ -174,6 +174,32 @@ export class CondominiumsService {
             as: 'units',
           },
         },
+        {
+          $lookup: {
+            from: 'accounts',
+            localField: 'account',
+            foreignField: '_id',
+            as: 'account',
+          },
+        },
+        {
+          $unwind: '$account',
+        },
+        {
+          $project: {
+            _id: 1,
+            address: 1,
+            unitQty: 1,
+            name: 1,
+            email: 1,
+            blocks: 1,
+            nit: 1,
+            verificationDigit: 1,
+            receptionPhoneNumber: 1,
+            'account.logoUrl': 1,
+            units: 1,
+          },
+        },
       ])
       .catch((error) => {
         Logger.error(error);
