@@ -396,24 +396,29 @@ export class RequirementsService {
     const { unit, user, condominium, createdAt } =
       requirement as RequirementEntity;
 
-    this.notificationService.sendEmail<INewRequestMessagePayload>({
-      action: ETemplates.NEW_REQUEST_MESSAGE,
-      to: user?.email || '',
-      payload: {
-        condominiumName: condominium?.name || '',
-        userEmail: user?.email || '',
-        unitNumber: unit?.number || '',
-        unitType: unit?.type || '',
-        unitBlock: unit?.block || '',
-        name: `${user?.firstName} ${user?.lastName}`,
-        message,
-        status: status || (requirement?.status as REQUIREMENT_STATE),
-        dateTime: dayjs(createdAt).format('DD/MM/YYY HH:mm').toString(),
-        author: `${assignee}`,
-        condominiumId: String(condominium?._id) || '',
-        requirementType: requirement?.requirementType || '',
-      },
-    });
+    console.log(
+      'dayjs =>',
+      dayjs(createdAt).format('DD/MM/YYY HH:mm').toString(),
+    );
+
+    // this.notificationService.sendEmail<INewRequestMessagePayload>({
+    //   action: ETemplates.NEW_REQUEST_MESSAGE,
+    //   to: user?.email || '',
+    //   payload: {
+    //     condominiumName: condominium?.name || '',
+    //     userEmail: user?.email || '',
+    //     unitNumber: unit?.number || '',
+    //     unitType: unit?.type || '',
+    //     unitBlock: unit?.block || '',
+    //     name: `${user?.firstName} ${user?.lastName}`,
+    //     message,
+    //     status: status || (requirement?.status as REQUIREMENT_STATE),
+    //     dateTime: dayjs(createdAt).format('DD/MM/YYY HH:mm').toString(),
+    //     author: `${assignee}`,
+    //     condominiumId: String(condominium?._id) || '',
+    //     requirementType: requirement?.requirementType || '',
+    //   },
+    // });
 
     return response;
   }
