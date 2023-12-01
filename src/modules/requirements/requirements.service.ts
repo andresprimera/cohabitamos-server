@@ -33,7 +33,6 @@ import {
 } from 'src/providers/notifications/types';
 import { ETemplates } from 'src/providers/notifications/enums';
 import { UsersByUnitEntity } from 'src/entities/users-by-unit.entity';
-import dayjs from 'dayjs';
 
 @Injectable()
 export class RequirementsService {
