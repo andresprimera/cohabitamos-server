@@ -8,7 +8,8 @@ import { CondominiumsModule } from '../condominiums/condominiums.module';
 import { UnitsModule } from '../units/units.module';
 import { UsersByUnitModule } from '../users-by-unit/users-by-unit.module';
 import { RequirementsLogModule } from '../requirements-log/requirements-log.module';
-import { NotificationService } from 'src/providers/notifications';
+import { NotificationsService } from '../notifications/notifications.service';
+import { Firebase } from 'src/providers/firebase';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { NotificationService } from 'src/providers/notifications';
     TypegooseModule.forFeature([RequirementEntity]),
   ],
   controllers: [RequirementsController],
-  providers: [RequirementsService, NotificationService],
+  providers: [RequirementsService, NotificationsService, Firebase],
   exports: [RequirementsService],
 })
 export class RequirementsModule {}

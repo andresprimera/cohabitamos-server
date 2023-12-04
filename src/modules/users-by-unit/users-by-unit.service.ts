@@ -15,10 +15,13 @@ import { Types } from 'mongoose';
 import { UnitsService } from '../units/units.service';
 import { CondominiumsService } from '../condominiums/condominiums.service';
 import { UsersService } from '../users/users.service';
-import { NotificationService } from 'src/providers/notifications';
-import { IUnitAuthRequestPayload } from 'src/providers/notifications/types';
-import { ETemplates } from 'src/providers/notifications/enums';
-import { AUTHORIZATION_STATUS } from 'src/common/enums';
+import {
+  AUTHORIZATION_STATUS,
+  EMAIL_ACTIONS,
+  NOTIFICATION_COLLECTIONS,
+} from 'src/common/enums';
+import { NotificationsService } from '../notifications/notifications.service';
+import { IUnitAuthRequestPayload } from '../notifications/dto/unit-auth-request.dto';
 
 @Injectable()
 export class UsersByUnitService {
@@ -32,14 +35,20 @@ export class UsersByUnitService {
     private readonly usersService: UsersService,
     private readonly unitsService: UnitsService,
     private readonly condominiumService: CondominiumsService,
-    private readonly notificationService: NotificationService,
+    private readonly notificationService: NotificationsService,
   ) {}
 
   async create(createUsersByUnitDto: CreateUsersByUnitDto) {
     const unit = await this.unitsService.findOne(createUsersByUnitDto.unit);
 
+    let userByUnitId = '';
+
     return await this.usersByUnitRepository
       .create({ ...createUsersByUnitDto, condominium: unit.condominium })
+      .then((response) => {
+        userByUnitId = response._id.toString();
+        return response;
+      })
       .catch((error) => {
         Logger.error(error);
         throw new BadRequestException(error.message);
@@ -51,7 +60,7 @@ export class UsersByUnitService {
         const user = await this.usersService.findOne(createUsersByUnitDto.user);
 
         this.notificationService.sendEmail<IUnitAuthRequestPayload>({
-          action: ETemplates.UNIT_AUTH_REQUEST_CREATED,
+          action: EMAIL_ACTIONS.UNIT_AUTH_REQUEST_CREATED,
           to: user?.email || '',
           payload: {
             condition: createUsersByUnitDto.condition,
@@ -63,6 +72,13 @@ export class UsersByUnitService {
             name: `${user?.firstName} ${user?.lastName}`,
             status: AUTHORIZATION_STATUS.PENDING,
           },
+        });
+
+        await this.notificationService.createFirebaseNotification({
+          collection: NOTIFICATION_COLLECTIONS.AUTHORIZATION_REQUESTS,
+          objectId: userByUnitId,
+          accountId: String(condominium.account),
+          condominiumId: String(condominium._id),
         });
       });
   }
@@ -173,7 +189,7 @@ export class UsersByUnitService {
           const unit = await this.unitsService.findOne(userByUnit?.unit);
 
           this.notificationService.sendEmail<IUnitAuthRequestPayload>({
-            action: ETemplates.UNIT_AUTH_REQUEST_APPROVED,
+            action: EMAIL_ACTIONS.UNIT_AUTH_REQUEST_APPROVED,
             to: user?.email || '',
             payload: {
               condition: userByUnit.condition,

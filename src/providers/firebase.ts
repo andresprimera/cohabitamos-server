@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { initializeApp } from 'firebase-admin/app';
 import * as admin from 'firebase-admin';
 import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -24,5 +25,9 @@ export class Firebase {
 
   getAuth() {
     return getAuth(Firebase.app);
+  }
+
+  getFirestore() {
+    return getFirestore(Firebase.app);
   }
 }

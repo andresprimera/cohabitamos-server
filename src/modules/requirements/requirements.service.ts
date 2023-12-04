@@ -23,16 +23,16 @@ import { ConvertToTaskDto } from './dto/convert-to-task.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import {
   AUTHORIZATION_STATUS,
+  EMAIL_ACTIONS,
+  NOTIFICATION_COLLECTIONS,
   REQUIREMENT_STATE,
   USER_CONDITION,
 } from 'src/common/enums';
-import { NotificationService } from 'src/providers/notifications';
-import {
-  INewRequestMessagePayload,
-  IRequestCreatedUpdatedPayload,
-} from 'src/providers/notifications/types';
-import { ETemplates } from 'src/providers/notifications/enums';
+import { NotificationsService } from '../notifications/notifications.service';
+
 import { UsersByUnitEntity } from 'src/entities/users-by-unit.entity';
+import { IRequestCreatedUpdatedPayload } from '../notifications/dto/request-created-updated.dto';
+import { INewRequestMessagePayload } from '../notifications/dto/new-request-message.dto';
 
 @Injectable()
 export class RequirementsService {
@@ -46,7 +46,7 @@ export class RequirementsService {
     private readonly condominiumsService: CondominiumsService,
     private readonly usersByUnitsService: UsersByUnitService,
     private readonly requirementsLogsService: RequirementsLogService,
-    private readonly notificationService: NotificationService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async createRequest(createRequirementDto: CreateRequirementDto) {
@@ -105,19 +105,18 @@ export class RequirementsService {
         status: status || REQUIREMENT_STATE.OPEN,
       })
       .catch((error) => {
-        Logger.error('This is the error is running =>', error);
         throw new BadRequestException(error.message);
       });
 
-    await this.requirementsLogsService.create({
+    const newRequirement = await this.requirementsLogsService.create({
       requirement,
       message: `Requerimiento creado: ${description}`,
       records: [],
       updatedBy: user._id,
     });
 
-    this.notificationService.sendEmail<IRequestCreatedUpdatedPayload>({
-      action: ETemplates.REQUEST_CREATED,
+    await this.notificationsService.sendEmail<IRequestCreatedUpdatedPayload>({
+      action: EMAIL_ACTIONS.REQUEST_CREATED,
       to: user.email,
       payload: {
         condominiumName: condominium.name,
@@ -130,6 +129,13 @@ export class RequirementsService {
         description: description,
         status: status || REQUIREMENT_STATE.OPEN,
       },
+    });
+
+    await this.notificationsService.createFirebaseNotification({
+      collection: NOTIFICATION_COLLECTIONS.REQUIREMENTS,
+      objectId: String(newRequirement._id),
+      accountId: String(condominium.account),
+      condominiumId: String(condominium._id),
     });
 
     return requirement;
@@ -345,7 +351,7 @@ export class RequirementsService {
       assigneeUser = await this.usersService.findOne(assignee);
     }
 
-    await this.requirementsLogsService.create({
+    const newRequirement = await this.requirementsLogsService.create({
       requirement: requirement as RequirementEntity,
       message: `Nueva actualización de requerimiento${
         message ? ': ' + message : '.'
@@ -394,8 +400,8 @@ export class RequirementsService {
 
     const { unit, user, condominium } = requirement as RequirementEntity;
 
-    this.notificationService.sendEmail<INewRequestMessagePayload>({
-      action: ETemplates.NEW_REQUEST_MESSAGE,
+    this.notificationsService.sendEmail<INewRequestMessagePayload>({
+      action: EMAIL_ACTIONS.NEW_REQUEST_MESSAGE,
       to: user?.email || '',
       payload: {
         condominiumName: condominium?.name || '',
@@ -411,6 +417,13 @@ export class RequirementsService {
         condominiumId: String(condominium?._id) || '',
         requirementType: requirement?.requirementType || '',
       },
+    });
+
+    await this.notificationsService.createFirebaseNotification({
+      collection: NOTIFICATION_COLLECTIONS.REQUIREMENTS_LOGS,
+      objectId: String(newRequirement._id),
+      accountId: String(condominium.account),
+      condominiumId: String(condominium._id),
     });
 
     return response;

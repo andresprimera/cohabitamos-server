@@ -7,9 +7,9 @@ import { UsersService } from '../users/users.service';
 import { Types } from 'mongoose';
 
 import { Record } from 'src/entities/requirements-log.entity';
-import { NotificationService } from 'src/providers/notifications';
-import { ETemplates } from 'src/providers/notifications/enums';
-import { INewRequestMessagePayload } from 'src/providers/notifications/types';
+import { NotificationsService } from '../notifications/notifications.service';
+import { EMAIL_ACTIONS, NOTIFICATION_COLLECTIONS } from 'src/common/enums';
+import { INewRequestMessagePayload } from '../notifications/dto/new-request-message.dto';
 
 @Injectable()
 export class RequirementsLogService {
@@ -17,7 +17,7 @@ export class RequirementsLogService {
     @InjectModel(RequirementsLogEntity)
     private readonly requirementsLogRepository: ModelType<RequirementsLogEntity>,
     private readonly usersService: UsersService,
-    private readonly notificationService: NotificationService,
+    private readonly notificationService: NotificationsService,
   ) {}
 
   async create(createRequirementsLogDto: CreateRequirementsLogDto) {
@@ -49,7 +49,7 @@ export class RequirementsLogService {
       }
     });
 
-    return await this.requirementsLogRepository
+    const newReqLog = await this.requirementsLogRepository
       .create({
         ...createRequirementsLogDto,
         records: updatedRecords,
@@ -64,7 +64,7 @@ export class RequirementsLogService {
         const { condominium, unit, user: pqrAuthor } = requirement;
 
         this.notificationService.sendEmail<INewRequestMessagePayload>({
-          action: ETemplates.NEW_REQUEST_MESSAGE,
+          action: EMAIL_ACTIONS.NEW_REQUEST_MESSAGE,
           to: pqrAuthor?.email || '',
           payload: {
             condominiumName: condominium?.name || '',
@@ -81,7 +81,16 @@ export class RequirementsLogService {
             dateTime: new Date().toLocaleString(),
           },
         });
+
+        await this.notificationService.createFirebaseNotification({
+          collection: NOTIFICATION_COLLECTIONS.REQUIREMENTS_LOGS,
+          objectId: String(newReqLog._id),
+          accountId: String(condominium.account),
+          condominiumId: String(condominium._id),
+        });
       });
+
+    return newReqLog;
   }
 
   async findByRequirementId(requirementId: Types.ObjectId) {

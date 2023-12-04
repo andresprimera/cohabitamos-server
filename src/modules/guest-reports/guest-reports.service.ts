@@ -22,11 +22,13 @@ import { VehiclesService } from '../vehicles/vehicles.service';
 import { VehiclesEntity } from 'src/entities/vehicle.entity';
 import { UsersByUnitService } from '../users-by-unit/users-by-unit.service';
 import { VisitorsService } from '../visitors/visitors.service';
-import { NotificationService } from 'src/providers/notifications';
-import { ETemplates } from 'src/providers/notifications/enums';
-import { IGuestReportCreatedPayload } from 'src/providers/notifications/types';
-import dayjs from 'dayjs';
-import { VISITORS_CONDITION } from 'src/common/enums';
+import { NotificationsService } from '../notifications/notifications.service';
+import { IGuestReportCreatedDto } from '../notifications/dto/guest-report-created.dto';
+import {
+  EMAIL_ACTIONS,
+  NOTIFICATION_COLLECTIONS,
+  VISITORS_CONDITION,
+} from 'src/common/enums';
 
 @Injectable()
 export class GuestReportsService {
@@ -42,7 +44,7 @@ export class GuestReportsService {
     private readonly vehicleService: VehiclesService,
     private readonly usersByUnitsService: UsersByUnitService,
     private readonly visitorsService: VisitorsService,
-    private readonly notificationsService: NotificationService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async create(createGuestReportDto: CreateGuestReportDto) {
@@ -194,8 +196,8 @@ export class GuestReportsService {
     const { firstName, lastName, phone, docType, docNumber, condition } =
       mainVisitor || {};
 
-    this.notificationsService.sendEmail<IGuestReportCreatedPayload>({
-      action: ETemplates.GUEST_REPORT_CREATED,
+    this.notificationsService.sendEmail<IGuestReportCreatedDto>({
+      action: EMAIL_ACTIONS.GUEST_REPORT_CREATED,
       to: user.email,
       payload: {
         condition: condition || '',
@@ -215,6 +217,13 @@ export class GuestReportsService {
         hasVehicle: vehicle?.plate ? 'Si' : 'No',
         hasPet: pet?.name ? 'Si' : 'No',
       },
+    });
+
+    await this.notificationsService.createFirebaseNotification({
+      collection: NOTIFICATION_COLLECTIONS.GUEST_REPORTS,
+      objectId: String(newGuestReport._id),
+      accountId: String(condominium.account),
+      condominiumId: String(condominium._id),
     });
 
     return newGuestReport;

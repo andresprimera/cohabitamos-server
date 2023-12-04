@@ -27,7 +27,8 @@ import { VisitorsModule } from './modules/visitors/visitors.module';
 import { UserRegistrationLinkModule } from './modules/user-registration-link/user-registration-link.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { OpenAI } from './providers/openAi';
-import { NotificationService } from './providers/notifications';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { NotificationsService } from './modules/notifications/notifications.service';
 
 @Module({
   imports: [
@@ -57,9 +58,10 @@ import { NotificationService } from './providers/notifications';
     VisitorsModule,
     UserRegistrationLinkModule,
     ChatModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, Firebase, OpenAI, NotificationService],
+  providers: [AppService, Firebase, OpenAI, NotificationsService],
 })
 // export class AppModule {}
 export class AppModule implements NestModule {

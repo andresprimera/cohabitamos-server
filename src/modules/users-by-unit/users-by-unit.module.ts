@@ -6,8 +6,9 @@ import { UsersByUnitEntity } from 'src/entities/users-by-unit.entity';
 import { UnitsModule } from '../units/units.module';
 import { CondominiumsModule } from '../condominiums/condominiums.module';
 import { UsersModule } from '../users/users.module';
-import { NotificationService } from 'src/providers/notifications';
 import { UsersService } from '../users/users.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { Firebase } from 'src/providers/firebase';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { UsersService } from '../users/users.service';
     TypegooseModule.forFeature([UsersByUnitEntity]),
   ],
   controllers: [UsersByUnitController],
-  providers: [UsersByUnitService, NotificationService],
+  providers: [UsersByUnitService, NotificationsService, Firebase],
   exports: [UsersByUnitService],
 })
 export class UsersByUnitModule {}
