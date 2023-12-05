@@ -108,7 +108,7 @@ export class RequirementsService {
         throw new BadRequestException(error.message);
       });
 
-    const newRequirement = await this.requirementsLogsService.create({
+    await this.requirementsLogsService.create({
       requirement,
       message: `Requerimiento creado: ${description}`,
       records: [],
@@ -129,13 +129,6 @@ export class RequirementsService {
         description: description,
         status: status || REQUIREMENT_STATE.OPEN,
       },
-    });
-
-    await this.notificationsService.createFirebaseNotification({
-      collection: NOTIFICATION_COLLECTIONS.REQUIREMENTS,
-      objectId: String(newRequirement._id),
-      accountId: String(condominium.account),
-      condominiumId: String(condominium._id),
     });
 
     return requirement;
@@ -351,7 +344,7 @@ export class RequirementsService {
       assigneeUser = await this.usersService.findOne(assignee);
     }
 
-    const newRequirement = await this.requirementsLogsService.create({
+    await this.requirementsLogsService.create({
       requirement: requirement as RequirementEntity,
       message: `Nueva actualización de requerimiento${
         message ? ': ' + message : '.'
@@ -398,33 +391,26 @@ export class RequirementsService {
       );
     }
 
-    const { unit, user, condominium } = requirement as RequirementEntity;
+    // const { unit, user, condominium } = requirement as RequirementEntity;
 
-    this.notificationsService.sendEmail<INewRequestMessagePayload>({
-      action: EMAIL_ACTIONS.NEW_REQUEST_MESSAGE,
-      to: user?.email || '',
-      payload: {
-        condominiumName: condominium?.name || '',
-        userEmail: user?.email || '',
-        unitNumber: unit?.number || '',
-        unitType: unit?.type || '',
-        unitBlock: unit?.block || '',
-        name: `${user?.firstName} ${user?.lastName}`,
-        message,
-        status: status || (requirement?.status as REQUIREMENT_STATE),
-        dateTime: new Date().toLocaleString(),
-        author: `${assignee}`,
-        condominiumId: String(condominium?._id) || '',
-        requirementType: requirement?.requirementType || '',
-      },
-    });
-
-    await this.notificationsService.createFirebaseNotification({
-      collection: NOTIFICATION_COLLECTIONS.REQUIREMENTS_LOGS,
-      objectId: String(newRequirement._id),
-      accountId: String(condominium.account),
-      condominiumId: String(condominium._id),
-    });
+    // this.notificationsService.sendEmail<INewRequestMessagePayload>({
+    //   action: EMAIL_ACTIONS.NEW_REQUEST_MESSAGE,
+    //   to: user?.email || '',
+    //   payload: {
+    //     condominiumName: condominium?.name || '',
+    //     userEmail: user?.email || '',
+    //     unitNumber: unit?.number || '',
+    //     unitType: unit?.type || '',
+    //     unitBlock: unit?.block || '',
+    //     name: `${user?.firstName} ${user?.lastName}`,
+    //     message,
+    //     status: status || (requirement?.status as REQUIREMENT_STATE),
+    //     dateTime: new Date().toLocaleString(),
+    //     author: `${assignee}`,
+    //     condominiumId: String(condominium?._id) || '',
+    //     requirementType: requirement?.requirementType || '',
+    //   },
+    // });
 
     return response;
   }

@@ -49,12 +49,17 @@ export class RequirementsLogService {
       }
     });
 
-    const newReqLog = await this.requirementsLogRepository
+    let newReqLogId = '';
+
+    return await this.requirementsLogRepository
       .create({
         ...createRequirementsLogDto,
         records: updatedRecords,
         updatedBy: msgAuthor,
         requirementId: requirement._id,
+      })
+      .then((newReqLog) => {
+        newReqLogId = newReqLog._id.toString();
       })
       .catch((error) => {
         Logger.error(error);
@@ -63,34 +68,36 @@ export class RequirementsLogService {
       .finally(async () => {
         const { condominium, unit, user: pqrAuthor } = requirement;
 
-        this.notificationService.sendEmail<INewRequestMessagePayload>({
-          action: EMAIL_ACTIONS.NEW_REQUEST_MESSAGE,
-          to: pqrAuthor?.email || '',
-          payload: {
-            condominiumName: condominium?.name || '',
-            userEmail: pqrAuthor?.email || '',
-            unitNumber: unit?.number || '',
-            unitType: unit?.type || '',
-            unitBlock: unit?.block || '',
-            name: `${pqrAuthor?.firstName} ${pqrAuthor?.lastName}`,
-            message: createRequirementsLogDto.message,
-            author: `${msgAuthor.firstName} ${msgAuthor.lastName}`,
-            condominiumId: condominium._id.toString(),
-            status: requirement.status,
-            requirementType: requirement.requirementType,
-            dateTime: new Date().toLocaleString(),
-          },
-        });
+        if (
+          !createRequirementsLogDto.message.includes('Requerimiento creado')
+        ) {
+          this.notificationService.sendEmail<INewRequestMessagePayload>({
+            action: EMAIL_ACTIONS.NEW_REQUEST_MESSAGE,
+            to: pqrAuthor?.email || '',
+            payload: {
+              condominiumName: condominium?.name || '',
+              userEmail: pqrAuthor?.email || '',
+              unitNumber: unit?.number || '',
+              unitType: unit?.type || '',
+              unitBlock: unit?.block || '',
+              name: `${pqrAuthor?.firstName} ${pqrAuthor?.lastName}`,
+              message: createRequirementsLogDto.message,
+              author: `${msgAuthor.firstName} ${msgAuthor.lastName}`,
+              condominiumId: condominium._id.toString(),
+              status: requirement.status,
+              requirementType: requirement.requirementType,
+              dateTime: new Date().toLocaleString(),
+            },
+          });
 
-        await this.notificationService.createFirebaseNotification({
-          collection: NOTIFICATION_COLLECTIONS.REQUIREMENTS_LOGS,
-          objectId: String(newReqLog._id),
-          accountId: String(condominium.account),
-          condominiumId: String(condominium._id),
-        });
+          await this.notificationService.createFirebaseNotification({
+            collection: NOTIFICATION_COLLECTIONS.REQUIREMENTS_LOGS,
+            objectId: newReqLogId,
+            accountId: String(condominium.account),
+            condominiumId: String(condominium._id),
+          });
+        }
       });
-
-    return newReqLog;
   }
 
   async findByRequirementId(requirementId: Types.ObjectId) {
