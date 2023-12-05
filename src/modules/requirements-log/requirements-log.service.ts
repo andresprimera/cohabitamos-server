@@ -60,6 +60,7 @@ export class RequirementsLogService {
       })
       .then((newReqLog) => {
         newReqLogId = newReqLog._id.toString();
+        return newReqLog;
       })
       .catch((error) => {
         Logger.error(error);
