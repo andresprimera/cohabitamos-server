@@ -66,7 +66,7 @@ export class RequirementsLogService {
         throw new BadRequestException(error.message);
       })
       .finally(async () => {
-        const { condominium, unit, user: pqrAuthor } = requirement;
+        const { condominium, unit, user: pqrAuthor, _id } = requirement;
 
         if (
           !createRequirementsLogDto.message.includes('Requerimiento creado')
@@ -92,7 +92,7 @@ export class RequirementsLogService {
 
           await this.notificationService.createFirebaseNotification({
             collection: NOTIFICATION_COLLECTIONS.REQUIREMENTS_LOGS,
-            objectId: newReqLogId,
+            objectId: _id.toString(),
             accountId: String(condominium.account),
             condominiumId: String(condominium._id),
           });
