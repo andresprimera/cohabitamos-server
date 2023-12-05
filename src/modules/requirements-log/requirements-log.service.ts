@@ -89,14 +89,14 @@ export class RequirementsLogService {
               dateTime: new Date().toLocaleString(),
             },
           });
-
-          await this.notificationService.createFirebaseNotification({
-            collection: NOTIFICATION_COLLECTIONS.REQUIREMENTS_LOGS,
-            objectId: _id.toString(),
-            accountId: String(condominium.account),
-            condominiumId: String(condominium._id),
-          });
         }
+
+        await this.notificationService.createFirebaseNotification({
+          collection: NOTIFICATION_COLLECTIONS.REQUIREMENTS_LOGS,
+          objectId: _id.toString(),
+          accountId: String(condominium.account),
+          condominiumId: String(condominium._id),
+        });
       });
   }
 
