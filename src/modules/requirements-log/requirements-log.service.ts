@@ -97,6 +97,7 @@ export class RequirementsLogService {
           objectId: _id.toString(),
           accountId: String(condominium.account),
           condominiumId: String(condominium._id),
+          author: msgAuthor._id.toString(),
         });
       });
   }

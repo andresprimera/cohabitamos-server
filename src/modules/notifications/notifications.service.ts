@@ -70,6 +70,7 @@ export class NotificationsService {
     objectId: string;
     accountId: string;
     condominiumId: string;
+    author?: string;
   }): Promise<void> {
     try {
       this.firebase.getFirestore().collection('notifications').add(payload);
