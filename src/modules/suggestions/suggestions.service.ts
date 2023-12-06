@@ -3,6 +3,7 @@ import { ReturnModelType } from '@typegoose/typegoose';
 import { InjectModel } from 'nestjs-typegoose';
 import { SuggestionsEntity } from 'src/entities/suggestions.entity';
 import { UserEntity } from 'src/entities/user.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 import { CreateSuggestionDto } from './dto/create-suggestion.dto';
 
 @Injectable()
@@ -12,6 +13,7 @@ export class SuggestionsService {
     private readonly suggestionsRepository: ReturnModelType<
       typeof SuggestionsEntity
     >,
+    private readonly notificationService: NotificationsService,
   ) {}
 
   async create(createSuggestionDto: CreateSuggestionDto, operator: UserEntity) {
@@ -22,6 +24,14 @@ export class SuggestionsService {
       })
       .catch((error) => {
         throw new BadRequestException(error.message);
+      })
+      .finally(() => {
+        this.notificationService.sendEmailToAdmins({
+          message: createSuggestionDto.message,
+          authorName: `${operator.firstName} ${operator.lastName}`,
+          authorEmail: operator.email,
+          authorPhone: operator.phone[0],
+        });
       });
   }
 

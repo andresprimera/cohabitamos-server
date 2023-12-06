@@ -65,6 +65,34 @@ export class NotificationsService {
     }
   }
 
+  async sendEmailToAdmins({
+    message,
+    authorName,
+    authorPhone,
+    authorEmail,
+  }: {
+    message: string;
+    authorName: string;
+    authorPhone: string;
+    authorEmail: string;
+  }) {
+    const msg = {
+      to: 'andresprimera@gmail.com',
+      from: 'noreplay@cohabitamos.com',
+      subject: 'Cohabitamos - Nueva sugerencia',
+      text: message,
+      html: `<p><strong>${message}<strong></p><p>Nombre: ${authorName}</p><p>Teléfono: ${authorPhone}</p><p>Email: ${authorEmail}</p>`,
+    };
+
+    try {
+      await this.sendgrid.send(msg).then(() => {
+        Logger.log(`Sengrid suggestion message sent`);
+      });
+    } catch (error) {
+      Logger.error('Sengrid  sendEmail error =>', error);
+    }
+  }
+
   async createFirebaseNotification<T>(payload: {
     collection: NOTIFICATION_COLLECTIONS;
     objectId: string;
