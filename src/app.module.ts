@@ -29,6 +29,7 @@ import { ChatModule } from './modules/chat/chat.module';
 import { OpenAI } from './providers/openAi';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { NotificationsService } from './modules/notifications/notifications.service';
+import { SuggestionsModule } from './modules/suggestions/suggestions.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { NotificationsService } from './modules/notifications/notifications.serv
     UserRegistrationLinkModule,
     ChatModule,
     NotificationsModule,
+    SuggestionsModule,
   ],
   controllers: [AppController],
   providers: [AppService, Firebase, OpenAI, NotificationsService],
