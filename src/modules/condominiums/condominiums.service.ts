@@ -140,12 +140,20 @@ export class CondominiumsService {
   }
 
   async findAll(operator: UserEntity) {
-    const account = await this.accountService
-      .findOne(operator?._id)
-      .catch((error) => {
-        Logger.log(error);
-        throw new NotFoundException(error.message);
-      });
+    let account = null;
+
+    if (operator?.permissions?.account) {
+      account = operator.permissions.account;
+    } else {
+      const accountObject = await this.accountService
+        .findOne(operator?._id)
+        .catch((error) => {
+          Logger.log(error);
+          throw new NotFoundException(error.message);
+        });
+
+      account = accountObject._id;
+    }
 
     return await this.condominiumRepository
       .find({ account: account._id })
@@ -204,7 +212,7 @@ export class CondominiumsService {
       ])
       .catch((error) => {
         Logger.error(error);
-        throw new BadRequestException(error.message);
+        throw new BadRequestException(`Condominium.findOne:: ${error.message}`);
       });
 
     if (response && response.length === 0) {

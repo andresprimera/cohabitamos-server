@@ -124,8 +124,6 @@ export class ChatService {
             content: `${response.message}. This is the data: ${response.data}`,
           });
 
-          console.log('Success =>', chatDto.messages);
-
           return await this.chat(chatDto);
         })
         .catch(async (error: any) => {
@@ -133,12 +131,12 @@ export class ChatService {
             role: 'system',
             content: error.message,
           });
-          console.log('Error =>', chatDto.messages);
+
+          Logger.error(error, chatDto.messages);
           return await this.chat(chatDto);
         });
     }
 
-    console.log('Regular response =>', response.data);
     return response.data;
   }
 
@@ -149,18 +147,14 @@ export class ChatService {
           parameters.email,
         );
 
-        console.log('user=>', response1.units);
         return {
           message: `The user with the provided email was found`,
           data: JSON.stringify(response1),
         };
       case 'createRequest':
-        console.log(functionName, parameters);
         const response2 = await this.requirementsService.createRequest(
           parameters,
         );
-
-        console.log(response2);
 
         return {
           message: `Request created successfully`,
@@ -168,14 +162,10 @@ export class ChatService {
         };
 
       case 'findRequirementTypesByCondominium':
-        console.log(functionName, parameters);
-
         const response3 =
           await this.requirementTypesService.findRequirementTypesByCondominium(
             parameters,
           );
-
-        console.log(response3);
 
         return {
           message: `Requirement types found successfully`,
@@ -183,8 +173,6 @@ export class ChatService {
         };
 
       case 'findEveryCondominium':
-        console.log(functionName, parameters);
-
         const response4 = await this.condominiumsService.findEveryCondominium();
 
         return {
