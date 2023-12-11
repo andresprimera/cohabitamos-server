@@ -101,7 +101,10 @@ export class NotificationsService {
     author?: string;
   }): Promise<void> {
     try {
-      this.firebase.getFirestore().collection('notifications').add(payload);
+      this.firebase
+        .getFirestore()
+        .collection('notifications')
+        .add({ ...payload, createdAt: new Date() });
 
       Logger.log('Firebase notification created');
     } catch (error) {
